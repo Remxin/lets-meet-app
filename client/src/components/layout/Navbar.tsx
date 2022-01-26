@@ -6,7 +6,7 @@ type navbarProps = {
   logged: boolean;
 };
 const Navbar = ({ logged }: navbarProps) => {
-  console.log(logged);
+  // console.log(logged);
   const logout = async () => {
     try {
       const res = await fetch(`${process.env.REACT_APP_SERVER_IP}/logout`, {

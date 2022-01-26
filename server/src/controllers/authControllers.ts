@@ -38,7 +38,7 @@ const signup = async (req: Request, res: Response) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, {
       expiresIn: jwtAge + "s",
     });
-    console.log(user);
+    // console.log(user);
     const emailRes: boolean = await sendWelcomeEmail(user.email, user.name); // wysyłanie emaila powitalnego
     if (emailRes) {
       // sprawdzenie, czy nie ma błędu w wysyłaniu emaila
@@ -70,14 +70,14 @@ const login = async (req: Request, res: Response) => {
 
 const verifyuser = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt;
-  console.log(token);
+  // console.log(token);
   if (token) {
     jwt.verify(
       token,
       process.env.JWT_TOKEN,
       async (err: any, decodedToken: any) => {
         if (err) {
-          console.log("tutaj");
+          // console.log("tutaj");
           console.log(err.message);
         } else {
           let user = await User.findById(decodedToken.id);

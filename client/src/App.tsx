@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import axios from "axios";
 
 import { UserContext } from "./contexts/UserContext";
 
@@ -8,7 +9,8 @@ import Navbar from "./components/layout/Navbar";
 import Home from "./components/home/Home";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
-import axios from "axios";
+import Page404 from "./components/error/Page404";
+import PrivacyPolicy from "./components/policy/PrivacyPolicy";
 
 function App() {
   const [user, setUser] = useState<any>(null);
@@ -57,6 +59,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="*" element={<Page404 />} />
           </Routes>
         </UserContext.Provider>
       </div>

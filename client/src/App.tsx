@@ -8,16 +8,43 @@ import Navbar from "./components/layout/Navbar";
 import Home from "./components/home/Home";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import axios from "axios";
 
 function App() {
   const [user, setUser] = useState<any>(null);
   const [isLogged, setIsLogged] = useState<boolean>(false);
 
   useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        // console.log("trying");
+        const res = await fetch(
+          `${process.env.REACT_APP_SERVER_IP}/verifyuser`,
+          {
+            method: "GET",
+            credentials: "include", // dołącza do zapytania cookiesy
+            headers: {
+              "Content-Type": "application/json",
+              Cache: "no-cache",
+            },
+          }
+        );
+        const data = await res.json();
+        await setUser(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    verifyUser();
+  }, []);
+
+  useEffect(() => {
+    // console.log(user);
     if (user) {
+      // sprawdzenie, czy jest zalogowany, by potem ustawić odpowiedni navbar
       setIsLogged(true);
     }
-  }, []);
+  }, [user]);
 
   return (
     // @ts-ignore

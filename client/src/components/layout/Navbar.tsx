@@ -6,6 +6,23 @@ type navbarProps = {
   logged: boolean;
 };
 const Navbar = ({ logged }: navbarProps) => {
+  console.log(logged);
+  const logout = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_SERVER_IP}/logout`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Cache: "no-cache",
+        },
+      });
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const navLinks = logged ? (
     <ul>
       <li>
@@ -14,7 +31,7 @@ const Navbar = ({ logged }: navbarProps) => {
         </NavLink>
       </li>
       <li>
-        <NavLink to="/logout" className="navbar__link">
+        <NavLink to="/login" className="navbar__link" onClick={logout}>
           Logout
         </NavLink>
       </li>

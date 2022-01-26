@@ -1,5 +1,6 @@
 // ----- imports -----
 import { Request, Response, NextFunction } from "express";
+import { sendWelcomeEmail } from "../helpers/emailHelpers";
 
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
@@ -29,23 +30,24 @@ const alertErr = (err: any) => {
   return errors;
 };
 
-// return jwt.sign({ id: id }, process.env.JTW_TOKEN, { expiresIn: jwtAge + "s" }) // jsonweb token expires in 5 days
 // ----- export functions -----
-
 const signup = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, sex, age } = req.body;
   try {
-    const user = await User.create({ name, email, password });
-    // const token = createJWT(user._id);
+    const user = await User.create({ name, email, password, sex, age });
     const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, {
       expiresIn: jwtAge + "s",
     });
     console.log(user);
+    const emailRes: boolean = await sendWelcomeEmail(user.email, user.name); // wysyłanie emaila powitalnego
+    if (emailRes) {
+      // sprawdzenie, czy nie ma błędu w wysyłaniu emaila
+      console.log(`Error in sending email to: ${user.email}`);
+    }
     res.cookie("jwt", token, { httpOnly: true, maxAge: jwtAge * 1000 });
     res.status(201).json({ user });
   } catch (error) {
     let errors = alertErr(error);
-    // res.sendStatus(400).json({ errors })
     res.status(400).json({ errors });
   }
 };
@@ -57,25 +59,8 @@ const login = async (req: Request, res: Response) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, {
       expiresIn: jwtAge + "s",
     });
-    if (user.role === "admin") {
-      const adminToken = jwt.sign(
-        { id: user._id },
-        process.env.JWT_ADMIN_TOKEN,
-        { expiresIn: jwtAge + "s" }
-      );
-      //@ts-ignore
-      res
-        .cookie("Ajwt", adminToken, {
-          //@ts-ignore
-          expiresIn: jwtAge * 1000,
-          httpOnly: true,
-        })
-        //@ts-ignore
-        .cookie("jwt", token, { expiresIn: jwtAge * 1000, httpOnly: true });
-    } else {
-      // @ts-ignore
-      res.cookie("jwt", token, { expiresIn: jwtAge * 1000, httpOnly: true });
-    }
+    // @ts-ignore
+    res.cookie("jwt", token, { expiresIn: jwtAge * 1000, httpOnly: true });
     res.status(201).json({ user });
   } catch (err) {
     let errors = alertErr(err); // alert function will set errors
@@ -85,7 +70,7 @@ const login = async (req: Request, res: Response) => {
 
 const verifyuser = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt;
-  // console.log(token)
+  console.log(token);
   if (token) {
     jwt.verify(
       token,

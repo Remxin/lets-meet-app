@@ -1,7 +1,7 @@
 //@ts-nocheck
 import React, { MutableRefObject, useContext, useRef, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
 
 const Signup = () => {
   //@ts-ignore
@@ -115,7 +115,7 @@ const Signup = () => {
         />
       ) : null}
       <p className="privacy-licence">
-        I agree to <a href="#">privacy licence</a>
+        I agree to <NavLink to="/privacy-policy">privacy policy</NavLink>
       </p>
       <input
         type="checkbox"

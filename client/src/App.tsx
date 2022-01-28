@@ -12,6 +12,8 @@ import Signup from "./components/auth/Signup";
 import Page404 from "./components/error/Page404";
 import PrivacyPolicy from "./components/policy/PrivacyPolicy";
 
+import AddEvent from "./components/pages/addEvent/AddEvent";
+
 function App() {
   const [user, setUser] = useState<any>(null);
   const [isLogged, setIsLogged] = useState<boolean>(false);
@@ -60,6 +62,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/add/event" element={<AddEvent />} />
             <Route path="*" element={<Page404 />} />
           </Routes>
         </UserContext.Provider>

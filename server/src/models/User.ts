@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     default: "user",
   },
+  promotionEvents: {
+    type: Number,
+    default: 0,
+  },
 });
 
 //@ts-ignore

@@ -8,6 +8,7 @@ const cors = require("cors");
 
 // ----- files imports -----
 const authRoutes = require("./routes/authRoutes");
+const eventRoutes = require("./routes/eventRoutes");
 
 // ----- variables -----
 const PORT = process.env.PORT || 5001;
@@ -29,6 +30,7 @@ app.use(cors(corsOptions));
 // ----- using routes -----
 try {
   app.use(authRoutes);
+  app.use(eventRoutes);
   console.log("routes successfully imported");
 } catch (err) {
   console.log(`Routes import error : ${err}`);

@@ -9,6 +9,8 @@ import Navbar from "./components/layout/Navbar";
 import Home from "./components/home/Home";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import ForgotPassword from "./components/auth/ForgotPassword";
+import ResetPassword from "./components/auth/ResetPassword";
 import Page404 from "./components/error/Page404";
 import PrivacyPolicy from "./components/policy/PrivacyPolicy";
 
@@ -61,6 +63,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset/password" element={<ResetPassword />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/add/event" element={<AddEvent />} />
             <Route path="*" element={<Page404 />} />

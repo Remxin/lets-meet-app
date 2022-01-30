@@ -123,6 +123,8 @@ const Signup = () => {
       />
       <p>{licenceErr}</p>
       <button type="submit">create account</button>
+      <br />
+      <NavLink to="/login">Already have an account</NavLink>
     </form>
   );
 };

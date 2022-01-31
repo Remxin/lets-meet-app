@@ -24,5 +24,5 @@ yarn-debug.log*
 yarn-error.log*
 
 #images
-src/static/uploads/*
-dist/static/uploads/*
+src/static/uploads
+dist/static/uploads

@@ -1,5 +1,6 @@
 //@ts-nocheck
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv").config();
 
 const User = require("../models/User");
 import { sendForgotPasswordEmail } from "../helpers/emailHelpers";
@@ -85,5 +86,41 @@ export const changeUserPassword = (req: Request, res: Response) => {
     );
   } catch (err) {
     return res.status(400).send({ err: "Bad request" });
+  }
+};
+
+export const addAvatar = (req: Request, res: Response) => {
+  const user = req.cookies.jwt;
+
+  console.log(req.files);
+  try {
+    jwt.verify(user, process.env.JWT_TOKEN, (err: Error, decodedUser: any) => {
+      if (err) {
+        return res
+          .status(403)
+          .send({ err: "You don't have permissions to perform this action" });
+      }
+
+      const file = req.files?.file;
+      console.log(file);
+      if (file) {
+        const fileExt = file.name.split(".").pop();
+        file.mv(
+          `${__dirname}/../static/uploads/avatars/${decodedUser.id}.${fileExt}`,
+          (err: Error) => {
+            if (err) {
+              return res
+                .status(500)
+                .send({ err: "Internal server error - cannot save file" });
+            }
+            return res.status(200).send({ msg: "Successfully saved file" });
+          }
+        );
+      }
+      // return res.status(400).send({ err: "Error - no file has been sent" });
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({ err });
   }
 };

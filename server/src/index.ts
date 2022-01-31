@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
 
 // ----- files imports -----
 const authRoutes = require("./routes/authRoutes");
@@ -28,6 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("static"));
 app.use(cors(corsOptions));
+app.use(fileUpload());
 
 // ----- using routes -----
 try {

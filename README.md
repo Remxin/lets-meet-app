@@ -1,6 +1,5 @@
 ﻿# Lets Meet App
 
-
 ## Table of contents
 
 - [Description](#Description)
@@ -11,7 +10,7 @@
 
 # Preview
 
-![enter image description here](https://cutewallpaper.org/21/wallpapers-oranges/4K-Papers-Oranges-wallpaper.jpg)
+![enter image description here](https://lightwallpapers.com/media/600x600/0-93.jpg)
 
 ## Description
 
@@ -19,18 +18,24 @@ The meeting app that allows users to organise and join events
 
 ## Technologies
 
-### Frontend 
-* React
-* TypeScript
-### Backend
-* Node
-* Express
-### Database
-* MongoDB
+### Frontend
 
+- React
+- TypeScript
+
+### Backend
+
+- Node
+- Express
+
+### Database
+
+- MongoDB
 
 ## Demo
 
 Soon...
+
 ## License
+
 [MIT](https://choosealicense.com/licenses/mit/)

@@ -5,9 +5,13 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
 
 // ----- files imports -----
 const authRoutes = require("./routes/authRoutes");
+const eventRoutes = require("./routes/eventRoutes");
+const placeRoutes = require("./routes/placeRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 // ----- variables -----
 const PORT = process.env.PORT || 5001;
@@ -25,10 +29,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("static"));
 app.use(cors(corsOptions));
+app.use(fileUpload());
 
 // ----- using routes -----
 try {
   app.use(authRoutes);
+  app.use(eventRoutes);
+  app.use(placeRoutes);
+  app.use(userRoutes);
   console.log("routes successfully imported");
 } catch (err) {
   console.log(`Routes import error : ${err}`);

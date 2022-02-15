@@ -45,6 +45,16 @@ const signup = async (req: Request, res: Response) => {
       console.log(`Error in sending email to: ${user.email}`);
     }
     res.cookie("jwt", token, { httpOnly: true, maxAge: jwtAge * 1000 });
+    if (user.role === "admin") {
+      const adminToken = jwt.sign(
+        { id: user._id, email: user.email },
+        process.env.ADMIN_TOKEN,
+        {
+          expiresIn: jwtAge + "s",
+        }
+      );
+      res.cookie("jwtA", adminToken, { httpOnly: true, maxAge: jwtAge * 1000 });
+    }
     res.status(201).json({ user });
   } catch (error) {
     let errors = alertErr(error);
@@ -61,6 +71,16 @@ const login = async (req: Request, res: Response) => {
     });
     // @ts-ignore
     res.cookie("jwt", token, { expiresIn: jwtAge * 1000, httpOnly: true });
+    if (user.role === "admin") {
+      const adminToken = jwt.sign(
+        { id: user._id, email: user.email },
+        process.env.ADMIN_TOKEN,
+        {
+          expiresIn: jwtAge + "s",
+        }
+      );
+      res.cookie("jwtA", adminToken, { httpOnly: true, maxAge: jwtAge * 1000 });
+    }
     res.status(201).json({ user });
   } catch (err) {
     let errors = alertErr(err); // alert function will set errors

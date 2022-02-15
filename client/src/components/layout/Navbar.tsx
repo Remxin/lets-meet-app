@@ -38,6 +38,11 @@ const Navbar = ({ logged }: navbarProps) => {
         </NavLink>
       </li>
       <li>
+        <NavLink to="/add/event" className="navbar__link">
+          Add Event
+        </NavLink>
+      </li>
+      <li>
         <NavLink to="/login" className="navbar__link" onClick={logout}>
           Logout
         </NavLink>

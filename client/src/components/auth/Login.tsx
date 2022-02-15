@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, MutableRefObject } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
 
 import { UserContext } from "../../contexts/UserContext";
 
@@ -55,6 +55,10 @@ const Login = () => {
       />
       <p>{passwordErr}</p>
       <button type="submit">login</button>
+      <br />
+      <NavLink to="/forgot-password">forgot password</NavLink>
+      <br />
+      <NavLink to="/signup">Don't have an account</NavLink>
     </form>
   );
 };

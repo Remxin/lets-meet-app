@@ -1,0 +1,20 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forgot email</title>
+  </head>
+  <body>
+    <div id="main">
+      <h1>Hi {{userName}}!</h1>
+      <p>Here is your password reset link: </p>
+      <button><a
+          href="{{clientIP}}/reset/password?token={{resetPasswordToken}}&email={{userEmail}}"
+        >RESET YOUR PASSWORD</a></button>
+      <p>*This link is active only for 15 minutes</p>
+      <p>*If you didn't forgot your password just ignore this email</p>
+      <p>Lets meet up team</p>
+    </div>
+  </body>
+</html>

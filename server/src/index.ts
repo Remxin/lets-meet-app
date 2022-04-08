@@ -13,6 +13,8 @@ const eventRoutes = require("./routes/eventRoutes");
 const placeRoutes = require("./routes/placeRoutes");
 const userRoutes = require("./routes/userRoutes");
 
+const { startApolloServer } = require("./apollo/apollo");
+
 // ----- variables -----
 const PORT = process.env.PORT || 5001;
 const app: Application = express();
@@ -49,5 +51,6 @@ mongoose
   .then(() => console.log("mongodb successfully connected"))
   .catch((err: any) => console.log(err));
 
+startApolloServer();
 // ----- listening -----
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));

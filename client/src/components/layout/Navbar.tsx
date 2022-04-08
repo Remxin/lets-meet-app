@@ -49,7 +49,8 @@ const Navbar = ({ logged }: navbarProps) => {
       </li>
     </ul>
   ) : (
-    <div className="shadow-md w-full fixed top-0 left-0">
+    // change to fixed and add margin bottom
+    <div className="shadow-md w-full relative top-0 left-0">
       <div className="md:flex items-center justify-between bg-white py-4 md:px-10 px-7">
         <div
           className="font-bold text-2xl cursor-pointer flex content-center items-center font-[Poppins] 

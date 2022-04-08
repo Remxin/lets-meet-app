@@ -6,6 +6,9 @@ import { Tab } from "@headlessui/react";
 import { Switch } from "@headlessui/react";
 import { IoIosMenu } from "react-icons/io";
 import { FcLandscape } from "react-icons/fc";
+
+import "./Navbar.css";
+
 type navbarProps = {
   logged: boolean;
 };
@@ -50,7 +53,7 @@ const Navbar = ({ logged }: navbarProps) => {
     </ul>
   ) : (
     // change to fixed and add margin bottom
-    <div className="shadow-md w-full relative top-0 left-0">
+    <div className="shadow-md w-full fixed top-0 left-0 s nav-content">
       <div className="md:flex items-center justify-between bg-white py-4 md:px-10 px-7">
         <div
           className="font-bold text-2xl cursor-pointer flex content-center items-center font-[Poppins] 

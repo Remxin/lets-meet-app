@@ -60,17 +60,19 @@ function App() {
         {/* @ts-ignore */}
         <UserContext.Provider value={{ user, setUser }}>
           <Navbar logged={isLogged} />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset/password" element={<ResetPassword />} />
-            <Route path="/user/add-avatar" element={<AddAvatar />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/add/event" element={<AddEvent />} />
-            <Route path="*" element={<Page404 />} />
-          </Routes>
+          <div className="main">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset/password" element={<ResetPassword />} />
+              <Route path="/user/add-avatar" element={<AddAvatar />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/add/event" element={<AddEvent />} />
+              <Route path="*" element={<Page404 />} />
+            </Routes>
+          </div>
         </UserContext.Provider>
       </div>
     </Router>

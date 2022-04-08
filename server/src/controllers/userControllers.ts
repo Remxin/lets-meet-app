@@ -1,6 +1,8 @@
 //@ts-nocheck
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config();
+const path = require("path");
+const fs = require("fs");
 
 const User = require("../models/User");
 import { sendForgotPasswordEmail } from "../helpers/emailHelpers";
@@ -105,6 +107,18 @@ export const addAvatar = (req: Request, res: Response) => {
       console.log(file);
       if (file) {
         const fileExt = file.name.split(".").pop();
+        // ----- usuwanie plikow o takiej samej nazwie -----
+        const dir = path.join(__dirname, "/../static/uploads/avatars");
+        const files = fs.readdirSync(dir);
+
+        for (const file of files) {
+          console.log(file);
+          let filename = file + "";
+          if (filename.includes(decodedUser.id)) {
+            fs.unlinkSync(`${__dirname}/../static/uploads/avatars/${filename}`);
+          }
+        }
+        // ----- właściwe dodawanie pliku -----
         file.mv(
           `${__dirname}/../static/uploads/avatars/${decodedUser.id}.${fileExt}`,
           (err: Error) => {
@@ -122,5 +136,44 @@ export const addAvatar = (req: Request, res: Response) => {
   } catch (err) {
     console.log(err);
     return res.status(400).send({ err });
+  }
+};
+
+export const getAvatar = (req, res) => {
+  const user = req.cookies?.jwt;
+  if (user) {
+    try {
+      jwt.verify(
+        user,
+        process.env.JWT_TOKEN,
+        (err: Error, decodedUser: any) => {
+          if (err) {
+            return res.status(403).send({
+              err: "You don't have permissions to perform this action",
+            });
+          }
+          // --- właściwe pobieranie zdjęcia ---
+          const id = decodedUser.id;
+          const dir = path.join(__dirname, "/../static/uploads/avatars");
+          const files = fs.readdirSync(dir);
+
+          for (const file of files) {
+            let filename = file + "";
+            if (filename.includes(id)) {
+              return res.sendFile(
+                path.join(__dirname + `/../static/uploads/avatars/${filename}`)
+              );
+            }
+          }
+          return res.sendFile(
+            path.join(__dirname + "/../static/uploads/avatars/default.png")
+          );
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  } else {
+    return res.send({ err: "user unauthorized" });
   }
 };

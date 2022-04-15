@@ -4,11 +4,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
 
 import { UserContext } from "./contexts/UserContext";
+import { NextUIProvider } from "@nextui-org/react";
 
 import Navbar from "./components/layout/Navbar";
 import Home from "./components/home/Home";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import NewLogin from "./components/auth/NewLogin";
+
 import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import AddAvatar from "./components/user/addAvatar/AddAvatar";
@@ -56,23 +59,26 @@ function App() {
   return (
     // @ts-ignore
     <Router>
-      <div className="app">
-        {/* @ts-ignore */}
-        <UserContext.Provider value={{ user, setUser }}>
-          <Navbar logged={isLogged} />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset/password" element={<ResetPassword />} />
-            <Route path="/user/add-avatar" element={<AddAvatar />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/add/event" element={<AddEvent />} />
-            <Route path="*" element={<Page404 />} />
-          </Routes>
-        </UserContext.Provider>
-      </div>
+      <NextUIProvider>
+        <div className="app">
+          {/* @ts-ignore */}
+          <UserContext.Provider value={{ user, setUser }}>
+            <Navbar logged={isLogged} />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/newlogin" element={<NewLogin />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset/password" element={<ResetPassword />} />
+              <Route path="/user/add-avatar" element={<AddAvatar />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/add/event" element={<AddEvent />} />
+              <Route path="*" element={<Page404 />} />
+            </Routes>
+          </UserContext.Provider>
+        </div>
+      </NextUIProvider>
     </Router>
   );
 }

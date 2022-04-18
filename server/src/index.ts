@@ -51,6 +51,10 @@ mongoose
   .then(() => console.log("mongodb successfully connected"))
   .catch((err: any) => console.log(err));
 
+// ----- start apollo server ----
 startApolloServer();
 // ----- listening -----
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+// ! TESTS (disable when everything is ok)
+// import "./tests/emailTest.js";

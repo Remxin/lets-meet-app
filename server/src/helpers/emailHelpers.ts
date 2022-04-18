@@ -6,10 +6,7 @@ const fs = require("fs");
 
 // ----- email config -----
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
+  service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASSWORD,
@@ -18,6 +15,12 @@ const transporter = nodemailer.createTransport({
 
 // ----- export functions -----
 export const sendWelcomeEmail = (userEmail: string, userName: string) => {
+  console.log(
+    process.env.GMAIL_HOST,
+    process.env.GMAIL_PORT,
+    process.env.GMAIL_USER,
+    process.env.GMAIL_PASSWORD
+  );
   let error = false;
   const sourceFile = fs.readFileSync(
     path.join(__dirname, "../views/email/welcome.hbs"),
@@ -29,7 +32,7 @@ export const sendWelcomeEmail = (userEmail: string, userName: string) => {
   };
   // -- declaring email options --
   const mailOptions = {
-    from: `Lets meet up <${process.env.NODEMAILER_USER}>`,
+    from: `Lets meet up <${process.env.GMAIL_USER}>`,
     to: userEmail,
     subject: `Welcome ${userName}!`,
     html: template(templateVars),
@@ -38,8 +41,10 @@ export const sendWelcomeEmail = (userEmail: string, userName: string) => {
   transporter.sendMail(mailOptions, (err: Error, info: string) => {
     if (err) {
       error = true;
+      console.log(err);
       return "error";
     }
+    console.log("success");
     return "success";
   });
 
@@ -65,7 +70,7 @@ export const sendForgotPasswordEmail = (
   };
   // -- declaring email options --
   const mailOptions = {
-    from: `Lets meet up <${process.env.NODEMAILER_USER}>`,
+    from: `Lets meet up <${process.env.GMAIL_USER}>`,
     to: userEmail,
     subject: `Reset your password`,
     html: template(templateVars),

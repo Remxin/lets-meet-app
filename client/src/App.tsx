@@ -25,6 +25,7 @@ import PrivacyPolicy from "./components/policy/PrivacyPolicy";
 
 import AddEvent from "./components/pages/addEvent/AddEvent";
 import Events from "./components/pages/Events";
+import Event from "./components/pages/Event";
 
 // ---- init global apollo server variable and initialize memory cache for queries, to speed up app ----
 const client = new ApolloClient({
@@ -87,6 +88,7 @@ function App() {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/add/event" element={<AddEvent />} />
                 <Route path="/events" element={<Events />} />
+                <Route path="/event/:eventId" element={<Event />} />
                 <Route path="*" element={<Page404 />} />
               </Routes>
             </div>

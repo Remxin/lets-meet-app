@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, {
   useState,
   useMemo,
@@ -24,9 +25,13 @@ const AddEvent = () => {
   );
   const [file, setFile] = useState("");
   const [addUniquePlace, setAddUniquePlace] = useState(false); // if user wants to add his place to official
-  const [operChat, setOpenChat] = useState(false);
+  const [openChat, setOpenChat] = useState(false);
   const [openEvent, setOpenEvent] = useState(false);
   const [isPremiumEvent, setIsPremiumEvent] = useState(false);
+
+  const eventNameRef = useRef() as MutableRefObject<HTMLInputElement>; // name of event
+  const eventDescriptionRef = useRef() as MutableRefObject<HTMLTextAreaElement>;
+  const cityNameRef = useRef() as MutableRefObject<HTMLSelectElement>;
 
   const placeRef = useRef() as MutableRefObject<HTMLSelectElement>;
   const singleRestrictionRef = useRef() as MutableRefObject<HTMLInputElement>;
@@ -102,16 +107,109 @@ const AddEvent = () => {
     }
   };
   // --- submit handler ---
-  const submitHandler = (e: React.ChangeEvent<HTMLFormElement>) => {};
+  const submitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    let place = null;
+    console.log(placeRef.current?.value);
+    // TODO: add error handling
+    if (!eventNameRef.current?.value) {
+      // error nazwy
+      return;
+    }
+    if (!eventDescriptionRef.current?.value) {
+      return;
+    }
+    if (!cityNameRef.current?.value || cityNameRef.current.value === "!none") {
+      console.log("nie ma city");
+      return;
+    }
+
+    if (placeRef.current.value === "!none") {
+      // zapomniano wybrać miejsca
+      console.log("nie wybrano miejsca");
+      return;
+    } else {
+      if (placeRef.current.value !== "") {
+        place = placeRef.current.value; // ustawienie miejsca na to z bazy danych
+      } else {
+        // wybrano własne miejsce
+        if (!uniquePlaceRef.current?.value) {
+          console.log("nie ma miejsca podanego");
+          return;
+        }
+        place = uniquePlaceRef.current.value; // ustawianie własnego miejsca
+        console.log("podano swoje miejsce");
+      }
+    }
+
+    try {
+      // console.log("miejsce: ", eventNameRef.current.value);
+      // console.log("deskrypcja:", eventDescriptionRef.current.value);
+      console.log("miejsce:", place);
+      // console.log("miasto:", cityNameRef.current.value);
+      // console.log("plik ze zdj", file);
+      // console.log(
+      //   "uytkownik chce dodać swoje miejsce do oficjalnych:",
+      //   addUniquePlace
+      // );
+      // console.log("restrykcje", restrictions);
+
+      // console.log("otwarty event:", openEvent);
+      // console.log("otwrty chat:", openChat);
+      // console.log("premium:", isPremiumEvent);
+
+      // eventName,
+      //     isPublic,
+      //     premiumEvent,
+      //     membersRestrictions,
+      //     place,
+      //     city,
+      //     eventDescription,
+      //     openChat,
+      const formData = new FormData();
+      formData.append(
+        "jsondataRequest",
+        JSON.stringify({
+          eventName: eventNameRef.current.value,
+          isPublic: openEvent,
+          premiumEvent: isPremiumEvent,
+          membersRestrictions: restrictions,
+          place,
+          city: cityNameRef.current.value,
+          eventDescription: eventDescriptionRef.current.value,
+          openChat: openChat,
+        })
+      );
+      formData.append("file", file);
+
+      console.log(formData);
+      // return;
+      const res = await axios.post(
+        `${process.env.REACT_APP_SERVER_IP}/create/event`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      const resData = await res.data;
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   // ------ render ------
   return (
     <form onSubmit={submitHandler}>
-      <input type="text" placeholder="Event name: " />
+      <input type="text" placeholder="Event name: " ref={eventNameRef} />
       <br />
       <textarea
         cols={30}
         rows={10}
         placeholder="event description: "
+        ref={eventDescriptionRef}
       ></textarea>
       <p>Members restriction</p>
       <input
@@ -124,7 +222,7 @@ const AddEvent = () => {
       </button>
       <ul>{restrictionsList}</ul>
       <p>City</p>
-      <select>
+      <select ref={cityNameRef}>
         <option value="!none" selected hidden>
           Select city
         </option>
@@ -164,7 +262,7 @@ const AddEvent = () => {
       <p>Public? (everyone can join without request)</p>
       <input type="checkbox" onChange={() => setOpenEvent(!openEvent)} />
       <p>Everyone can write on chat?</p>
-      <input type="checkbox" onChange={() => setOpenChat(!operChat)} />
+      <input type="checkbox" onChange={() => setOpenChat(!openChat)} />
       <p>
         Premium Event <span>*left: {promotionsLeft}</span>
       </p>

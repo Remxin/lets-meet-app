@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import TestQuery from "../../graphql/components/TestQuery";
+import EventsQuery from "../../graphql/components/EventsQuery";
+import EventCard from "./EventCard";
 
 const Events = () => {
   return (
     <div>
-      <TestQuery />
+      <EventsQuery />
     </div>
   );
 };

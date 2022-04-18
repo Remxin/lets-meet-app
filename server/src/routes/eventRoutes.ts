@@ -5,5 +5,6 @@ const eventControllers = require("../controllers/eventControllers");
 const router = Router();
 
 router.post("/create/event", eventControllers.createEvent);
+router.get("/get/event-image", eventControllers.getEventImage);
 
 module.exports = router;

@@ -58,3 +58,4 @@ app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 // ! TESTS (disable when everything is ok)
 // import "./tests/emailTest.js";
+// import "./tests/helpersTest";

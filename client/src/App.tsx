@@ -13,10 +13,14 @@ import {
 // ----- context imports -----
 import { UserContext } from "./contexts/UserContext";
 // ----- location imports -----
+import { NextUIProvider } from "@nextui-org/react";
+
 import Navbar from "./components/layout/Navbar";
 import Home from "./components/home/Home";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import NewLogin from "./components/auth/NewLogin";
+
 import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import AddAvatar from "./components/user/addAvatar/AddAvatar";
@@ -71,31 +75,34 @@ function App() {
 
   return (
     // @ts-ignore
-    <Router>
-      <div className="app">
-        <ApolloProvider client={client}>
-          {/* @ts-ignore */}
-          <UserContext.Provider value={{ user, setUser }}>
-            <Navbar logged={isLogged} />
-            <div className="main">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset/password" element={<ResetPassword />} />
-                <Route path="/user/add-avatar" element={<AddAvatar />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/add/event" element={<AddEvent />} />
-                <Route path="/events" element={<Events />} />
-                <Route path="/event/:eventId" element={<Event />} />
-                <Route path="*" element={<Page404 />} />
-              </Routes>
-            </div>
-          </UserContext.Provider>
-        </ApolloProvider>
-      </div>
-    </Router>
+    <div className="app">
+      <Router>
+        <NextUIProvider>
+          <ApolloProvider client={client}>
+            {/* @ts-ignore */}
+            <UserContext.Provider value={{ user, setUser }}>
+              <Navbar logged={isLogged} />
+              <div className="main">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/newlogin" element={<NewLogin />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/reset/password" element={<ResetPassword />} />
+                  <Route path="/user/add-avatar" element={<AddAvatar />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/add/event" element={<AddEvent />} />
+                  <Route path="/events" element={<Events />} />
+                  <Route path="/event/:eventId" element={<Event />} />
+                  <Route path="*" element={<Page404 />} />
+                </Routes>
+              </div>
+            </UserContext.Provider>
+          </ApolloProvider>
+        </NextUIProvider>
+      </Router>
+    </div>
   );
 }
 

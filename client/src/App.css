@@ -10,6 +10,9 @@
   width: 100%;
 }
 
+.app {
+  padding-top: 120px;
+}
 .main {
-  margin-top: 100px;
+  /* margin-top: 150px; */
 }

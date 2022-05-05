@@ -97,6 +97,13 @@ const Navbar = ({ logged }: navbarProps) => {
               </a>
             </NavLink>
           </li>
+          <li className="md:ml-8 text-xl md:my-0 my-7">
+            <NavLink to="/newlogin" className="navbar__link">
+              <a className="text-gray-800 hover:text-gray-400 duration-500">
+                New Login
+              </a>
+            </NavLink>
+          </li>
         </ul>
       </div>
     </div>

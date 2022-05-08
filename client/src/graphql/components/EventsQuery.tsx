@@ -11,18 +11,14 @@ type eventProps = {
   public: Boolean;
   place: String;
   city: String;
-  members: String[];
+  members: any[];
   organizator: any;
   membersRestrictions: String[];
+  maxMembers: Number,
 };
 //@ts-ignore
 const EventsQuery = () => {
   const { loading, error, data } = useQuery(EVENTSQUERY);
-  useEffect(() => {
-    if (data) {
-      const fetchForImage = () => {};
-    }
-  }, [data]);
 
   if (loading)
     return (
@@ -51,6 +47,7 @@ const EventsQuery = () => {
           members={event.members}
           organizator={event.organizator}
           restrictions={event.membersRestrictions}
+          maxMembers={event.maxMembers}
         />
       ))}
     </div>

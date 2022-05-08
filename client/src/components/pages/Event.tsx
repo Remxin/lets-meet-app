@@ -1,18 +1,19 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import EventQuery from '../../graphql/components/EventQuery'
 
 const Event = () => {
   const params = useParams();
-  console.log(params);
+  if (!params.eventId) {
+    return <Navigate replace to="/" />
+  }
   return (
     <div>
-      {/* <img
-        src={
-          (process.env.REACT_APP_SERVER_IP =
-            "/get/event-image/" + params.eventId)
-        }
-        alt="event image"
-      /> */}
+      {/* @ts-ignore */}
+      <EventQuery eventId={params.eventId}/>
+      
+      
     </div>
   );
 };

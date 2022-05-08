@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 import {
   ApolloClient,
   InMemoryCache,
@@ -21,15 +21,18 @@ import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import NewLogin from "./components/auth/NewLogin";
 
+import UserPanel from "./components/user/UserPanel";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import AddAvatar from "./components/user/addAvatar/AddAvatar";
+import ChangePassword from "./components/user/changePassword/ChangePassword";
 import Page404 from "./components/error/Page404";
 import PrivacyPolicy from "./components/policy/PrivacyPolicy";
 
 import AddEvent from "./components/pages/addEvent/AddEvent";
 import Events from "./components/pages/Events";
 import Event from "./components/pages/Event";
+import Chats from "./components/pages/chats/Chats";
 
 // ---- init global apollo server variable and initialize memory cache for queries, to speed up app ----
 const client = new ApolloClient({
@@ -90,11 +93,14 @@ function App() {
                   <Route path="/newlogin" element={<NewLogin />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset/password" element={<ResetPassword />} />
+                  <Route path="/user" element={<UserPanel />} />
                   <Route path="/user/add-avatar" element={<AddAvatar />} />
+                  <Route path="/user/change-password" element={<ChangePassword />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/add/event" element={<AddEvent />} />
                   <Route path="/events" element={<Events />} />
                   <Route path="/event/:eventId" element={<Event />} />
+                  <Route path="/chats" element={<Chats />} />
                   <Route path="*" element={<Page404 />} />
                 </Routes>
               </div>

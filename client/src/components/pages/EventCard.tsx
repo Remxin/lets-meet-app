@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import userDataHelper from '../../helpers/userData'
+import { Card, Col, Row, Button, Text} from '@nextui-org/react'
 
 type eventProps = {
   id: String;
@@ -9,65 +11,104 @@ type eventProps = {
   isPublic: Boolean;
   place: String;
   city: String;
-  members: String[];
+  members: any[];
   organizator: any;
   restrictions: String[];
+  maxMembers: Number
 };
 
-function capitalize(string: String) {
-  console.log(string);
-  const stringArr = string.split("");
-  let returnString = "";
-  let first = true;
-  //@ts-ignore
-  stringArr.forEach((char: String) => {
-    if (first) {
-      first = false;
-      returnString += char.toLocaleUpperCase();
-    } else {
-      returnString += char;
-    }
-  });
-  return returnString;
-}
-const EventCard = ({
-  id,
-  name,
-  organizatorId,
-  premium,
-  isPublic,
-  place,
-  city,
-  members,
-  organizator,
-  restrictions,
-}: eventProps) => {
+const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, members, organizator, restrictions, maxMembers }: eventProps) => {
   const navigate = useNavigate();
   return (
-    <div
-      key={id.toString()}
-      style={{ backgroundColor: premium ? "gold" : "gray" }}
-      onClick={() => navigate("/event/" + id)}
-    >
-      <h2>{capitalize(name)}</h2>
-      <h4>{city}</h4>
-      <p>Organizator: {capitalize(organizator.name)}</p>
-      <p>Wymagania: </p>
-      <ul>
-        {restrictions.map((restriction) => (
-          <li>{restriction}</li>
-        ))}
-      </ul>
-      <img
-        src={process.env.REACT_APP_SERVER_IP + "/get/event-image?eventId=" + id}
-        alt="event image"
-        style={{ width: 500 }}
+    <Card cover css={{ w: "20%", height: "30vh",  p: 0 }} clickable hoverable onClick={() => navigate("/event/" + id)}>
+    <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
+      <Col>
+        <Text size={26} weight="bold" transform="uppercase" color="#ffffff">
+          {name}
+        </Text>
+        <Text h3 color="#ededed" size={18}>
+          {userDataHelper.capitalize(place)}
+        </Text>
+      </Col>
+    </Card.Header>
+    <Card.Body>
+      <Card.Image
+        src={`${process.env.REACT_APP_SERVER_IP}/get/event-image?eventId=${id}`}
+        height={400}
+        width="100%"
+        alt="Relaxing app background"
       />
-      <div className="labels">
-        {premium ? <div>Premium</div> : null}
-        {isPublic ? <div>Public</div> : null}
-      </div>
-    </div>
+    </Card.Body>
+    <Card.Footer
+      blur
+      css={{
+        position: "absolute",
+        bgBlur: "#0f1114",
+        borderTop: "$borderWeights$light solid $gray700",
+        bottom: 0,
+        zIndex: 1,
+      }}
+    >
+      <Row>
+        <Col>
+          <Row>
+            <Col>
+              <Text color="#dcdcdc" size={18}>
+                {userDataHelper.capitalize(city)}
+              </Text>
+              <Text color="#d1d1d1" size={12}>
+                Uczestnicy: {maxMembers === -1 ? members.length : `${members.length}/${maxMembers}`}
+              </Text>
+            </Col>
+          </Row>
+        </Col>
+        <Col>
+            
+          {isPublic ? (
+            <Row justify="flex-end">
+            <Button
+              flat
+              auto
+              rounded
+              css={{ color: "#ffffff", linearGradient: "326deg, #a4508b 0%, #5f0a87 74%" }}
+              // #ffffcc #ffff00
+            >
+              <Text
+                css={{ color: "inherit" }}
+                size={12}
+                weight="bold"
+                transform="uppercase"
+              >
+                Public
+              </Text>
+            </Button>
+          </Row>
+          ) : null}
+          {premium ? (
+            <Row justify="flex-end" >
+            <Button
+              flat
+              auto
+              rounded
+              css={{ color: "#ffffff", linearGradient: "315deg, #fbb034 0%, #ffdd00 74%" }}
+              // #ffffcc #ffff00
+            >
+              <Text
+                css={{ color: "inherit" }}
+                size={12}
+                weight="bold"
+                transform="uppercase"
+              >
+                Premium
+              </Text>
+            </Button>
+          </Row>
+          ) : null}
+          
+        </Col>
+      </Row>
+    </Card.Footer>
+  </Card>
   );
 };
 

@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 
 const User = require("../models/User");
+const {verifyUser} = require("../helpers/auth")
 import { sendForgotPasswordEmail } from "../helpers/emailHelpers";
 
 export const forgotPassword = async (req: Request, res: Response) => {
@@ -139,40 +140,34 @@ export const addAvatar = (req: Request, res: Response) => {
   }
 };
 
-export const getAvatar = (req, res) => {
+export const getAvatar = async (req, res) => {
   const user = req.cookies?.jwt;
+  const id = req?.query?.userId
   if (user) {
-    try {
-      jwt.verify(
-        user,
-        process.env.JWT_TOKEN,
-        (err: Error, decodedUser: any) => {
-          if (err) {
-            return res.status(403).send({
-              err: "You don't have permissions to perform this action",
-            });
-          }
-          // --- właściwe pobieranie zdjęcia ---
-          const id = decodedUser.id;
-          const dir = path.join(__dirname, "/../static/uploads/avatars");
-          const files = fs.readdirSync(dir);
 
-          for (const file of files) {
-            let filename = file + "";
-            if (filename.includes(id)) {
-              return res.sendFile(
-                path.join(__dirname + `/../static/uploads/avatars/${filename}`)
-              );
-            }
+      const decodedUser = await verifyUser(user)
+      console.log(decodedUser)
+      if (decodedUser.err) {
+        return res.status(403).send({err: "You don't have permissions to perform this action"})
+      }
+
+        // --- właściwe pobieranie zdjęcia ---
+        console.log(id)
+        const dir = path.join(__dirname, "/../static/uploads/avatars");
+        const files = fs.readdirSync(dir);
+
+        for (const file of files) {
+          let filename = file + "";
+          if (filename.includes(id)) {
+            return res.sendFile(
+              path.join(__dirname + `/../static/uploads/avatars/${filename}`)
+            );
           }
-          return res.sendFile(
-            path.join(__dirname + "/../static/uploads/avatars/default.png")
-          );
         }
-      );
-    } catch (err) {
-      console.log(err);
-    }
+        return res.sendFile(
+          path.join(__dirname + "/../static/uploads/avatars/default.png")
+        );
+        
   } else {
     return res.send({ err: "user unauthorized" });
   }

@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import mongoose from "mongoose";
 
 const eventSchema = new mongoose.Schema({
@@ -38,7 +39,11 @@ const eventSchema = new mongoose.Schema({
   chatId: {
     type: String,
   },
-});
+  maxMembers: {
+    type: Number,
+    default: -1
+  }
+}, {timestamps: true});
 
 const Event = mongoose.model("event", eventSchema);
 module.exports = Event;

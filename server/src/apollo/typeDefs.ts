@@ -11,14 +11,15 @@ export const typeDefs = gql`
     name: String!
     organizatorId: String
     organizator: User
-    members: [String!]
+    members: [User]
     premium: Boolean!
     public: Boolean!
-    place: String!
+    place: String! 
     city: String!
     description: String!
     membersRestrictions: [String]
     chatId: ID!
+    maxMembers: Int!
   }
 
   type User {
@@ -26,7 +27,7 @@ export const typeDefs = gql`
     name: String!
     email: String!
     sex: String!
-    age: Int!
+    age: Float!
     myEvents: [ID]
     joinedEvents: [ID]
     premium: Boolean!

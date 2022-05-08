@@ -6,6 +6,10 @@ export const EVENTSQUERY = gql`
       id
       name
       organizatorId
+      maxMembers
+      members {
+        name
+      }
       organizator {
         name
         email
@@ -14,7 +18,6 @@ export const EVENTSQUERY = gql`
       public
       place
       city
-      members
       membersRestrictions
     }
   }

@@ -13,15 +13,35 @@ export const resolvers = {
       // --- creating sql relation to adding event ogranizator ---
       events = await Promise.all(
         events.map(async (event: any) => {
-          console.log(event.organizatorId);
           const organizator = await User.findById(event.organizatorId);
           event.organizator = organizator;
           console.log(organizator, event);
           return event;
         })
       );
+      events = await Promise.all(
+        events.map(async (event: any) => {
+          event.members = event.members.map(async (userId: any) => {
+            return await User.findById(userId)
+          })
+        })
+      )
       return events1;
     },
-    event: async (root: any, args: any) => await Event.findById(args.id),
+    event: async (root: any, args: any) => {
+
+      const event = await Event.findById(args.id)
+      const membersTab = event.members.map(async (memberId: String) => {
+        return await User.findById(memberId)
+      })
+      event.members = membersTab
+      // console.log(event.organizator)
+      const organizator = await User.findById(event.organizatorId)
+      // console.log(organizator)
+      event.organizator = organizator
+      console.log(event)
+      return event
+      
+    },
   },
 };

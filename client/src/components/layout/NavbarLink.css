@@ -1,0 +1,36 @@
+.navlink_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navlink_container  > * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 5px;
+}
+
+.navlink_container * {
+    color: #555353;
+    transition: .5s all;
+}
+
+.navlink_container:hover * {
+    color: rgb(180, 180, 180);
+}
+
+.navlink__icon {
+    display: block;
+    width: fit-content;
+    height: fit-content;
+    font-size: 28px;
+}
+
+.navlink__text {
+    display: block;
+    height: fit-content;
+    margin-top: -5px;
+}
+

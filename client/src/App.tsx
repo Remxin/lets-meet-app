@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+//@ts-ignore
+// import { GoogleApiWrapper } from "google-map-react";
 // import axios from "axios";
 import {
   ApolloClient,
@@ -33,6 +35,8 @@ import AddEvent from "./components/pages/addEvent/AddEvent";
 import Events from "./components/pages/Events";
 import Event from "./components/pages/Event";
 import Chats from "./components/pages/chats/Chats";
+
+import AdminPanel from "./components/admin/AdminPanel";
 
 // ---- init global apollo server variable and initialize memory cache for queries, to speed up app ----
 const client = new ApolloClient({
@@ -95,12 +99,16 @@ function App() {
                   <Route path="/reset/password" element={<ResetPassword />} />
                   <Route path="/user" element={<UserPanel />} />
                   <Route path="/user/add-avatar" element={<AddAvatar />} />
-                  <Route path="/user/change-password" element={<ChangePassword />} />
+                  <Route
+                    path="/user/change-password"
+                    element={<ChangePassword />}
+                  />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/add/event" element={<AddEvent />} />
                   <Route path="/events" element={<Events />} />
                   <Route path="/event/:eventId" element={<Event />} />
                   <Route path="/chats" element={<Chats />} />
+                  <Route path="/admin" element={<AdminPanel />} />
                   <Route path="*" element={<Page404 />} />
                 </Routes>
               </div>
@@ -113,3 +121,6 @@ function App() {
 }
 
 export default App;
+// export default GoogleApiWrapper({
+//   apiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY,
+// })(App);

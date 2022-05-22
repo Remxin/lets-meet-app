@@ -57,7 +57,7 @@ const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, me
                 {userDataHelper.capitalize(city)}
               </Text>
               <Text color="#d1d1d1" size={12}>
-                Uczestnicy: {maxMembers === -1 ? members.length : `${members.length}/${maxMembers}`}
+                Members: {maxMembers === -1 ? members.length : `${members.length}/${maxMembers}`}
               </Text>
             </Col>
           </Row>

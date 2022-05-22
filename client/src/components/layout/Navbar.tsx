@@ -1,12 +1,10 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import "./Navbar.css";
-import { NavLink } from "react-router-dom";
-import { Tab } from "@headlessui/react";
-import { Switch } from "@headlessui/react";
 import { IoIosMenu } from "react-icons/io";
 import { FcLandscape} from "react-icons/fc";
-import { FaGlassCheers, FaDoorOpen, FaDoorClosed, FaWeixin } from 'react-icons/fa'
+import { FaGlassCheers, FaDoorOpen, FaDoorClosed, FaWeixin, FaChessKing } from 'react-icons/fa'
+import { UserContext } from "../../contexts/UserContext";
 
 import { FaHome } from "react-icons/fa";
 
@@ -18,8 +16,10 @@ type navbarProps = {
   logged: boolean;
 };
 const Navbar = ({ logged }: navbarProps) => {
+  //@ts-ignore
+  const {user} = useContext(UserContext)
   const [enabled, setEnabled] = useState(false);
-  let [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   // console.log(logged);
   const logout = async () => {
@@ -66,7 +66,7 @@ const Navbar = ({ logged }: navbarProps) => {
       <NavbarLink path="/" text="Home" Icon={FaHome}/>
       <NavbarLink path="/events" text="My Events" Icon={FaGlassCheers}/>
       <NavbarLink path="/chats" text="Chats" Icon={FaWeixin}/>
-
+      {user.role === 'admin' ? <NavbarLink path="/admin" text="Admin Panel" Icon={FaChessKing}/> : null}
       <NavbarLink path="" text="Logout" Icon={FaDoorOpen} func={logout}/>
     </ul>
   </div>
@@ -100,6 +100,7 @@ const Navbar = ({ logged }: navbarProps) => {
           <NavbarLink path="/login" text="Login" Icon={FaDoorClosed}/>
           <NavbarLink path="/signup" text="Signup" Icon={FaDoorClosed}/>
           <NavbarLink path="/newlogin" text="New Login" Icon={FaDoorClosed}/>
+          {}
         </ul>
       </div>
     </div>

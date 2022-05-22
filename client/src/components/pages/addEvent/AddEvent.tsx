@@ -222,13 +222,14 @@ const AddEvent = () => {
       </button>
       <ul>{restrictionsList}</ul>
       <p>City</p>
-      <select ref={cityNameRef}>
-        <option value="!none" selected hidden>
+      <input type="text" list="cityData" />
+      <datalist ref={cityNameRef} id="cityData">
+        {/* <option value="!none" selected hidden>
           Select city
-        </option>
+        </option> */}
         <option value="">other</option>
         {citiesOpt}
-      </select>
+      </datalist>
       <p>Localization (select 'my own place' to add your specific place)</p>
       <select ref={placeRef} onChange={specyfyPlace}>
         <option value="!none" selected hidden>

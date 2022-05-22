@@ -12,6 +12,7 @@ const authRoutes = require("./routes/authRoutes");
 const eventRoutes = require("./routes/eventRoutes");
 const placeRoutes = require("./routes/placeRoutes");
 const userRoutes = require("./routes/userRoutes");
+const cityRoutes = require("./routes/cityRoutes")
 
 const { startApolloServer } = require("./apollo/apollo");
 
@@ -27,6 +28,7 @@ const corsOptions: any = {
 // ----- app configuration -----
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.text())
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("static"));
@@ -39,6 +41,7 @@ try {
   app.use(eventRoutes);
   app.use(placeRoutes);
   app.use(userRoutes);
+  app.use(cityRoutes)
   console.log("routes successfully imported");
 } catch (err) {
   console.log(`Routes import error : ${err}`);

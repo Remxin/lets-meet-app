@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const placeSchema = new mongoose.Schema({
+const citySchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -20,5 +20,5 @@ const placeSchema = new mongoose.Schema({
 
 })
 
-const Place = mongoose.model("place", placeSchema);
-module.exports = Place;
+const City = mongoose.model("city", citySchema);
+module.exports = City;

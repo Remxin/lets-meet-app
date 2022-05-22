@@ -4,10 +4,8 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.5.10",
-    "@googlemaps/react-wrapper": "^1.1.34",
     "@headlessui/react": "^1.4.3",
     "@nextui-org/react": "^1.0.8-beta.5",
-    "@react-google-maps/api": "^2.11.4",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -15,7 +13,6 @@
     "@types/node": "^16.11.21",
     "@types/react": "^17.0.38",
     "axios": "^0.25.0",
-    "google-map-react": "^2.1.10",
     "graphql": "^16.3.0",
     "query-string": "^7.1.0",
     "react": "^17.0.2",

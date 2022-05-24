@@ -1,7 +1,8 @@
 import React from "react";
+import UnverifiedPlaces from "../../../graphql/components/UnverifiedPlaces";
 
 const VerifyPlace = () => {
-  return <div>VerifyPlace</div>;
+  return <UnverifiedPlaces verified={false}/>;
 };
 
 export default VerifyPlace;

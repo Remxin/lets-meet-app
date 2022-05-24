@@ -1,4 +1,4 @@
-import { Schema, Model, Mongoose} from 'mongoose'
+import { Schema, model } from 'mongoose'
 
 const errorSchema = new Schema({
     source: {
@@ -15,3 +15,6 @@ const errorSchema = new Schema({
     
 
 }, {timestamps: true})
+
+const Error = model("error", errorSchema);
+module.exports = Error;

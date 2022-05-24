@@ -8,7 +8,7 @@ export const addCity = (
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(cityName, country, localizationString, state)
+      if (!cityName || !country || !localizationString || !state) return resolve({err: "Complete all the fields"})
       const res = await fetch(`${process.env.REACT_APP_SERVER_IP}/add/city`, {
         method: "POST",
         body: JSON.stringify({
@@ -20,7 +20,6 @@ export const addCity = (
         credentials: "include"
       });
       const resData = await res.json();
-      console.log(resData)
       if (resData.err) resolve(resData.err)
       resolve({ msg: resData.msg });
     } catch (err) {

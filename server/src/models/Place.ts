@@ -5,10 +5,7 @@ const placeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  localizationCords: {
-    type: String,
-    default: "",
-  },
+
   localizationString: {
     type: String,
     required: true,
@@ -37,6 +34,12 @@ const placeSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+
+  cityId: {
+    required: true,
+    type: String
+  },
+
 });
 
 const Place = mongoose.model("place", placeSchema);

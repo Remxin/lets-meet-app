@@ -4,6 +4,9 @@ const dotenv = require("dotenv").config();
 
 const Place = require("../models/Place");
 const User = require("../models/User");
+import { verifyUser } from "../helpers/auth";
+import { getPlaceImageLength, getPlaceImage } from "../helpers/images";
+import { placeImgQueryType } from '../types/requestTypes'
 
 export const placeCreationRequest = (req: Request, res: Response) => {
   const user = req.cookies.jwt;
@@ -118,3 +121,41 @@ export const verifyPlace = (req: Request, res: Response) => {
     console.log(err);
   }
 };
+
+export const placeImgLen = async (req: Request, res: Response) => {
+  const token = req.cookies?.jwt 
+  const placeId = req?.query?.placeId;
+  if (!placeId) {
+    return res.send({err: "No place id passed"})
+  }
+  if (!token) {
+    return res.send({err: "User not registered"})
+  }
+  const user = await verifyUser(token)
+  if (!user) {
+    return res.send({err: "User not verified"})
+  }
+
+  const len = await getPlaceImageLength(placeId)
+  return res.send({len})
+
+};
+
+export const getPlaceImg = async (req: Request, res: Response) => {
+  const token = req.cookies?.jwt
+  if (!token) {
+    return res.send({err: "User not registered"})
+  }
+
+  const user = await verifyUser(token)
+  if (!user) {
+    return res.send({err: "User not verified"})
+  }
+  const {placeId, photoIndex}: placeImgQueryType = req.query
+  if (!placeId || !photoIndex) {
+    return res.send({err: "Bad request"})
+  }
+
+  const image = await getPlaceImage(photoIndex, placeId)
+  return res.sendFile(image.path)
+}

@@ -1,22 +1,27 @@
 import React from "react";
-//@ts-ignore
-// import GoogleMapReact from "google-map-react";
-// import { Map, GoogleApiWrapper } from "google-map-react";
-// import { Wrapper } from "@googlemaps/react-wrapper";
-import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 
 interface MapsProps {
   localizationString: String;
+  changeFun?: Function
 }
 
-const GoogleMaps = ({ localizationString }: MapsProps) => {
-  console.log();
-  const { isLoaded } = useLoadScript({
-    //@ts-ignore
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY,
-  });
+function cutLocalizationString(locStr: String) {
+  let arr = locStr.split("pb=")
+    arr = arr[1].split("\"")
+    locStr = arr[0]
+    // console.log(locStr)
+    return locStr
+}
 
-  if (!isLoaded) return <div>Loading...</div>;
+const GoogleMaps = ({ localizationString, changeFun }: MapsProps) => {
+  console.log(localizationString)
+  if (localizationString.charAt(0) === "<") {
+    localizationString = cutLocalizationString(localizationString)
+
+    if (changeFun) {
+      changeFun(localizationString)
+    }
+  }
 
   return (
     <iframe

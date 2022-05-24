@@ -28,11 +28,11 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  myEvents: {
+  myEventsId: {
     type: Array,
     default: [],
   },
-  joinedEvents: {
+  joinedEventsId: {
     type: Array,
     default: [],
   },

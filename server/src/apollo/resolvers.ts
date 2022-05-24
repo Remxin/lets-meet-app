@@ -1,5 +1,10 @@
 const Event = require("../models/Event");
 const User = require("../models/User");
+const City = require("../models/City")
+const Place = require("../models/Place")
+
+import {placeArgsType, eventArgsType} from './argsTypes'
+import { placeType, eventType } from '../types/modelTypes';
 
 export const resolvers = {
   Query: {
@@ -12,7 +17,7 @@ export const resolvers = {
       let events = events1;
       // --- creating sql relation to adding event ogranizator ---
       events = await Promise.all(
-        events.map(async (event: any) => {
+        events.map(async (event: eventType) => {
           const organizator = await User.findById(event.organizatorId);
           event.organizator = organizator;
           console.log(organizator, event);
@@ -20,28 +25,44 @@ export const resolvers = {
         })
       );
       events = await Promise.all(
-        events.map(async (event: any) => {
-          event.members = event.members.map(async (userId: any) => {
+        events.map(async (event: eventType) => {
+          //@ts-ignore
+          event.members = event.members.map(async (userId: String) => {
             return await User.findById(userId)
           })
         })
       )
       return events1;
     },
-    event: async (root: any, args: any) => {
+    event: async (root: any, args: eventArgsType) => {
 
       const event = await Event.findById(args.id)
       const membersTab = event.members.map(async (memberId: String) => {
         return await User.findById(memberId)
       })
       event.members = membersTab
-      // console.log(event.organizator)
       const organizator = await User.findById(event.organizatorId)
-      // console.log(organizator)
       event.organizator = organizator
-      console.log(event)
       return event
       
     },
+
+    places: async (root:any, args: placeArgsType) => {
+      let places = await Place.find({verified: args.verified})
+      // console.log(places) 
+      places = await Promise.all(
+        places.map(async (place: placeType) => {
+          place.user = await User.findById(place.userId)
+          place.city = await City.findById(place.cityId)
+          return place
+        })
+      )
+      return places
+    },
+
+    cities: async () => {
+      let cities = await City.find()
+      return cities
+    }
   },
 };

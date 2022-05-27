@@ -8,8 +8,9 @@
     height: 300px;
     overflow-y: scroll;
     overflow-x: hidden;
-}
 
-.members-card__container > * {
-    display: block;
+
+    & > * {
+        display: block;
+    }
 }

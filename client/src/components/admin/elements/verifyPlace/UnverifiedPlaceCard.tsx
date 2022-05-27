@@ -3,6 +3,7 @@ import {Grid, Card, Row, Text, Divider, Button, Spacer} from '@nextui-org/react'
 import GoogleMaps from "../../../../modules/GoogleMaps"
 import {FaGlobeAmericas, FaMapMarkedAlt, FaIdCard} from "react-icons/fa"
 import ALink from "../../../../modules/ALink"
+import {useNavigate} from 'react-router-dom'
 
 
 type placeType = {
@@ -17,13 +18,15 @@ type placeType = {
 
 
 const UnverifiedPlaceCard = ({id ,name, city, website, description, localizationString}:placeType) => {
+  const navigate = useNavigate()
   console.log(localizationString)
     if (!city?.name || !city?.country || !city?.state) {
         return <p>Error</p>
     }
   return (
-    <Grid.Container gap={2} justify="flex-start">
-      <Grid sm={12} md={5}>
+    //@ts-ignore
+    <Grid.Container gap={2} justify="flex-start" onClick={() => navigate("/admin/unverifiedPlace/" + id)} key={id}>
+      <Grid sm={8} md={4}>
         <Card css={{ mw: "500px" }} clickable>
           <Card.Header>
           <FaIdCard size={30}/>
@@ -44,17 +47,12 @@ const UnverifiedPlaceCard = ({id ,name, city, website, description, localization
               {description}
             </Text>
             <img />
-          <GoogleMaps localizationString={localizationString}/>
+          {/* <GoogleMaps localizationString={localizationString}/> */}
           </Card.Body>
           <Divider />
           <Card.Footer>
             <Row justify="flex-end">
-              <Button size="sm" light color="error">
-                Reject
-              </Button>
-              <Button size="sm" color="success">
-                Accept
-              </Button>
+              
             </Row>
           </Card.Footer>
         </Card>

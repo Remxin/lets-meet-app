@@ -8,6 +8,7 @@ export const typeDefs = gql`
     event(id: ID!): Event
     places(verified: Boolean): [Place]
     cities: [City]
+    place(verified: Boolean, id: ID!): Place
     # cities(country: String)
   }
   type Event {

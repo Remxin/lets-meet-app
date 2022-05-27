@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useContext } from "react";
-import "./Navbar.css";
+import "../../styles/scss/layoutComponents/Navbar.scss"
 import { IoIosMenu } from "react-icons/io";
 import { FcLandscape} from "react-icons/fc";
 import { FaGlassCheers, FaDoorOpen, FaDoorClosed, FaWeixin, FaChessKing } from 'react-icons/fa'
@@ -9,8 +9,6 @@ import { UserContext } from "../../contexts/UserContext";
 import { FaHome } from "react-icons/fa";
 
 import NavbarLink from "./NavbarLink";
-
-import "./Navbar.css";
 
 type navbarProps = {
   logged: boolean;

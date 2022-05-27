@@ -3,7 +3,7 @@ const User = require("../models/User");
 const City = require("../models/City")
 const Place = require("../models/Place")
 
-import {placeArgsType, eventArgsType} from './argsTypes'
+import {placesArgsType, eventArgsType, singlePlaceArgsType} from './argsTypes'
 import { placeType, eventType } from '../types/modelTypes';
 
 export const resolvers = {
@@ -47,7 +47,7 @@ export const resolvers = {
       
     },
 
-    places: async (root:any, args: placeArgsType) => {
+    places: async (root:any, args: placesArgsType) => {
       let places = await Place.find({verified: args.verified})
       // console.log(places) 
       places = await Promise.all(
@@ -58,6 +58,15 @@ export const resolvers = {
         })
       )
       return places
+    },
+
+    place: async (root:any, args: singlePlaceArgsType) => {
+      let place = await Place.findOne({_id: args.id, verified: args.verified})
+     
+      place.user = await User.findById(place.userId)
+      place.city = await City.findById(place.cityId)
+      return place
+      // let place = await Place.findById()
     },
 
     cities: async () => {

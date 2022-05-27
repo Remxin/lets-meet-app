@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
+import "./App.scss";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 //@ts-ignore
 // import { GoogleApiWrapper } from "google-map-react";
@@ -37,6 +37,8 @@ import Event from "./components/pages/Event";
 import Chats from "./components/pages/chats/Chats";
 
 import AdminPanel from "./components/admin/AdminPanel";
+import UnverifiedPlace from "./components/admin/elements/verifyPlace/UnverifiedPlace";
+import UnverifiedPlaceCard from "./components/admin/elements/verifyPlace/UnverifiedPlaceCard";
 
 // ---- init global apollo server variable and initialize memory cache for queries, to speed up app ----
 const client = new ApolloClient({
@@ -109,6 +111,7 @@ function App() {
                   <Route path="/event/:eventId" element={<Event />} />
                   <Route path="/chats" element={<Chats />} />
                   <Route path="/admin" element={<AdminPanel />} />
+                  <Route path="/admin/unverifiedPlace/:placeId" element={<UnverifiedPlace />} />
                   <Route path="*" element={<Page404 />} />
                 </Routes>
               </div>

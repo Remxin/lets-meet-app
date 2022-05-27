@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-import "./NavbarLink.css"
+import "../../styles/scss/layoutComponents/NavbarLink.scss"
 
 
 type linkProps = {

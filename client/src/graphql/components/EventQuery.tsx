@@ -7,7 +7,7 @@ import { FaUsers } from "react-icons/fa";
 import OrganizatorCard from '../../components/pages/eventCardComp/OrganizatorCard'
 import MemberCard from '../../components/pages/eventCardComp/MemberCard'
 import userDataHelper from '../../helpers/userData'
-import "./Event.css"
+import "../../styles/scss/apolloComponents/Event.scss"
 
 type userType = {
     name: String,

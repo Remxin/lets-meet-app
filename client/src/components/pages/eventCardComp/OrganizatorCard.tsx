@@ -1,5 +1,5 @@
 import React from 'react'
-import "./OrganizatorCard.css"
+import "../../../styles/scss/pagesComponents/eventCard/OrganizatorCard.scss"
 import { Card, Col, Text, Grid, Row, Button } from "@nextui-org/react";
 
 import userDataHelper from '../../../helpers/userData'

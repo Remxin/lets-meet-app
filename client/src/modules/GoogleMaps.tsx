@@ -22,14 +22,13 @@ const GoogleMaps = ({ localizationString, changeFun }: MapsProps) => {
       changeFun(localizationString)
     }
   }
-
+  console.log(localizationString)
   return (
     <iframe
       src={`https://www.google.com/maps/embed?pb=${localizationString}`}
       width="600"
       height="450"
-      // style="border:0;"
-      // allowfullscreen=""
+      className="google-maps"
       loading="lazy"
       // referrerpolicy="no-referrer-when-downgrade"
     ></iframe>

@@ -2,6 +2,9 @@ import React, { useState, useContext, useRef, MutableRefObject } from "react";
 import { Navigate, NavLink } from "react-router-dom";
 
 import { UserContext } from "../../contexts/UserContext";
+import {login} from '../../api/auth/login'
+
+
 
 const Login = () => {
   //@ts-ignore
@@ -18,26 +21,24 @@ const Login = () => {
     setNameErr("");
     setEmailErr("");
     setPasswordErr("");
-    try {
-      const res = await fetch(`${process.env.REACT_APP_SERVER_IP}/login`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({
-          password: passwordRef.current.value,
-          email: emailRef.current.value,
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      const resData = await res.json();
+
+    if (!passwordRef.current?.value) {
+      setPasswordErr("Please enter password!")
+      return
+    }
+    if (!emailRef.current?.value) {
+      setEmailErr("Please enter name!")
+      return
+    }
+      // --- login ---
+      const resData = await login(passwordRef.current.value, emailRef.current.value)
 
       if (resData.errors) {
         setEmailErr(resData.errors.email);
         setPasswordErr(resData.errors.password);
       }
       setUser(resData.user);
-    } catch (err) {
-      console.log(err);
-    }
+   
   };
 
   if (user) {

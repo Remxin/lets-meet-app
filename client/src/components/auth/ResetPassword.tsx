@@ -17,7 +17,6 @@ const ResetPassword = () => {
   const passwordConfirmRef = useRef() as MutableRefObject<HTMLInputElement>;
 
   useEffect(() => {
-    console.log("robi się");
     if (!email || !token) {
       return navigate("/login");
     }

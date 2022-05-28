@@ -98,7 +98,7 @@ const verifyuser = (req: Request, res: Response, next: NextFunction) => {
       async (err: any, decodedToken: any) => {
         if (err) {
           // console.log("tutaj");
-          console.log(err.message);
+          // console.log(err.message);
         } else {
           let user = await User.findById(decodedToken.id);
           res.json(user);

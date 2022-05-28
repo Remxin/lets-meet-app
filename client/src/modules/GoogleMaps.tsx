@@ -22,7 +22,7 @@ const GoogleMaps = ({ localizationString, changeFun }: MapsProps) => {
       changeFun(localizationString)
     }
   }
-  console.log(localizationString)
+
   return (
     <iframe
       src={`https://www.google.com/maps/embed?pb=${localizationString}`}

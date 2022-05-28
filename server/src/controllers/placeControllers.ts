@@ -4,8 +4,8 @@ const dotenv = require("dotenv").config();
 
 const Place = require("../models/Place");
 const User = require("../models/User");
-import { verifyUser } from "../helpers/auth";
-import { getPlaceImageLength, getPlaceImage } from "../helpers/images";
+import { verifyAdmin, verifyUser } from "../helpers/auth";
+import { getPlaceImageLength, getPlaceImage, deletePlaceImageFolder } from "../helpers/images";
 import { placeImgQueryType } from '../types/requestTypes'
 
 export const placeCreationRequest = (req: Request, res: Response) => {
@@ -55,73 +55,6 @@ export const placeCreationRequest = (req: Request, res: Response) => {
   }
 };
 
-export const verifyPlace = (req: Request, res: Response) => {
-  const admin = req.cookies.jwtA;
-  try {
-    jwt.verify(
-      admin,
-      process.env.ADMIN_TOKEN,
-      async (err: Error, decodedAdmin: any) => {
-        if (err) {
-          console.log("No permissions to verify place");
-          return res
-            .status(403)
-            .send({ err: "You don't have permissions to verify places" });
-        }
-        let trustedEmail = false;
-        console.log(process.env.ADMIN_EMAILS, process.env.JWT_TOKEN);
-        JSON.parse(process.env.ADMIN_EMAILS).forEach((email) => {
-          console.log(email, decodedAdmin.email);
-          if (email === decodedAdmin.email) {
-            trustedEmail = true;
-          }
-        });
-        if (!trustedEmail) {
-          return res.status(403).send({
-            err: "Authorization failed - you don't have permissions for this action",
-          });
-        }
-        const { placeId } = req.body;
-        const place = await Place.findOne({ _id: placeId });
-        console.log(place);
-        const addingUserId = place.userId;
-        place.verified = true;
-        place.userId = ""; // teraz ustawiam na puste, poniewaz tutaj będzie oficjalne konto miejsca, jeśli będzie chciało
-        await place
-          .save() // aktualizowanie statusu miejsca na verified
-          .then(async () => {
-            const addingUserInfo = await User.findOne({ _id: addingUserId }); // dodawanie userowi za nagrodę darmową promocję eventu
-            console.log(addingUserId, addingUserInfo);
-            addingUserInfo.promotionEvents += 1;
-            addingUserInfo
-              .save()
-              .then(() => {
-                return res
-                  .status(200)
-                  .send({ msg: "Successfully verified place" });
-              })
-              .catch((err: Error) => {
-                console.log(
-                  `Adding promotion event points to user ${addingUserId} failed - give him manually`
-                ); // nalezy dodać uzytkownikowi 1 darmowy punkt promocji wydarzenia manualnie i sprawdzic, co jest nie tak z serwerem
-                return res.status(500).send({
-                  msg: "Internal server error - place successfully added, but user promotion points do not increase - administrator will give them manually",
-                });
-              });
-          })
-          .catch((err: Error) => {
-            console.log(`Cannot verify place: ${err}`);
-            return res
-              .status(500)
-              .send({ msg: "Internal server error - cannot verify place" });
-          });
-      }
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 export const placeImgLen = async (req: Request, res: Response) => {
   const token = req.cookies?.jwt 
   const placeId = req?.query?.placeId;
@@ -158,4 +91,85 @@ export const getPlaceImg = async (req: Request, res: Response) => {
 
   const image = await getPlaceImage(photoIndex, placeId)
   return res.sendFile(image.path)
+}
+
+export const verifyPlace = async (req: Request, res: Response) => {
+  if (!req.cookies?.jwtA) {
+    return res.send({err: "You don't have permissions to perform this action"})
+  }
+  
+  let admin = await verifyAdmin(req.cookies.jwtA)
+  // console.log(admin)
+
+  if (admin.err) {
+    return res.send({err: "You don't have permissions to perform this action"})
+  }
+
+  const placeId = JSON.parse(req.body).placeId;
+  const place = await Place.findOne({ _id: placeId });
+  if (!place) {
+    return res.send({err: "Cannot find this place!"})
+  }
+  console.log(place);
+  const addingUserId = place.userId;
+  place.verified = true;
+  place.userId = ""; // teraz ustawiam na puste, poniewaz tutaj będzie oficjalne konto miejsca, jeśli będzie chciało
+  await place
+    .save() // aktualizowanie statusu miejsca na verified
+    .then(async () => {
+      const addingUserInfo = await User.findOne({ _id: addingUserId }); // dodawanie userowi za nagrodę darmową promocję eventu
+      console.log(addingUserId, addingUserInfo);
+      addingUserInfo.promotionEvents += 0.2;
+      addingUserInfo
+        .save()
+        .then(() => {
+          return res
+            .status(200)
+            .send({ msg: "Successfully verified place" });
+        })
+        .catch((err: Error) => {
+          console.log(
+            `Adding promotion event points to user ${addingUserId} failed - give him manually`
+          ); // nalezy dodać uzytkownikowi 1 darmowy punkt promocji wydarzenia manualnie i sprawdzic, co jest nie tak z serwerem
+          return res.status(500).send({
+            err: "Internal server error - place successfully added, but user promotion points do not increase - administrator will give them manually",
+          });
+        });
+      })
+}
+
+export const rejectPlace = async (req: Request, res: Response) => {
+  const token = req.cookies?.jwtA
+  if (!token) {
+    return res.send({err: "User not verified!"})
+  }
+
+  const admin = await verifyAdmin(token)
+  if (!admin) {
+    return res.send({err: "You don't have permissions to perform this action"})
+  }
+
+  const placeId = JSON.parse(req.body).placeId
+  if (!placeId) {
+    return res.send({err: "Bad request"})
+  }
+
+  try {
+    // deleting document
+    await Place.deleteOne({_id: placeId})
+    const deleted = await deletePlaceImageFolder(placeId)
+    if (deleted.err) {
+      res.send({ err: "Deleted Place, but cannot deleted its image folder" })
+    }
+
+    return res.send({msg: "Successfully detelet document"})
+  } catch (err) {
+    console.log(err)
+    return res.send({err: "Error in deleting document"})
+  }
+
+
+
+
+
 }

@@ -28,3 +28,14 @@ export const getPlaceImage = (index: number, imageId: String) => {
         }
     })
 }
+
+export const deletePlaceImageFolder = (imageId: String) => {
+    return new Promise<{err?: String, msg?:String}>(async (resolve, reject) => {
+        try {
+            await fs.rmSync(path.join(__dirname, "/../static/uploads/places/", imageId), { recursive: true, force: true })
+            resolve({ msg: "Successfully deleted folder" })
+        } catch (err) {
+            reject({err})
+        }
+    })
+}

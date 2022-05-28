@@ -1,5 +1,14 @@
 const jwt = require("jsonwebtoken");
 
+type adminType = {
+  id: String,
+  email: String
+}
+type verifyAdminResType = {
+  err?: string,
+  admin?: adminType
+}
+
 // ----- returnuje obiekt usera, gdy się uda, zwraca obiekt z err, jeśli się nie uda -----
 export const verifyUser = (token: String) => {
   return new Promise((resolve, reject) => {
@@ -7,7 +16,7 @@ export const verifyUser = (token: String) => {
       if (token) {
         jwt.verify(token, process.env.JWT_TOKEN, (err: Error, user: any) => {
           if (err) {
-            resolve({ err });
+            return resolve({ err });
           }
           resolve(user);
         });
@@ -22,17 +31,18 @@ export const verifyUser = (token: String) => {
 
 // ----- returnuje obiekt admina, jeśli się uda go zweryfikować, w przeciwnym wypadku wypluwa obiekt err -----
 export const verifyAdmin = async (adminToken: String) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<verifyAdminResType>((resolve, reject) => {
     try {
       jwt.verify(
         adminToken,
         process.env.ADMIN_TOKEN,
         async (err: Error, decodedAdmin: any) => {
           if (err) {
-            resolve({ err });
+            //@ts-ignore
+            return resolve({ err });
           }
           if (!process.env.ADMIN_EMAILS) {
-            resolve({ err: "server cannot load admin list" });
+            return resolve({ err: "server cannot load admin list" });
           }
           // @ts-ignore
           const adminEmails = await JSON.parse(process.env.ADMIN_EMAILS);

@@ -2,6 +2,7 @@
 import React, { MutableRefObject, useContext, useRef, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { Navigate, NavLink } from "react-router-dom";
+import { signup } from "../../api/auth/signup";
 
 const Signup = () => {
   //@ts-ignore
@@ -55,21 +56,10 @@ const Signup = () => {
       return setAgeErr("Chose your age");
     }
     let numAge = new Date(ageRef.current.value).getTime();
+
+    
     // --- actuall server request ---
-    try {
-      const res = await fetch(`${process.env.REACT_APP_SERVER_IP}/signup`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({
-          name: nameRef.current.value,
-          password: passwordRef.current.value,
-          email: emailRef.current.value,
-          sex,
-          age: numAge,
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      const resData = await res.json();
+      const resData = await signup(nameRef.current.value, passwordRef.current.value, emailRef.current.value, sex, numAge)
 
       if (resData.errors) {
         setNameErr(resData.errors.name);
@@ -77,9 +67,7 @@ const Signup = () => {
         setPasswordErr(resData.errors.password);
       }
       setUser(resData.user);
-    } catch (err) {
-      console.log(err);
-    }
+  
   };
 
   if (user) {

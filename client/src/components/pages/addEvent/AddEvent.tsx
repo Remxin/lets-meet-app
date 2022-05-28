@@ -143,29 +143,10 @@ const AddEvent = () => {
     }
 
     try {
-      // console.log("miejsce: ", eventNameRef.current.value);
-      // console.log("deskrypcja:", eventDescriptionRef.current.value);
-      console.log("miejsce:", place);
-      // console.log("miasto:", cityNameRef.current.value);
-      // console.log("plik ze zdj", file);
-      // console.log(
-      //   "uytkownik chce dodać swoje miejsce do oficjalnych:",
-      //   addUniquePlace
-      // );
-      // console.log("restrykcje", restrictions);
 
-      // console.log("otwarty event:", openEvent);
-      // console.log("otwrty chat:", openChat);
-      // console.log("premium:", isPremiumEvent);
+      // console.log("miejsce:", place);
+ 
 
-      // eventName,
-      //     isPublic,
-      //     premiumEvent,
-      //     membersRestrictions,
-      //     place,
-      //     city,
-      //     eventDescription,
-      //     openChat,
       const formData = new FormData();
       formData.append(
         "jsondataRequest",

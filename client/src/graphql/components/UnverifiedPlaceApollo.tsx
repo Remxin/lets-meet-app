@@ -1,6 +1,7 @@
 import React, {useState, useRef, MutableRefObject, useEffect, useMemo} from 'react'
 import { useQuery } from '@apollo/client';
 import {PLACEQUERY} from '../queries/placeQuery'
+import {useNavigate} from "react-router-dom"
 import "../../styles/scss/apolloComponents/UnverifiedPlace.scss"
 
 import {Grid, Card, Text, Switch, Input, Button} from "@nextui-org/react"
@@ -9,6 +10,8 @@ import GoogleMaps from '../../modules/GoogleMaps';
 
 import { getPlaceImgLen } from '../../api/place/getPlaceLen';
 import { placeLink } from '../../api/place/placeImageLink';
+import { verifyPlace } from '../../api/place/verifyPlace';
+import { rejectPlace } from '../../api/place/rejectPlace';
 
 import {FaStar} from 'react-icons/fa'
 
@@ -30,6 +33,8 @@ const UnverifiedPlaceApollo = ({verified, placeId}: unverifiedPlaceType) => {
   const websiteRef = useRef() as MutableRefObject<HTMLInputElement>
   const [imagesCount, setImagesCount] = useState([])
   const [err, setErr] = useState("")
+
+  const navigate = useNavigate()
 
   // ------ Ładowanie zdjęć ------
   useEffect(() => {
@@ -79,6 +84,26 @@ const UnverifiedPlaceApollo = ({verified, placeId}: unverifiedPlaceType) => {
 
 
     //  _______________ QUERY IS SUCCESSFULL ________________
+
+    async function verPlace() {
+      const resData = await verifyPlace(data.place.id)
+      if (resData.err) {
+        return setErr(resData.err)
+      }
+      console.log(resData.msg)
+      navigate("/admin")
+    }
+
+    async function rejPlace() {
+      const resData = await rejectPlace(data.place.id)
+      console.log(resData)
+      if (resData.err) {
+        return setErr(resData.err)
+      }
+
+      console.log(resData.msg)
+      navigate("/admin")
+    }
   const place = data.place
 
   return (
@@ -154,10 +179,10 @@ const UnverifiedPlaceApollo = ({verified, placeId}: unverifiedPlaceType) => {
             </div>
             
             <Card.Footer className='card-footer'>
-                <Button shadow color="error" auto className='reject-button'>
+                <Button shadow color="error" auto className='reject-button' onClick={() => rejPlace()}>
               Reject place
               </Button>
-              <Button shadow color="success" auto className='accept-button'>
+              <Button shadow color="success" auto className='accept-button' onClick={() => verPlace()}>
                 Accept Place
               </Button>
             </Card.Footer>

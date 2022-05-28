@@ -61,12 +61,13 @@ export const resolvers = {
     },
 
     place: async (root:any, args: singlePlaceArgsType) => {
-      let place = await Place.findOne({_id: args.id, verified: args.verified})
-     
-      place.user = await User.findById(place.userId)
-      place.city = await City.findById(place.cityId)
-      return place
-      // let place = await Place.findById()
+   
+        let place = await Place.findOne({_id: args.id, verified: args.verified})
+        
+        place.user = await User.findById(place.userId)
+        place.city = await City.findById(place.cityId)
+        return place
+
     },
 
     cities: async () => {

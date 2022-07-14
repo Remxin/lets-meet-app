@@ -1,5 +1,7 @@
 export type placeType = {
+    _id?: String
     id: String
+    addressString: String
     name: String
     localizationString: String
     premium: Boolean
@@ -46,6 +48,7 @@ export type eventType = {
 }
 
 export type cityType = {
+    _id?: String
     id?: String
     name: String
     country: String

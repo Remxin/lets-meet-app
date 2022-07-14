@@ -9,7 +9,7 @@ import { placeType, eventType } from '../types/modelTypes';
 export const resolvers = {
   Query: {
     test: () => {
-      console.log("jest");
+      // console.log("jest");
       return "Hello world!";
     },
     events: async () => {
@@ -20,7 +20,7 @@ export const resolvers = {
         events.map(async (event: eventType) => {
           const organizator = await User.findById(event.organizatorId);
           event.organizator = organizator;
-          console.log(organizator, event);
+          // console.log(organizator, event);
           return event;
         })
       );

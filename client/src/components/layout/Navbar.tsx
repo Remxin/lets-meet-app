@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import "../../styles/scss/layoutComponents/Navbar.scss"
 import { IoIosMenu } from "react-icons/io";
 import { FcLandscape} from "react-icons/fc";
-import { FaGlassCheers, FaDoorOpen, FaDoorClosed, FaWeixin, FaChessKing } from 'react-icons/fa'
+import { FaGlassCheers, FaDoorOpen, FaDoorClosed, FaWeixin, FaChessKing, FaPlusCircle } from 'react-icons/fa'
 import { UserContext } from "../../contexts/UserContext";
 
 import { FaHome } from "react-icons/fa";
@@ -62,6 +62,7 @@ const Navbar = ({ logged }: navbarProps) => {
       } md:opacity-100 opacity-100`}
     >
       <NavbarLink path="/" text="Home" Icon={FaHome}/>
+      <NavbarLink path="/add/event" text="Add Event" Icon={FaPlusCircle}/>
       <NavbarLink path="/events" text="My Events" Icon={FaGlassCheers}/>
       <NavbarLink path="/chats" text="Chats" Icon={FaWeixin}/>
       {user.role === 'admin' ? <NavbarLink path="/admin" text="Admin Panel" Icon={FaChessKing}/> : null}

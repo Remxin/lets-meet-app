@@ -15,14 +15,14 @@ type organizatorProps = {
 
 
 
-
 const OrganizatorCard = ({id, name, sex, age, premium}: organizatorProps) => {
+  console.log(id, name, sex, age)
   return (
     <Grid xs={5} sm={3}>
       <Card cover css={{ bg: "$gold", w: "100%" }} clickable>
       <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
         <Col>
-          <Text size={22} weight="bold" color="#ffffffff">
+          <Text size={22} weight="bold" color="#000000af">
             {userDataHelper.capitalize(name)}
           </Text>
           <Text h4 color="#cccccc">
@@ -32,7 +32,7 @@ const OrganizatorCard = ({id, name, sex, age, premium}: organizatorProps) => {
       </Card.Header>
       <Card.Image
         src={`${process.env.REACT_APP_SERVER_IP}/get/user/avatar?userId=${id}`}
-        height={340}
+        height={240}
         width="100%"
         alt="Card image background"
       />

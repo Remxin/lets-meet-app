@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-//@ts-ignore
-// import { GoogleApiWrapper } from "google-map-react";
-// import axios from "axios";
+import { ChakraProvider } from '@chakra-ui/react'
 import {
   ApolloClient,
   InMemoryCache,
@@ -32,6 +30,7 @@ import Page404 from "./components/error/Page404";
 import PrivacyPolicy from "./components/policy/PrivacyPolicy";
 
 import AddEvent from "./components/pages/addEvent/AddEvent";
+import AddPlace from "./components/pages/addPlace/AddPlace";
 import Events from "./components/pages/Events";
 import Event from "./components/pages/Event";
 import Chats from "./components/pages/chats/Chats";
@@ -87,6 +86,7 @@ function App() {
     <div className="app">
       <Router>
         <NextUIProvider>
+          <ChakraProvider>
           <ApolloProvider client={client}>
             {/* @ts-ignore */}
             <UserContext.Provider value={{ user, setUser }}>
@@ -107,6 +107,7 @@ function App() {
                   />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/add/event" element={<AddEvent />} />
+                  <Route path="/add/place" element={<AddPlace />} />
                   <Route path="/events" element={<Events />} />
                   <Route path="/event/:eventId" element={<Event />} />
                   <Route path="/chats" element={<Chats />} />
@@ -117,6 +118,7 @@ function App() {
               </div>
             </UserContext.Provider>
           </ApolloProvider>
+          </ChakraProvider>
         </NextUIProvider>
       </Router>
     </div>

@@ -5,5 +5,6 @@ const cityControllers = require("../controllers/cityControllers")
 const router = Router();
 
 router.post("/add/city", cityControllers.addCity)
+router.post("/get/city", cityControllers.getCities)
 
 module.exports = router;

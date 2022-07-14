@@ -5,7 +5,9 @@ const placeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
+  addressString: {
+    type: String
+  },
   localizationString: {
     type: String,
     required: true,

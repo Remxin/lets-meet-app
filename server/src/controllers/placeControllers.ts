@@ -168,8 +168,23 @@ export const rejectPlace = async (req: Request, res: Response) => {
     return res.send({err: "Error in deleting document"})
   }
 
+}
 
+export const getCityPlaces = async (req, res) => {
+  const token = req.cookies?.jwtA
+  if (!token) {
+    return res.send({err: "User not verified!"})
+  }
 
-
-
+  const user = await verifyUser(token)
+  if (!user) {
+    return res.send({err: "User not verified"})
+  }
+  const cityId = JSON.parse(req.body).cityId
+  if (!cityId) {
+    const returnCities = await Place.find()
+    return res.send(returnCities)
+  }
+  const returnCities = await Place.find({cityId})
+  return res.send(returnCities)
 }

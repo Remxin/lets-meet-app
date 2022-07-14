@@ -57,7 +57,7 @@ const EventQuery = ({eventId}: queryProps) => {
           <div>
               <h2>{userDataHelper.capitalize(data.event.name)}</h2>
               <h4>Organizator: </h4>
-              <OrganizatorCard id={data.event.organizator.id} name={data.event.organizator.name} age={data.event.organizator.age} premium={data.event.organizator.premium} sex={data.event.organizator.sex}/>
+              <OrganizatorCard id={data.event.organizatorId} name={data.event.organizator.name} age={data.event.organizator.age} premium={data.event.organizator.premium} sex={data.event.organizator.sex}/>
               <h4>Members: {data.event.members.length}{data.event.maxMembers !== -1 ? `/${data.event.maxMembers}` : null}</h4>
               <p>Show members:  </p>
               <Switch checked={false} color="warning" shadow bordered icon={<FaUsers/>} onChange={() => setShowMembers(!showMembers)}/>

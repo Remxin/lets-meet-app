@@ -22,8 +22,7 @@ const  PlaceSelect = ({cityId}: placeSelectType, ref) => {
     const [addUniquePlace, setAddUniquePlace] = useState<boolean>(false)
     const [cityPlacesArr, setCityPlacesArr] = useState([])
     const [placeId, setPlaceId] = useState("!")
-
-    // console.log(cityId)
+    
     // * ---- custom refs ----
     useImperativeHandle(ref, () => {
         return {
@@ -58,7 +57,9 @@ const  PlaceSelect = ({cityId}: placeSelectType, ref) => {
 
     // fetch for places
     useEffect(() => {
-      if (!cityId || cityId === "Own city") return
+      console.log(cityId)
+      if (!cityId) return
+      if (cityId === "Own city") return setCityPlacesArr([])
       async function fetchForPlaces () {
         const placesArr = await getCityPlaces(cityId)
         // @ts-ignore
@@ -76,8 +77,8 @@ const  PlaceSelect = ({cityId}: placeSelectType, ref) => {
       let cityPlaces: placeType[] = cityPlacesArr.sort((x: any, y:any) => {
         return x.name > y.name
       })
-      // @ts-ignore
-      cityPlaces = cityPlaces.map((place: placeType) => {
+        // @ts-ignore
+        cityPlaces = cityPlaces.map((place: placeType) => {
         let address = place.addressString !== "" ? "("+ place.addressString+")" : ""
         //@ts-ignore
         return {value: place._id, label: place.name + address}
@@ -113,7 +114,7 @@ const  PlaceSelect = ({cityId}: placeSelectType, ref) => {
           </span>
         </p>
         <Checkbox
-        color='warning'
+          color='warning'
           onChange={() => setAddUniquePlace(prev => !prev)}
         >Make this place official</Checkbox>
       </div>

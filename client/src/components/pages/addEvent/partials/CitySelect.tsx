@@ -9,13 +9,15 @@ import { cityType } from '../../../../types/modelTypes';
 
 //@ts-ignore
 const CitySelect = ({setId}, ref) => {
+  let fetchTimeout = null // timeout whitch is used to fetch places after stop changing input value for 1s
     // * -- states --
+    const [fetchTimer, setFetchTimer] = useState(true) // if false fetch for places in city
     const [first, setFirst] = useState(true) // first component render
     const [cities, setCities] = useState<cityType[]>([])
-    // const [cityId, setCityId] = useLocalStorage("cityId") // daj useState
-    // const [cityName, setCityName] = useLocalStorage("cityName") // daj useState
-    const [cityId, setCityId] = useState("")
-    const [cityName, setCityName] = useState("")
+    const [cityId, setCityId] = useLocalStorage("cityId") // daj useState
+    const [cityName, setCityName] = useLocalStorage("cityName") // daj useState
+    console.log(cityId)
+
     const [rerender, setRerender] = useState(false) // use to force rerendering this component
     // * -- refs --
     const cityIdRef = useRef() as MutableRefObject<HTMLDataListElement>
@@ -67,15 +69,18 @@ const CitySelect = ({setId}, ref) => {
     }, [])
 
     useEffect(() => {
-      console.log(first, cityNameRef.current?.value)
-      if (first) return 
-      // cityNameRef.current.value = cityName
+      if (first) {
+        return setTimeoutFunction()
+      }
+      if (fetchTimeout) clearTimeout(fetchTimeout)
+      setFetchTimer(true)
+      fetchTimeout = setTimeout(() => {
+        setFetchTimer(false)
+      }, 1000)
+
       //@ts-ignore
         let foundCity = cities.find((city) => city.name === cityNameRef.current?.value)
         if (foundCity) {
-          //@ts-ignore
-          // setId(foundCity._id)
-          // console.log(foundCity._id)
           //@ts-ignore
           setCityName(foundCity.name)
 
@@ -88,13 +93,19 @@ const CitySelect = ({setId}, ref) => {
         }
         setCityName("")
         return setCityId("")
-        // setId("Own city")
     }, [cityNameRef.current?.value])
 
+    useEffect(() => {
+      if (!fetchTimer) passCityId()
+    }, [fetchTimer])
 
+    function setTimeoutFunction () {
+      fetchTimeout = setTimeout(() => { // timeout whitch is used to fetch places after stop changing input value for 1s
+        setId(cityId)
+      }, 2000) 
+    }
     // function that passes cityId to parent component
     const passCityId = () => {
-      // console.log(cityId)
       setId(cityId)
     }
 

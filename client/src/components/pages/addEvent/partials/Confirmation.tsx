@@ -99,6 +99,7 @@ const Confirmation = ({submitHandler, wantToAddUniquePlace = false}: Confirmatio
   
    const {data, error, loading } = useFetch(submitHandler, true) 
    const navigate = useNavigate()
+   
    const redirectToMenu = useCallback(() => {
        navigate("/")
        window.location.reload()

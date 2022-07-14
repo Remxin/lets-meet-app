@@ -50,7 +50,6 @@ const AddEvent = () => {
   const cityRef = useRef() as MutableRefObject<HTMLSelectElement>;
 
   const placeRef = useRef() as MutableRefObject<HTMLSelectElement>;
-  const uniquePlaceRef = useRef() as MutableRefObject<HTMLInputElement>;
 
 const canSetPremium:boolean = promotionsLeft === 0
 
@@ -67,7 +66,7 @@ const canSetPremium:boolean = promotionsLeft === 0
   }, [eventNameRef.current?.value, isPremiumEvent, restrictions, placeRef.current?.getValue(), cityRef.current?.id(), eventDescriptionRef.current?.value, openChat, file])
 
 
-
+console.log(cityId)
  
   // --- choosing image file ---
   const addFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,7 +125,7 @@ const canSetPremium:boolean = promotionsLeft === 0
     {/* @ts-ignore */}
       <PlaceSelect ref={placeRef} cityId={cityId}/>
       <p>{fileName}</p>
-      <input type="file" onChange={addFile} />
+      <input type="file" onChange={addFile} accept="image/png, image/jpg"/>
       <Spacer y={.5}/>
       <Checkbox color="warning" onChange={() => setOpenEvent(prev => !prev)} >Everyone can join without request</Checkbox>
       <Spacer y={.5}/>

@@ -48,9 +48,11 @@ const Restrictions = ({setRestrictions}) => {
     }
 
     const restrictionsListComponent = useMemo(() => {
+        let iterator = 0
         return restrictions.map((restriction) => {
+            iterator++
             return (
-                <li className='restriction-li' key={Date.now()}><IconButton className="restricion-delete-btn" onClick={handleRemoveRestriction} colorScheme="red" icon={< FaTrashAlt />} aria-label='delete restriction'  data-restriction={restriction}/> {restriction}  </li>
+                <li className='restriction-li' key={Date.now() + iterator}><IconButton className="restricion-delete-btn" onClick={handleRemoveRestriction} colorScheme="red" icon={< FaTrashAlt />} aria-label='delete restriction'  data-restriction={restriction}/> {restriction}  </li>
             )
         })
     }, [restrictions])

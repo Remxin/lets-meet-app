@@ -13,7 +13,7 @@ import { addEvent } from "../../../api/addEvent/addEvent";
 
 import JoditEditor from 'jodit-react'
 // graphical components 
-import { Input, Checkbox, Spacer, Grid, Button, Text } from "@nextui-org/react";
+import { Input, Checkbox, Spacer, Grid, Button, Card } from "@nextui-org/react";
 
 // partials
 import PlaceSelect from "./partials/PlaceSelect";
@@ -24,6 +24,7 @@ import Confirmation from "./partials/Confirmation";
 
 import { AnimatePresence, motion, useAnimation } from "framer-motion"
 import "../../../styles/scss/pagesComponents/addEvent/addEvent.scss"
+import { FaRegFileImage } from 'react-icons/fa'
 
 
 const paragraphVariants = {
@@ -137,56 +138,76 @@ console.log(cityId)
   
   // ------ render ------
   return (
-    <form onSubmit={submitHandler}>
-      <Input clearable bordered labelPlaceholder="Event name" initialValue="" ref={eventNameRef}/>
-      <JoditEditor
-            	ref={eventDescriptionRef}
-              value={""}
-              config={{placeholder: "Place description: ", maxLenght: 200}}
-                //@ts-ignore
-		          tabIndex={1} // tabIndex of textarea
-      />
-      <p></p>
-    <Restrictions setRestrictions={setRestrictions}/>
-    <CitySelect ref={cityRef} setId={setCityId}/>
-    {/* @ts-ignore */}
-      <PlaceSelect ref={placeRef} cityId={cityId}/>
-      <p>{fileName}</p>
-      <input type="file" onChange={addFile} accept="image/png, image/jpg"/>
-      <Spacer y={.5}/>
-      <Checkbox color="warning" onChange={() => setOpenEvent(prev => !prev)} >Everyone can join without request</Checkbox>
-      <Spacer y={.5}/>
-      {/* <p>Everyone can write on chat?</p> */}
-      <Checkbox color="warning" onChange={() => setOpenChat(prev => !prev)} >Everyone can write on chat</Checkbox>
-      {/* <p>
-        Premium Event <span>*left: {promotionsLeft}</span>
-      </p> */}
-      <Spacer y={.5}/>
-      <Checkbox
-        // defaultChecked={true}
-        color="warning"
-        
-        disabled={canSetPremium}
-        onChange={() => setIsPremiumEvent(prev => !prev)}
-      >Premium event <span> *left: {promotionsLeft}</span></Checkbox>
-      <Grid>
-        <Button flat color="warning" auto type="submit">
-          Add Event
-        </Button>
-      </Grid>
-    
-      <AnimatePresence>
-      {/* @ts-ignore */}
-      {showSummary ? (<Summary name={eventNameRef.current?.value} description={eventDescriptionRef.current?.value} restrictions={restrictions} city={cityRef.current.name()} place={placeRef.current.getValue()} premium={isPremiumEvent} openChat={openChat} openEvent={openEvent} setShowThisMenu={setShowSummary} setShowConfirmation={setShowConfirmation}/>) : null}
-      {showConfirmation ? <Confirmation submitHandler={
+    <Card>
+      <form onSubmit={submitHandler}>
+        <div className="section">
+          <h3>Basic informations</h3>
+          <Input bordered placeholder="Event name" ref={eventNameRef}/>
+          <JoditEditor
+                  ref={eventDescriptionRef}
+                  value={""}
+                  config={{placeholder: "Event description: ", maxLenght: 200}}
+                    //@ts-ignore
+                  tabIndex={1} // tabIndex of textarea
+          />
+        </div>
+       <div className="section">
+         <h3>Restricions</h3>
+        <Restrictions setRestrictions={setRestrictions}/>
+       </div>
+       <div className="section">
+        <h3>Localization</h3>
+        <CitySelect ref={cityRef} setId={setCityId}/>
+        {/* @ts-ignore */}
+          <PlaceSelect ref={placeRef} cityId={cityId}/>
+       </div>
+       <div className="section">
+          <h3>Image</h3>  
+          <p className="image-text">{fileName}</p>
+          <label htmlFor="event-image-input" className="event-image-label">
+            <FaRegFileImage/> <span>Choose image</span>
+          </label>
+            <input type="file" onChange={addFile} accept="image/png, image/jpg" id="event-image-input" className="event-image-input"/>
+       </div>
+       <div className="section">
+          <h3>Additional informations</h3> 
+          <Spacer y={.5}/>
+          <Checkbox size="md" className="checkbox-with-label" color="warning" onChange={() => setOpenEvent(prev => !prev)} >Everyone can join without request</Checkbox>
+          <Spacer y={.5}/>
+          {/* <p>Everyone can write on chat?</p> */}
+          <Checkbox size="md" className="checkbox-with-label" color="warning" onChange={() => setOpenChat(prev => !prev)} >Everyone can write on chat</Checkbox>
+          {/* <p>
+            Premium Event <span>*left: {promotionsLeft}</span>
+          </p> */}
+          <Spacer y={.5}/>
+          <Checkbox
+            size="md"
+            className="checkbox-with-label"
+            color="warning"
+            
+            disabled={canSetPremium}
+            onChange={() => setIsPremiumEvent(prev => !prev)}
+          >Premium event <span> *left: {promotionsLeft}</span></Checkbox>
+       </div>
+        <Grid className="add-event-button-grid">
+          <Button flat color="warning" auto type="submit" className="add-event-button">
+            Add Event
+          </Button>
+        </Grid>
+      
+        <AnimatePresence>
+        {/* @ts-ignore */}
+        {showSummary ? (<Summary name={eventNameRef.current?.value} description={eventDescriptionRef.current?.value} restrictions={restrictions} city={cityRef.current.name()} place={placeRef.current.getValue()} premium={isPremiumEvent} openChat={openChat} openEvent={openEvent} setShowThisMenu={setShowSummary} setShowConfirmation={setShowConfirmation}/>) : null}
+        {showConfirmation ? <Confirmation submitHandler={
+          //@ts-ignore
+        handlerFunction
+          
         //@ts-ignore
-       handlerFunction
-        
-       //@ts-ignore
-      } wantToAddUniquePlace={placeRef.current.wantToAddUniquePlace}/> : null}
-      </AnimatePresence>
-      <motion.p className="error-paragraph" animate={errorAnimationControll} initial={{opacity: 0, scale: 0.2}}>{error}</motion.p>
-    </form>
+        } wantToAddUniquePlace={placeRef.current.wantToAddUniquePlace}/> : null}
+        </AnimatePresence>
+        <motion.p className="error-paragraph" animate={errorAnimationControll} initial={{opacity: 0, scale: 0.2}}>{error}</motion.p>
+      </form>
+    </Card>
   );
 };
 

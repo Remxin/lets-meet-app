@@ -2,7 +2,7 @@
 import React, { MutableRefObject, useRef, useReducer, useMemo, useEffect, useState} from 'react'
 import { Input, Button, Grid, Spacer } from "@nextui-org/react"
 import { IconButton, Text } from '@chakra-ui/react'
-import { FaTrashAlt, FaPen } from "react-icons/fa"
+import { FaTrashAlt, FaPlus } from "react-icons/fa"
 import { setDefaultResultOrder } from 'dns'
 
 import '../../../../styles/scss/pagesComponents/addEvent/restrictions.scss'
@@ -65,7 +65,6 @@ const Restrictions = ({setRestrictions}) => {
         <Text fontSize='sm' color="tomato" >{error}</Text>
         <Grid.Container direction='row'>
             <Input
-            clearable
             bordered
             // type="text"
             placeholder='New restriction: '
@@ -75,9 +74,8 @@ const Restrictions = ({setRestrictions}) => {
             // onKeyDown={(e) => e.key == "Enter" ? console.log(e.key) : null}
             />
             <Spacer x={.3}/>
-            <Button bordered color="success" auto onClick={handleAddRestriction}>
-            Add Restriction
-            </Button>
+            <IconButton bordered colorScheme="green" auto onClick={handleAddRestriction} className="restrictions-adding-button" icon={<FaPlus/>}/>
+                
         </Grid.Container>     
             <ul>{restrictionsListComponent}</ul>
         </Grid.Container>

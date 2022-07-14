@@ -13,7 +13,7 @@ import { addEvent } from "../../../api/addEvent/addEvent";
 
 import JoditEditor from 'jodit-react'
 // graphical components 
-import { Input, Checkbox, Spacer, Grid, Button } from "@nextui-org/react";
+import { Input, Checkbox, Spacer, Grid, Button, Text } from "@nextui-org/react";
 
 // partials
 import PlaceSelect from "./partials/PlaceSelect";
@@ -22,13 +22,28 @@ import Restrictions from "./partials/Restrictions";
 import Summary from "./partials/Summary";
 import Confirmation from "./partials/Confirmation";
 
-import { AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion, useAnimation } from "framer-motion"
+import "../../../styles/scss/pagesComponents/addEvent/addEvent.scss"
+
+
+const paragraphVariants = {
+  hidden: {
+    opaciy: 0,
+    scale: 0.2
+  },
+
+  visible: {
+    opacity: 1,
+    scale: 1
+  }
+}
  
 
 
 const AddEvent = () => {
   //@ts-ignore
   const { user } = useContext(UserContext);
+  const errorAnimationControll = useAnimation()
 
   const [restrictions, setRestrictions] = useState([]);
   const [promotionsLeft, setPromotionsLeft] = useState(0);
@@ -45,6 +60,8 @@ const AddEvent = () => {
   const [showSummary, setShowSummary] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
 
+  const [error, setError] = useState("aaa")
+
   const eventNameRef = useRef() as MutableRefObject<HTMLInputElement>; // name of event
   const eventDescriptionRef = useRef() as React.LegacyRef<JoditEditor>
   const cityRef = useRef() as MutableRefObject<HTMLSelectElement>;
@@ -55,7 +72,7 @@ const canSetPremium:boolean = promotionsLeft === 0
 
   useEffect(() => {
     if (user) {
-      setPromotionsLeft(user.promotionEvents);
+      setPromotionsLeft(Math.floor(user.promotionEvents));
     }
   }, [user]);
 
@@ -79,34 +96,44 @@ console.log(cityId)
   // --- submit handler ---
   const submitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //@ts-ignore
-    // console.log(eventDescriptionRef.current?.value)
     let place = null;
-    // console.log(placeRef.current?.value);
+
     // TODO: add error handling
     if (!eventNameRef.current?.value) {
-      // error nazwy
+      showError("Please enter event name")
       return;
     }
     //@ts-ignore
     if (!eventDescriptionRef.current?.value) {
+      showError("Please enter event description")
       return;
     }
     //@ts-ignore
     if (!cityRef.current?.name() || cityRef.current.name() === "!none") {
-      console.log("nie ma city");
+      showError("Please enter city")
       return;
     }
     //@ts-ignore
     console.log(placeRef?.current.getValue())
-    if (placeRef.current.value === "!none") {
+    //@ts-ignore
+    if (placeRef.current?.getValue() === "!") {
       // zapomniano wybrać miejsca
-      console.log("nie wybrano miejsca");
+      showError("Please choose your event's place")
       return;
     } 
     return setShowSummary(true)
 
   };
+
+
+  function showError(errorText: string) {
+    setError(errorText)
+    errorAnimationControll.start({
+      opacity: [0.7, 1],
+      scale: [0.5, 1.2, 1],
+      transition: {duration: 0.5, type: "ease-in-out"}
+    })
+  }
   
   // ------ render ------
   return (
@@ -147,8 +174,7 @@ console.log(cityId)
           Add Event
         </Button>
       </Grid>
-      {/* @ts-ignore */}
-      <button onClick={() => setAddResponse({err: "User not verified"})}>change res</button>
+    
       <AnimatePresence>
       {/* @ts-ignore */}
       {showSummary ? (<Summary name={eventNameRef.current?.value} description={eventDescriptionRef.current?.value} restrictions={restrictions} city={cityRef.current.name()} place={placeRef.current.getValue()} premium={isPremiumEvent} openChat={openChat} openEvent={openEvent} setShowThisMenu={setShowSummary} setShowConfirmation={setShowConfirmation}/>) : null}
@@ -159,6 +185,7 @@ console.log(cityId)
        //@ts-ignore
       } wantToAddUniquePlace={placeRef.current.wantToAddUniquePlace}/> : null}
       </AnimatePresence>
+      <motion.p className="error-paragraph" animate={errorAnimationControll} initial={{opacity: 0, scale: 0.2}}>{error}</motion.p>
     </form>
   );
 };

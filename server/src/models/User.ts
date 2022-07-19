@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
+  chatsId: {
+    type: Array,
+    default: []
+  },
   premium: {
     type: Boolean,
     default: false,

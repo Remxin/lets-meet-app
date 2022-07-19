@@ -1,69 +1,80 @@
 //@ts-nocheck
-import React, { useReducer, useEffect, useState } from 'react'
+import React, { useReducer, useEffect, useState, useContext, useRef, useCallback } from 'react'
+import { UserContext } from '../contexts/UserContext';
 import io from 'socket.io-client';
 
 const SOCKETIP = process.env.REACT_APP_SOCKET_IP || ""
-const socket = io(SOCKETIP)
+const socket = io(SOCKETIP, { withCredentials: true})
 
 
-export enum CASES {
-    GETMAINCHATMESSAGES = "getMainChatMessages",
-    CHANGEMAINCHAT = "changeMainChat",
-    WRITEMESSAGE = "writeMessage",
-    GETLASTMAINCHATMESSAGE = "getLastMainChatMessage",
+enum CASES {
     GETUSERCHATS = "getUserChats",
-    GETLASTMESSAGEOFCHAT = "getLastMessageOfChat",
-    SETLASTMESSAGEOFCHAT = "setLastMessageOfChat",
+    SETMAINCHAT = "setMainChat",
+    GETMESSAGE = "getMessage",
+    CREATECHATSECTION = "createChatSection",
     DISCONNECTSOCKET = "disconnectSocket"
 }
 
-const socketIncomingActions = ["user-chats"]
+const socketIncomingActions = ["get-message"]
 
 function reducer(state: any, action: any) {
+    let chatSections = null
+    let chosenChat = null
     switch(action.type) {
-        case CASES.GETMAINCHATMESSAGES:
-            state.mainChat.messages = action.payload.messages 
-            break
-        case CASES.CHANGEMAINCHAT:
-            // removing main chat (and setting required props for side chats)
-            state.mainChat.lastMessage = {...state.mainChat.messages[state.mainChat.messages.length - 1], seen: true}
-            if (state.mainChat.id) state.allChats.push(state.mainChat)
-
-            // setting new chat as main
-            state.mainChat = state.allChats.find((chat) => chat.id === action.payload.newMainChatId)
-            break
-        case CASES.WRITEMESSAGE:
-            state.mainChat.messages.push(action.payload.newMessage)
-            break
-        case CASES.GETUSERCHATS:
+        case CASES.GETUSERCHATS: // is working
             // connect to each room + get rooms data
-            socket.emit("request-chats-data", {chatsId: action.payload.chats}, (response) => {  // * this (get here last message)
-                response.forEach((chatData) => {
-                    // * or this (get chat's last message info)
-                    // socket.emit("request-chat-last-message", {chatId: chatData.id}, ((lastMessage) => {
-                    //     // only sender needs to get feedback
-                    //     chatData.messages.push(lastMessage)
-                    // })) 
-                    state.allChats.push(chatData)
-                })
-            }) 
-            // --- all last messages added (may work) in other case return Promise after case ---
-            state.payload.loadingBoolFunction(false)
-            break
-        case CASES.GETLASTMESSAGEOFCHAT: // ! rather delete
-            // const chatData = state.playload.chatData
-            // socket.emit("request-chat-last-message", {chatData}, ((response) => {
-            //     // only sender needs to get feedback
-            // })) 
-            // state.allChats.push(chatData)
-            break
-        case CASES.SETLASTMESSAGEOFCHAT: 
-            break
+            return {
+                ...state,
+                allChats: action.payload.chats
+            }
+
+        case CASES.SETMAINCHAT: // is working
+            chatSections = Object.keys(state.allChats)
+            chosenChat = null
+
+            for (let section of chatSections) {
+                for (let chat of state.allChats[section]) {
+                    if (chat._id == action.payload.mainChatId) {
+                        chosenChat = chat
+                        chosenChat.messages = action.payload.messages
+                        if (chosenChat?.messages[chosenChat.messages.length - 1]?.seen) chosenChat.messages[chosenChat.messages.length - 1].seen = true // last message has been seen now
+                    }
+                }
+            }
+            return {
+                ...state,
+                mainChat: chosenChat
+            }
+        case CASES.GETMESSAGE:
+            chatSections = Object.keys(state.allChats)
+            chosenChat = null
+            console.log("get message")
+
+            for (let section of chatSections) {
+                for (let chat of state.allChats[section]) {
+                    if (chat._id == action.payload.chatId) {
+                        chosenChat = chat
+                        chosenChat.messages = []
+                        // if this isn't your main chat set the message to not read
+                        const newMessage = {...action.payload.message, seen: chat._id == state.mainChat?._id}
+                        chosenChat.messages.push(newMessage)
+                    }
+                }
+            }
+            return { ...state }
+        
+        case CASES.CREATECHATSECTION:
+            const newSection = action.payload.sectionName
+            if (state.allChats?.[newSection]) return 
+            state.allChats[newSection] = []
+            return { ...state }
+            
+
         case CASES.DISCONNECTSOCKET:
-            socketIncomingActions.forEach((action) => {
+            for (let action of socketIncomingActions) {
                 socket.off(action)
-            })
-            break
+            }
+        return {...state}
 
         default:
             throw new Error("This method do not exist")
@@ -71,55 +82,113 @@ function reducer(state: any, action: any) {
     }
 }
 
+function sendMessageTemplate(userName: String, userId: String, message: String, chatId: String) {
+    const messageObject = {user: userName, userId: userId, message, timestamps: Date.now()}
+    socket.emit("message-sent", {chatId, message: messageObject})
+}
+
 export const useChat = () => {
+    const errorTimeout = useRef(null)
+
+    const { user } = useContext(UserContext)
+    const userRef = useRef(user)
+ 
+
     const [isSocketConnecting, setIsSocketConnecting] = useState(true)
     const [areChatsLoading, setAreChatsLoading] = useState(false)
-    const [mainChatId, setMainChatId] = useState(null)
+    const [mainChatId, setMainChatId] = useState<String | null>(null)
+    const [isConnectionError, setIsConnectionError] = useState(false)
+    const [errorText, setErrorText] = useState("")
    
-    const [state, dispatch] = useReducer(reducer, {
-        mainChat: {
-            id: null,
-            owner: null,
-            messages: [
+    const [chats, dispatch] = useReducer(reducer, {
+        mainChat: null,
+        // {
+        //     _id: null,
+        //     owner: null,
+        //     userCanWrite: null,
+        //     messages: [
                 // {id, timestamps, userId, text} (max: 30)
-            ]
-        },
+        //     ]
+        // },
         allChats: [
-            /* 
-            {
-            id: String, owner: UserType,
+            // 'chatSection': [] 
+            /*                  |
+            {                   V
+            _id: String, owner: UserType,
+            userCanWrite: boolean,
             messages: [
-                {id, timestamps, userId, text} (max: 15)
+                {_id, timestamps, userId, text} (max: 15)
             ],
-            lastMessage: {id, timestamps, userId, text, seen: boolean} (only 1)
+            lastMessage: {_id, timestamps, userId, text, seen: boolean} (only 1)
             } */
         ]
     })
+    // console.log(user)
+    const sendMessage = useCallback((message: String) => {
+        sendMessageTemplate(userRef.current.name, userRef.current._id, message, chats.mainChat?._id) // works
+    }, [chats?.mainChat])
 
-    useEffect(() => {
-        // check if socket is promise?
-        if (socket) setIsSocketConnecting(false)
-
-        setAreChatsLoading(true)
-        socket.emit("request-user-chats", {userId: ""})
-        socket.on('user-chats', async (chatsArr) => {
-            dispatch({type: CASES.GETUSERCHATS, payload: {chats: chatsArr, loadingBoolFunction: setAreChatsLoading}})
+    const createNewChatSection = useCallback((sectionName: String) => {
+        console.log('create')
+        socket.emit("request-create-new-chat-section", {userId: userRef.current._id, sectionName}, (result) => {
+            if (result.err) return setErrorText("Error in creating new chat section")
+            dispatch({type: CASES.CREATECHATSECTION, payload: { sectionName }})
         })
-        socket.on("last-message", (messageData) => dispatch({type: CASES.GETLASTMESSAGEOFCHAT}))
+    }, [])
+
+    // prevent userContext error
+    useEffect(() => {
+        userRef.current = user
+    }, [user])
+    // ----- setting error timeout -----
+    useEffect(() => {
+        errorTimeout.current = setTimeout(() => { // after 10s returns error
+            setIsConnectionError(true) 
+        }, 10000)
+    }, [])
+
+
+    // _-_-_-_- MAIN USEEFFECT _-_-_-_-_-
+    useEffect(() => {
+        if (!socket.connected || !user) return 
+
+        clearTimeout(errorTimeout.current)
+        setIsSocketConnecting(false)
+        setAreChatsLoading(true)
+
+        // emit for chats data
+        socket.emit("request-user-chats-data", {chats: user.chatsId, userId: user._id}, (response) => {
+            dispatch({type: CASES.GETUSERCHATS, payload: {chats: response.chats}})
+            setAreChatsLoading(false)
+        })
+      
+        // get chat message (when someone sends)
+        socket.on("get-message", (data) => dispatch({type: CASES.GETMESSAGE, payload: {message: data.message, chatId: data.chatId}}))
 
         return () => {
             // clearing data and disconnecting socket (socket.off(every_emit)) and disconnect from everyRoom (chatId)
             dispatch({type: CASES.DISCONNECTSOCKET})
         }
-    }, [socket])
+    }, [socket, socket?.connected])
 
-    useEffect(() => {
-        if (!socket) return
-        dispatch({type: CASES.CHANGEMAINCHAT, payload: {newMainChatId: mainChatId}})
-        socket.emit("last-messages", { chatId: mainChatId }, (response) => dispatch({type: CASES.GETMAINCHATMESSAGES, payload: {messages: response}}))
-
+    // ----- setting chosen chat to main (by id) ------
+    useEffect(() => { 
+        if (!mainChatId) return
+        socket.emit("request-chat-messages", { chatId: mainChatId, count: 20 }, (response) => dispatch({type: CASES.SETMAINCHAT, payload: {messages: response.messages, mainChatId}}))
+        
     }, [mainChatId])
 
-    return { isSocketConnecting, areChatsLoading, mainChat: state.mainChat, allChat: state.allChat, setMainChatId}
+    const chatManager = {
+        mainChat: chats?.mainChat,
+        allChats: chats?.allChats,
+        setMainChatId,
+        sendMessage
+    }
+    const sectionManager = {
+        aa: "bb",
+        createNewChatSection
+    }
+    console.log(chats)
+    return { isSocketConnecting, areChatsLoading, isConnectionError, chatManager, sectionManager}
 }
 

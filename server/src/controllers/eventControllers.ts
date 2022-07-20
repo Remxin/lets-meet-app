@@ -145,7 +145,7 @@ export const createEvent = (req: Request, res: Response) => {
               })
           );
         }
-        console.log("verified");
+        // console.log("verified");
         // getting data from request
         const {
           eventName,
@@ -157,17 +157,8 @@ export const createEvent = (req: Request, res: Response) => {
           eventDescription,
           openChat,
         } = JSON.parse(req.body.jsondataRequest);
-        console.log(
-          eventName,
-          isPublic,
-          premiumEvent,
-          membersRestrictions,
-          place,
-          city,
-          eventDescription,
-          openChat
-        );
-        console.log(decodedToken.id);
+ 
+        // console.log(decodedToken.id);
         await Chat.create(
           // creating chat for event
           { organizatorId: decodedToken.id, open: openChat },
@@ -178,7 +169,7 @@ export const createEvent = (req: Request, res: Response) => {
                 .status(500)
                 .send({ err: "Internal server error - cannot create chat" });
             }
-            console.log("chat jest ");
+     
             await Event.create(
               // creating event and linking chat to it
               {
@@ -199,13 +190,13 @@ export const createEvent = (req: Request, res: Response) => {
                     err: "Internal server error - cannot create event",
                   });
                 }
-                console.log("event jest");
+   
                 const file = req.files?.file;
-                console.log(file);
+           
                 if (file) {
                   // creating file
                   const fileExt = file.name.split(".").pop();
-                  console.log(fileExt);
+           
                   file.mv(
                     `${__dirname}/../static/uploads/events/${event._id}.${fileExt}`,
                     (err: Error) => {
@@ -237,15 +228,15 @@ export const createEvent = (req: Request, res: Response) => {
 
 export const getEventImage = (req: Request, res: Response) => {
   const eventId = req?.query?.eventId;
-  console.log(eventId);
+
   const dir = path.join(__dirname, "/../static/uploads/events");
   const files = fs.readdirSync(dir);
 
   for (const file of files) {
     let filename = file + "";
-    console.log(filename);
+
     if (filename.includes(eventId)) {
-      console.log("this one");
+;
       return res.sendFile(
         path.join(__dirname + `/../static/uploads/events/${filename}`)
       );

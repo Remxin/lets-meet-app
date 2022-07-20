@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const chatSchema = new mongoose.Schema({
-  eventId: {
-    type: String,
-    required: true
-  },
+  // eventId: {
+  //   type: String,
+  //   required: true
+  // },
 
   organizatorId: {
     type: String,

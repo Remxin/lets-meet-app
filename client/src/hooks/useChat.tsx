@@ -41,6 +41,10 @@ function reducer(state: any, action: any) {
                     }
                 }
             }
+            console.log({
+                ...state,
+                mainChat: chosenChat
+            })
             return {
                 ...state,
                 mainChat: chosenChat
@@ -48,16 +52,26 @@ function reducer(state: any, action: any) {
         case CASES.GETMESSAGE:
             chatSections = Object.keys(state.allChats)
             chosenChat = null
-            console.log("get message")
+            console.log("get message", action.payload)
+    
 
             for (let section of chatSections) {
                 for (let chat of state.allChats[section]) {
                     if (chat._id == action.payload.chatId) {
+                        
                         chosenChat = chat
-                        chosenChat.messages = []
-                        // if this isn't your main chat set the message to not read
-                        const newMessage = {...action.payload.message, seen: chat._id == state.mainChat?._id}
-                        chosenChat.messages.push(newMessage)
+                        console.log("chosenChat", chosenChat)
+                        if (chosenChat._id === state.mainChat._id) { // this is main chat do not delete prev chat data
+                            chosenChat.messages.push({...action.payload.message, seen: true})
+
+                        } else {    // this is side chat (want to store only last message)
+                            chosenChat.messages = []
+                            const newMessage = {...action.payload.message, seen: false}
+                            chosenChat.messages.push(newMessage)
+
+                            
+                            // if this isn't your main chat set the message to not read
+                        }
                     }
                 }
             }
@@ -84,6 +98,7 @@ function reducer(state: any, action: any) {
 
 function sendMessageTemplate(userName: String, userId: String, message: String, chatId: String) {
     const messageObject = {user: userName, userId: userId, message, timestamps: Date.now()}
+    console.log(chatId)
     socket.emit("message-sent", {chatId, message: messageObject})
 }
 
@@ -125,11 +140,14 @@ export const useChat = () => {
     })
     // console.log(user)
     const sendMessage = useCallback((message: String) => {
+        // console.log(userRef.current)
+        if (!userRef.current || !chats.mainChat) return setErrorText("Application error")
+        console.log("send-message")
         sendMessageTemplate(userRef.current.name, userRef.current._id, message, chats.mainChat?._id) // works
-    }, [chats?.mainChat])
+    }, [chats?.mainChat, mainChatId])
 
     const createNewChatSection = useCallback((sectionName: String) => {
-        console.log('create')
+       
         socket.emit("request-create-new-chat-section", {userId: userRef.current._id, sectionName}, (result) => {
             if (result.err) return setErrorText("Error in creating new chat section")
             dispatch({type: CASES.CREATECHATSECTION, payload: { sectionName }})
@@ -173,12 +191,14 @@ export const useChat = () => {
 
     // ----- setting chosen chat to main (by id) ------
     useEffect(() => { 
+    
         if (!mainChatId) return
         socket.emit("request-chat-messages", { chatId: mainChatId, count: 20 }, (response) => dispatch({type: CASES.SETMAINCHAT, payload: {messages: response.messages, mainChatId}}))
         
     }, [mainChatId])
 
     const chatManager = {
+        mainChatId,
         mainChat: chats?.mainChat,
         allChats: chats?.allChats,
         setMainChatId,
@@ -188,7 +208,8 @@ export const useChat = () => {
         aa: "bb",
         createNewChatSection
     }
-    console.log(chats)
+
+    console.log(chats?.mainChat)
     return { isSocketConnecting, areChatsLoading, isConnectionError, chatManager, sectionManager}
 }
 

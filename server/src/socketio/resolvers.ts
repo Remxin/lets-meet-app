@@ -2,6 +2,8 @@ const Chat = require("../models/Chat")
 const Event = require("../models/Event")
 const Preferences = require("../models/UserPreferences")
 import RoomManager from './RoomManager'
+import {chatType} from '../types/modelTypes'
+
 
 
 
@@ -12,37 +14,40 @@ type MessageType = {
     timestamps: number
 }
 
+type SectionType = {
+    name: String,
+    chats: chatType[]
+}
+
 async function getUserChatsData (chatsId: String[], userId: String, socket: any) { // gives minimum informations about chats
     
-    // ! hallelujah it works - DO NOT TOUCH THIS
     const returnObject = {}
+    let allChatsId = []
+
     let userChats = await Preferences.findOne({ userId }).select("chatSections")
-    userChats = userChats.chatSections
     if (!userChats) return {}
-    const keys = Object.keys(userChats)
-    const values = Object.values(userChats)
-    let incrementer = 0
-    
-    for (let key of keys) {
-        let allChatsId: string[] = []
-        //@ts-ignore
-        const chatInfo = values[incrementer].map(async (chatId) => {
-            let chat = await Chat.findById(chatId)
-            if (!chat) return null
-            allChatsId.push(chat._id.toString())
-            // allChatsId = [...allChatsId, chat._id]
-            console.log(chat._id.toString())
-            const event = await Event.findById(chat.eventId).select("premium city place name")
-            //@ts-ignore
-            chat = {...chat._doc, event, _id: chat._id.toString()}
-            return chat
-        })
-        //@ts-ignore
-        returnObject[key] = await Promise.all(chatInfo)
-        
+    userChats = userChats.chatSections
+    for (let section of userChats) {
+        const sectionName = section.name
+        const sectionChatsId:String[] = section.chats
+        let sectionChats = []
+
+        for (let chatId of sectionChatsId) {
+            let foundChat = await Chat.findById(chatId)
+            if (!foundChat) return null
+            foundChat.messages = [foundChat.messages[foundChat.messages.length - 2]]
+            allChatsId.push(foundChat._id.toString())
+            const event = await Event.findOne({chatId: foundChat._id}).select("premium city place name")
+  
+            foundChat = {...foundChat._doc, event, _id: foundChat._id.toString()}
+            sectionChats.push(foundChat)
+        }
+        // @ts-ignore
+        returnObject[sectionName] = sectionChats
         RoomManager.joinSocketToRoom(allChatsId, socket)
-        incrementer++
     }
+
+  
   
     
     return returnObject
@@ -50,13 +55,17 @@ async function getUserChatsData (chatsId: String[], userId: String, socket: any)
 
 async function getChatMessages (chatId: String, count: Number) {
     let messages = await Chat.findById(chatId).select("messages")
+    // console.log(messages)
     const messagesCount = +`-${count}`
     messages = messages.messages.slice(messagesCount)
     return messages
 }
 
 async function messageSent(chatId: String, message: MessageType) {
+    console.log(chatId)
     const chatMessages = await Chat.findById(chatId).select("messages")
+    // console.log(chatMessages)
+    if (!chatMessages) return
     chatMessages.messages.push(message)
     chatMessages.save().catch((err: Error) => console.log(err)) // TODO: write error to database)
 }
@@ -80,7 +89,6 @@ function createNewChatSection(userId: String, sectionName: string) {
         // console.log(userPreferences)
         
         userPreferences.save().then((res: any) => {
-            console.log(res)
             resolve({msg: "Added new chat section"})
         }).catch((err: Error) => {
             console.log(err)

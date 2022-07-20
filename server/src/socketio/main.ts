@@ -48,7 +48,7 @@ io.on("connection", (socket: Socket) => { // on connection
     socket.on("message-sent", (params) => {
       const { chatId, message } = params
       resolver.messageSent(chatId, message)
-      io.to(chatId).emit("get-message", {message})
+      io.to(chatId).emit("get-message", {message, chatId})
     })
 
     socket.on("request-create-new-chat-section", async (params, callback) => {

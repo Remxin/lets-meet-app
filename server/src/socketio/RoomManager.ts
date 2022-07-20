@@ -10,6 +10,7 @@ class RoomManager {
     static joinSocketToRoom(roomId: string | string[], socket: any) { // chat ID == room ID
         if (Array.isArray(roomId)) {
             roomId.forEach((room: string) => {
+                console.log("joining to room", room)
                 socket.join(room)
             })
             return

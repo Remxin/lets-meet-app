@@ -54,11 +54,12 @@ export type cityType = {
 }
 
 export type chatType = {
-    id:String
+    _id?: String
+    id?:String
     organizatorId: String
-      members: String[] | userType[]
-      messages: messageType[]
-      open: Boolean
+    members: String[] | userType[]
+    messages: messageType[]
+    open: Boolean
 }
 
 export type messageType = {

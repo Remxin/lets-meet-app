@@ -11,8 +11,9 @@ const preferencesSchema = new mongoose.Schema({
         
     },
     chatSections: {
-        type: Object,
-        strict: false
+        type: Array
+        // type: Object,
+        // strict: false
     },
     country: {
         type: String,

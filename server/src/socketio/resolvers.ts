@@ -72,28 +72,52 @@ async function messageSent(chatId: String, message: MessageType) {
 
 function createNewChatSection(userId: String, sectionName: string) {
     return new Promise(async (resolve, reject) => {
-        const userPreferences = await Preferences.findOne({ userId })
+        try {
+            const userPreferences = await Preferences.findOne({ userId })
+            if (!userPreferences) reject({err: "Cannot find user"})
+            const chatSectionExist = userPreferences.chatSections.some((chatSection: any) => chatSection.name == sectionName)
+            if (chatSectionExist) return resolve({err: "This section exist"}) // if user have already created this section
+    
+            userPreferences.chatSections.push({name: sectionName, chats: []})
+          
+            
+            userPreferences.save().then((res: any) => {
+                resolve({msg: "Added new chat section"})
+            }).catch((err: Error) => {
+                console.log(err)
+                resolve({ err })
+            }) // TODO write error to database
+
+        } catch (err) {
+            reject({ err })
+        }
+    })
+}
+
+function moveChatToAnotherSection (userId: String, chatId: String, prevSection: String, newSection: String) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const preferences = await Preferences.findOne({userId})
+            const chatSections = preferences.chatSections
+            
+            console.log(prevSection)
+
+            const pSectionIndex = chatSections.findIndex((section: SectionType) => section.name === prevSection)
+            const nSectionIndex = chatSections.findIndex((section: SectionType) => section.name === newSection)
+            
+            if (pSectionIndex == -1 || nSectionIndex == -1) return resolve({err: "Bad section names"})
+            const lastChatArr = chatSections[pSectionIndex].chats.filter((pchatId: String) => pchatId !== chatId)
         
-        if (userPreferences.chatSections[sectionName]) resolve({err: "This section exist"})
-        // console.log(userPreferences.chatSections)
-        // console.log(sectionName)
-        const sections = userPreferences.chatSections
-        sections[sectionName] = []
+ 
+            chatSections[pSectionIndex].chats = lastChatArr
+            chatSections[nSectionIndex].chats.push(chatId)
+  
+            await Preferences.updateOne({ userId }, {chatSections: chatSections})
         
-        const id = userPreferences._id
-        console.log(sections)
-        await Preferences.findOneAndDelete(id)
-        await  Preferences.create(sections)
-        // userPreferences.chatSections = sections
-        // console.log(sections)
-        // console.log(userPreferences)
         
-        userPreferences.save().then((res: any) => {
-            resolve({msg: "Added new chat section"})
-        }).catch((err: Error) => {
-            console.log(err)
-            resolve({ err })
-        }) // TODO write error to database
+        } catch (err) {
+            reject({ err })
+        }
     })
 }
 
@@ -101,6 +125,7 @@ const resolver = {
     getUserChatsData,
     getChatMessages,
     messageSent,
-    createNewChatSection
+    createNewChatSection,
+    moveChatToAnotherSection
 }
 export default resolver

@@ -16,21 +16,13 @@ const Chats = () => {
   useEffect(() => {
     setTimeout(() => {
     
-      chatManager.setMainChatId("625dab1aeefa984cdd541644")
+      // chatManager.setMainChatId("625dab1aeefa984cdd541644")
      
-      // sectionManager.createNewChatSection("ccc")
+      sectionManager.moveChatToAnotherSection("625dab1aeefa984cdd541644", "other", "ccc")
     }, 1500)
   }, [])
 
-  useEffect(() => {
-    console.log(chatManager.mainChat)
-    if (!chatManager.mainChatId) return
-    setTimeout(() => {
-      console.log(chatManager)
-      chatManager.sendMessage("bbb")
-    }, 1000)
-  }, [chatManager.mainChat])
-
+ 
 
 
 

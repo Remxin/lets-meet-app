@@ -7,6 +7,7 @@ import resolver from "./resolvers";
 import { callbackify } from "util";
 import { Socket } from "dgram";
 import RoomManager from './RoomManager'
+import { resolveReadonlyArrayThunk } from "graphql";
 
 const SOCKETPORT = process.env.SOCKET_PORT || 5003
 const httpServer = createServer();
@@ -54,7 +55,12 @@ io.on("connection", (socket: Socket) => { // on connection
     socket.on("request-create-new-chat-section", async (params, callback) => {
       const { userId, sectionName } = params
       const res = await resolver.createNewChatSection(userId, sectionName)
+      callback(res)
+    })
 
+    socket.on("request-move-chat-to-another-section", async (params, callback) => {
+      const {userId, chatId, prevSection, newSection } = params
+      const res = await resolver.moveChatToAnotherSection(userId, chatId, prevSection, newSection)
       callback(res)
     })
 });

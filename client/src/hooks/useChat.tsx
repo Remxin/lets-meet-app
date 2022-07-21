@@ -12,6 +12,7 @@ enum CASES {
     SETMAINCHAT = "setMainChat",
     GETMESSAGE = "getMessage",
     CREATECHATSECTION = "createChatSection",
+    MOVECHATTOANOTHERSECTION = "moveChatToAnotherSection",
     DISCONNECTSOCKET = "disconnectSocket"
 }
 
@@ -98,7 +99,6 @@ function reducer(state: any, action: any) {
 
 function sendMessageTemplate(userName: String, userId: String, message: String, chatId: String) {
     const messageObject = {user: userName, userId: userId, message, timestamps: Date.now()}
-    console.log(chatId)
     socket.emit("message-sent", {chatId, message: messageObject})
 }
 
@@ -147,10 +147,17 @@ export const useChat = () => {
     }, [chats?.mainChat, mainChatId])
 
     const createNewChatSection = useCallback((sectionName: String) => {
-       
         socket.emit("request-create-new-chat-section", {userId: userRef.current._id, sectionName}, (result) => {
+            console.log(result)
             if (result.err) return setErrorText("Error in creating new chat section")
             dispatch({type: CASES.CREATECHATSECTION, payload: { sectionName }})
+        })
+    }, [])
+
+    const moveChatToAnotherSection = useCallback((chatId: String, prevSection: String, newSection: String) => {
+        socket.emit("request-move-chat-to-another-section", {userId: userRef.current._id, chatId, prevSection, newSection }, (result) => {
+            if (result.err) return setErrorText("Error in moving chat to another section")
+            dispatch({type: CASES.MOVECHATTOANOTHERSECTION, payload: {chatId, prevSection, newSection}})
         })
     }, [])
 
@@ -206,10 +213,11 @@ export const useChat = () => {
     }
     const sectionManager = {
         aa: "bb",
-        createNewChatSection
+        createNewChatSection,
+        moveChatToAnotherSection
     }
 
-    console.log(chats?.mainChat)
+    console.log(chats)
     return { isSocketConnecting, areChatsLoading, isConnectionError, chatManager, sectionManager}
 }
 

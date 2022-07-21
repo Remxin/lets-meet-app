@@ -99,8 +99,6 @@ function moveChatToAnotherSection (userId: String, chatId: String, prevSection: 
         try {
             const preferences = await Preferences.findOne({userId})
             const chatSections = preferences.chatSections
-            
-            console.log(prevSection)
 
             const pSectionIndex = chatSections.findIndex((section: SectionType) => section.name === prevSection)
             const nSectionIndex = chatSections.findIndex((section: SectionType) => section.name === newSection)
@@ -108,13 +106,31 @@ function moveChatToAnotherSection (userId: String, chatId: String, prevSection: 
             if (pSectionIndex == -1 || nSectionIndex == -1) return resolve({err: "Bad section names"})
             const lastChatArr = chatSections[pSectionIndex].chats.filter((pchatId: String) => pchatId !== chatId)
         
- 
+            const isChatInNewSection = chatSections[nSectionIndex].chats.some((pChatId: String) => pChatId == chatId)
+
             chatSections[pSectionIndex].chats = lastChatArr
-            chatSections[nSectionIndex].chats.push(chatId)
+            if (isChatInNewSection) chatSections[nSectionIndex].chats.push(chatId)
+    
   
             await Preferences.updateOne({ userId }, {chatSections: chatSections})
+            resolve({msg: "Success"})
         
         
+        } catch (err) {
+            reject({ err })
+        }
+    })
+}
+
+function removeChatSection (userId: String, chatSectionName: String) {
+    return new Promise(async (resolve, reject) => {
+        try {  
+            const preferences = await Preferences.findOne({ userId })
+         
+            if (!preferences) return resolve({err: "Cannot find user chat sections"})
+            const newChatSections = preferences.chatSections.filter((chatSection: SectionType) => chatSection.name !== chatSectionName)
+            await Preferences.updateOne({userId}, {chatSections: newChatSections})
+            resolve({msg: "Success"})
         } catch (err) {
             reject({ err })
         }
@@ -126,6 +142,7 @@ const resolver = {
     getChatMessages,
     messageSent,
     createNewChatSection,
-    moveChatToAnotherSection
+    moveChatToAnotherSection,
+    removeChatSection
 }
 export default resolver

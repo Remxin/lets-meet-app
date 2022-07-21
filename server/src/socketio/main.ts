@@ -63,6 +63,12 @@ io.on("connection", (socket: Socket) => { // on connection
       const res = await resolver.moveChatToAnotherSection(userId, chatId, prevSection, newSection)
       callback(res)
     })
+
+    socket.on("request-remove-chat-section", async (params, callback) => {
+      const {userId, sectionName} = params
+      const res = await resolver.removeChatSection(userId, sectionName)
+      callback(res)
+    })
 });
 
 io.on("connect-error", () => { // connecting to socket error

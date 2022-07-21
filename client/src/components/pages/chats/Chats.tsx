@@ -18,7 +18,7 @@ const Chats = () => {
     
       // chatManager.setMainChatId("625dab1aeefa984cdd541644")
      
-      sectionManager.moveChatToAnotherSection("625dab1aeefa984cdd541644", "other", "ccc")
+      sectionManager.removeChatSection("ccc")
     }, 1500)
   }, [])
 

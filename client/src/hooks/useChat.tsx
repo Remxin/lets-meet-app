@@ -13,6 +13,7 @@ enum CASES {
     GETMESSAGE = "getMessage",
     CREATECHATSECTION = "createChatSection",
     MOVECHATTOANOTHERSECTION = "moveChatToAnotherSection",
+    REMOVECHATSECTION = "removeChatSection",
     DISCONNECTSOCKET = "disconnectSocket"
 }
 
@@ -83,7 +84,10 @@ function reducer(state: any, action: any) {
             if (state.allChats?.[newSection]) return 
             state.allChats[newSection] = []
             return { ...state }
-            
+        
+        case CASES.REMOVECHATSECTION:
+            delete state.allChats[action.payload.sectionName]
+            return { ...state }
 
         case CASES.DISCONNECTSOCKET:
             for (let action of socketIncomingActions) {
@@ -161,6 +165,13 @@ export const useChat = () => {
         })
     }, [])
 
+    const removeChatSection = useCallback((sectionName: String) => {
+        socket.emit("request-remove-chat-section", {userId: userRef.current._id, sectionName}, (result) => {
+            if (result.err) return setErrorText("Cannot delete chat section")
+            return
+            dispatch({type: CASES.REMOVECHATSECTION, payload: {sectionName}})
+        })
+    }, [])
     // prevent userContext error
     useEffect(() => {
         userRef.current = user
@@ -214,7 +225,8 @@ export const useChat = () => {
     const sectionManager = {
         aa: "bb",
         createNewChatSection,
-        moveChatToAnotherSection
+        moveChatToAnotherSection,
+        removeChatSection
     }
 
     console.log(chats)

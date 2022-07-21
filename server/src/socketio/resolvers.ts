@@ -23,7 +23,6 @@ async function getUserChatsData (chatsId: String[], userId: String, socket: any)
     
     const returnObject = {}
     let allChatsId = []
-
     let userChats = await Preferences.findOne({ userId }).select("chatSections")
     if (!userChats) return {}
     userChats = userChats.chatSections
@@ -31,7 +30,7 @@ async function getUserChatsData (chatsId: String[], userId: String, socket: any)
         const sectionName = section.name
         const sectionChatsId:String[] = section.chats
         let sectionChats = []
-
+        if (!sectionChatsId) return []
         for (let chatId of sectionChatsId) {
             let foundChat = await Chat.findById(chatId)
             if (!foundChat) return null
@@ -137,12 +136,23 @@ function removeChatSection (userId: String, chatSectionName: String) {
     })
 }
 
+async function actualizeUserData (sections: any, userId: String) {
+    try {
+        console.log(sections)
+        await Preferences.updateOne({userId}, {chatSections: sections})
+    } catch (err) { //TODO : error handling
+        console.log(err)
+    }
+            
+}
+
 const resolver = {
     getUserChatsData,
     getChatMessages,
     messageSent,
     createNewChatSection,
     moveChatToAnotherSection,
-    removeChatSection
+    removeChatSection,
+    actualizeUserData
 }
 export default resolver

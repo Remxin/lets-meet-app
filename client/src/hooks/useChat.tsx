@@ -11,6 +11,7 @@ enum CASES {
     GETUSERCHATS = "getUserChats",
     SETMAINCHAT = "setMainChat",
     GETMESSAGE = "getMessage",
+    POSITIONCHAT = 'positionChat',
     CREATECHATSECTION = "createChatSection",
     MOVECHATTOANOTHERSECTION = "moveChatToAnotherSection",
     REMOVECHATSECTION = "removeChatSection",
@@ -78,7 +79,21 @@ function reducer(state: any, action: any) {
                 }
             }
             return { ...state }
-        
+        case CASES.POSITIONCHAT:
+            let { chatId, newChatIndex, sectionName } = action.payload
+            const sectionChats = state.allChats[sectionName]
+
+            const fromIndex = sectionChats.findIndex((chat) => chat._id === chatId); // 👉️ 0
+            console.log("from ", fromIndex, "to: ", newChatIndex)
+
+            const element = sectionChats.splice(fromIndex, 1)[0];
+
+            sectionChats.splice(newChatIndex, 0, element);
+
+            console.log(sectionChats)
+            state.allChats[sectionName] = sectionChats
+
+            return { ...state }
         case CASES.CREATECHATSECTION:
             const newSection = action.payload.sectionName
             if (state.allChats?.[newSection]) return 
@@ -89,10 +104,17 @@ function reducer(state: any, action: any) {
             delete state.allChats[action.payload.sectionName]
             return { ...state }
 
-        case CASES.DISCONNECTSOCKET:
+        case CASES.DISCONNECTSOCKET: // main purpose of this function is to disconnect from socket + save user chats in right order inside sections
+            const sectionsArr = []
+            for (let chatSection in state.allChats) {
+                const chatsId = state.allChats[chatSection].map((chatData) => chatData._id)
+                sectionsArr.push({name: chatSection, chats: chatsId})
+            }
+            socket.emit("request-actualize-user-chat-preferences", {sections: sectionsArr, userId: action.payload.userId})
             for (let action of socketIncomingActions) {
                 socket.off(action)
             }
+            socket.close()
         return {...state}
 
         default:
@@ -150,6 +172,10 @@ export const useChat = () => {
         sendMessageTemplate(userRef.current.name, userRef.current._id, message, chats.mainChat?._id) // works
     }, [chats?.mainChat, mainChatId])
 
+    const positionChat = useCallback((chatId: String, newChatIndex: number, sectionName: String) => { // when you drag chat to another position (like in todo list)
+        dispatch({type: CASES.POSITIONCHAT, payload: {chatId, newChatIndex, sectionName}})
+    }, [])
+
     const createNewChatSection = useCallback((sectionName: String) => {
         socket.emit("request-create-new-chat-section", {userId: userRef.current._id, sectionName}, (result) => {
             console.log(result)
@@ -168,7 +194,6 @@ export const useChat = () => {
     const removeChatSection = useCallback((sectionName: String) => {
         socket.emit("request-remove-chat-section", {userId: userRef.current._id, sectionName}, (result) => {
             if (result.err) return setErrorText("Cannot delete chat section")
-            return
             dispatch({type: CASES.REMOVECHATSECTION, payload: {sectionName}})
         })
     }, [])
@@ -203,9 +228,9 @@ export const useChat = () => {
 
         return () => {
             // clearing data and disconnecting socket (socket.off(every_emit)) and disconnect from everyRoom (chatId)
-            dispatch({type: CASES.DISCONNECTSOCKET})
+            dispatch({type: CASES.DISCONNECTSOCKET, payload: {userId: userRef.current._id}})
         }
-    }, [socket, socket?.connected])
+    }, [socket, socket.connected])
 
     // ----- setting chosen chat to main (by id) ------
     useEffect(() => { 
@@ -220,7 +245,8 @@ export const useChat = () => {
         mainChat: chats?.mainChat,
         allChats: chats?.allChats,
         setMainChatId,
-        sendMessage
+        sendMessage,
+        positionChat
     }
     const sectionManager = {
         aa: "bb",

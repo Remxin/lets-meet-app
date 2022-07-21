@@ -10,15 +10,11 @@ import { Card, Loading } from "@nextui-org/react"
 const Chats = () => {
   //@ts-ignore
   const { isSocketConnecting, areChatsLoading, isConnectionError, chatManager, sectionManager } = useChat()
-  // console.log(chatManager.allChats)
-  // console.log(mainChat)
 
-  useEffect(() => {
+  useEffect(() => { // this is only for testing useChat utilities
     setTimeout(() => {
-    
-      // chatManager.setMainChatId("625dab1aeefa984cdd541644")
-     
-      sectionManager.removeChatSection("ccc")
+      sectionManager.createNewChatSection("other")
+      // chatManager.positionChat("625dac2deefa984cdd54164f", 2, "favourites")
     }, 1500)
   }, [])
 

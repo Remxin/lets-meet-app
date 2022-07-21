@@ -39,7 +39,7 @@ io.on("connection", (socket: Socket) => { // on connection
     })
 
     socket.on("request-chat-messages", async (params, callback) => {
-      const {chatId, count} = params
+      const { chatId, count } = params
       const result = await resolver.getChatMessages(chatId, count)
       callback({
         messages: result
@@ -49,7 +49,7 @@ io.on("connection", (socket: Socket) => { // on connection
     socket.on("message-sent", (params) => {
       const { chatId, message } = params
       resolver.messageSent(chatId, message)
-      io.to(chatId).emit("get-message", {message, chatId})
+      io.to(chatId).emit("get-message", { message, chatId })
     })
 
     socket.on("request-create-new-chat-section", async (params, callback) => {
@@ -59,15 +59,20 @@ io.on("connection", (socket: Socket) => { // on connection
     })
 
     socket.on("request-move-chat-to-another-section", async (params, callback) => {
-      const {userId, chatId, prevSection, newSection } = params
+      const { userId, chatId, prevSection, newSection } = params
       const res = await resolver.moveChatToAnotherSection(userId, chatId, prevSection, newSection)
       callback(res)
     })
 
     socket.on("request-remove-chat-section", async (params, callback) => {
-      const {userId, sectionName} = params
+      const { userId, sectionName } = params
       const res = await resolver.removeChatSection(userId, sectionName)
       callback(res)
+    })
+
+    socket.on("request-actualize-user-chat-preferences", (params) => {
+      const { sections, userId } = params
+      resolver.actualizeUserData(sections, userId)
     })
 });
 

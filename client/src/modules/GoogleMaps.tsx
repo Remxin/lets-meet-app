@@ -15,6 +15,9 @@ function cutLocalizationString(locStr: String) {
 
 const GoogleMaps = ({ localizationString, changeFun }: MapsProps) => {
   console.log(localizationString)
+  if (!localizationString) return <p>Cannot load map</p>
+
+
   if (localizationString.charAt(0) === "<") {
     localizationString = cutLocalizationString(localizationString)
 

@@ -44,10 +44,6 @@ function reducer(state: any, action: any) {
                     }
                 }
             }
-            console.log({
-                ...state,
-                mainChat: chosenChat
-            })
             return {
                 ...state,
                 mainChat: chosenChat
@@ -55,7 +51,6 @@ function reducer(state: any, action: any) {
         case CASES.GETMESSAGE:
             chatSections = Object.keys(state.allChats)
             chosenChat = null
-            console.log("get message", action.payload)
     
 
             for (let section of chatSections) {
@@ -63,7 +58,6 @@ function reducer(state: any, action: any) {
                     if (chat._id == action.payload.chatId) {
                         
                         chosenChat = chat
-                        console.log("chosenChat", chosenChat)
                         if (chosenChat._id === state.mainChat._id) { // this is main chat do not delete prev chat data
                             chosenChat.messages.push({...action.payload.message, seen: true})
 
@@ -84,13 +78,11 @@ function reducer(state: any, action: any) {
             const sectionChats = state.allChats[sectionName]
 
             const fromIndex = sectionChats.findIndex((chat) => chat._id === chatId); // 👉️ 0
-            console.log("from ", fromIndex, "to: ", newChatIndex)
 
             const element = sectionChats.splice(fromIndex, 1)[0];
 
             sectionChats.splice(newChatIndex, 0, element);
 
-            console.log(sectionChats)
             state.allChats[sectionName] = sectionChats
 
             return { ...state }
@@ -164,11 +156,8 @@ export const useChat = () => {
             } */
         ]
     })
-    // console.log(user)
     const sendMessage = useCallback((message: String) => {
-        // console.log(userRef.current)
         if (!userRef.current || !chats.mainChat) return setErrorText("Application error")
-        console.log("send-message")
         sendMessageTemplate(userRef.current.name, userRef.current._id, message, chats.mainChat?._id) // works
     }, [chats?.mainChat, mainChatId])
 
@@ -178,7 +167,6 @@ export const useChat = () => {
 
     const createNewChatSection = useCallback((sectionName: String) => {
         socket.emit("request-create-new-chat-section", {userId: userRef.current._id, sectionName}, (result) => {
-            console.log(result)
             if (result.err) return setErrorText("Error in creating new chat section")
             dispatch({type: CASES.CREATECHATSECTION, payload: { sectionName }})
         })
@@ -255,7 +243,6 @@ export const useChat = () => {
         removeChatSection
     }
 
-    console.log(chats)
     return { isSocketConnecting, areChatsLoading, isConnectionError, chatManager, sectionManager}
 }
 

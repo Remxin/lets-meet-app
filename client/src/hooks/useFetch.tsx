@@ -22,8 +22,11 @@ const useFetch = (fetchPromise: () => Promise<PromiseType>, startOnLoad?: boolea
         if (response.msg) {
             setLoading(false)
             return setData(response.msg)
+        } else {
+            setLoading(false)
+            //@ts-ignore
+            return setData(response)
         }
-        setLoading(false)
     }, [])
 
     useEffect(() => {

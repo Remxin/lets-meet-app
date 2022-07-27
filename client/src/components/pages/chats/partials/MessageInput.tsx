@@ -15,11 +15,17 @@ import {
   } from '@chakra-ui/react'
 // import { Pop} from "@nextui-org/react"
 import { FaSmile, FaHeart, FaArrowAltCircleRight } from "react-icons/fa"
+import faceEmojis from '../emojis/faceEmojis.json'
+import handEmojis from '../emojis/handEmojis.json'
 
 const MessageInput = ({sendMessageFun}: any) => {
     const [isUserWriting, setIsUserWriting] = useState(false)
-    const messageInputRef = useRef() as MutableRefObject<HTMLInputElement>
     const [message, setMessage] = useState("")
+
+    console.log(faceEmojis, handEmojis)
+    const messageInputRef = useRef() as MutableRefObject<HTMLInputElement>
+    const faceEmojisRef = useRef() as MutableRefObject<HTMLDivElement>
+    const handEmojisRef = useRef() as MutableRefObject<HTMLDivElement>
 
     useEffect(() => {
         if (messageInputRef.current?.value !== "") {
@@ -40,21 +46,40 @@ const MessageInput = ({sendMessageFun}: any) => {
         setMessage("")
     }
 
+//@ts-ignore
+    function moveCaretAtEnd(e) {
+        var temp_value = e.target.value
+        e.target.value = ''
+        e.target.value = temp_value
+      }
+
     return (
         <>
-            <Input animated={false} contentClickable={true} placeholder='Type a message...' className='input' onChange={(e) => setMessage(e.target.value)} bordered ref={messageInputRef} contentRight={
-                <Popover>
+            <Input animated={false} contentClickable={true} placeholder='Type a message...' className='input' onChange={(e) => setMessage(e.target.value)} bordered ref={messageInputRef} onFocus={moveCaretAtEnd} contentRight={
+                <Popover onClose={() => messageInputRef.current.focus()}>
                 <PopoverTrigger>
-                    <Button><FaSmile className='popover-trigger'/></Button>
+                    <Button className='trigger-button'><FaSmile className='popover-trigger'/></Button>
                 </PopoverTrigger>
-                <PopoverContent>
+                <PopoverContent className='popover-content' width={100 + "px"}>
                 <PopoverArrow />
-                     <PopoverHeader>Header</PopoverHeader>
-                     <PopoverCloseButton />
-                     <PopoverBody>
-                         <a href='#'>link do niczego</a>
+                     <PopoverHeader className='popover-header'>
+                         <button onClick={() => faceEmojisRef.current.scrollIntoView({ behavior: "smooth", block: "start"})}>{faceEmojis[0]}</button>
+                         <button onClick={() => handEmojisRef.current.scrollIntoView({ behavior: "smooth", block: "start"})}>{handEmojis[0]}</button>
+                     </PopoverHeader>
+                     {/* <PopoverCloseButton /> */}
+                     <PopoverBody className='popover-body'>
+                        <div className="emojis-content" ref={faceEmojisRef}>
+                             {faceEmojis.map((emoji: string) => {
+                                 return <button className='emoji' onClick={() => messageInputRef.current.value += emoji}>{emoji}</button>
+                             })}
+                        </div>
+                        <div className="emojis-content" ref={handEmojisRef}>
+                            {handEmojis.map((emoji: string) => {
+                                 return <button className='emoji' onClick={() => messageInputRef.current.value += emoji}>{emoji}</button>
+                             })}
+                        </div>
                      </PopoverBody>
-                     <PopoverFooter>This is the footer</PopoverFooter>
+                     <PopoverFooter></PopoverFooter>
                 </PopoverContent>
             </Popover>
             

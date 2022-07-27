@@ -223,9 +223,64 @@
         .input {
             width: 90%;
 
-            .popover-trigger {
-                background-color: yellow;
-                z-index: 3000;
+            .trigger-button {
+                display: flex;
+                position: relative;
+
+                .popover-trigger {
+                    display: block;
+                    z-index: 3000;
+                    // width: 100%;
+                    // height: 100%;
+                    font-size: 50px;
+
+    
+                }
+            }
+
+            .popover-content {
+                max-height: 200px;
+
+                .popover-header {
+                    position: relative;
+                    width: 100%;
+                    display: flex;
+                    // margin-top: 40px;
+
+                    .chakra-popover__close-btn {
+                        position: absolute;
+                        width: 100%;
+                        svg {
+                            width: 100%;
+                        }
+                    }
+                    
+
+                    button {
+                        width: 40px;
+                        height: 40px;
+                        font-size: 20px;
+                    }
+                }
+
+                .popover-body {
+                    overflow-y: scroll;
+
+
+
+                    .emojis-content {
+                        display: flex;
+                        flex-wrap: wrap;
+                        max-width: 300px;
+    
+                        .emoji {
+                            width: 15px;
+                            margin-left: 3px;
+                            margin-top: 3px;
+                        }
+                    }
+                }
+
             }
 
             // * {

@@ -224,8 +224,11 @@
             width: 90%;
 
             .trigger-button {
+                position: relative;
                 display: flex;
                 position: relative;
+                padding: 8px;
+                right: 5px;
 
                 .popover-trigger {
                     display: block;
@@ -245,7 +248,12 @@
                     position: relative;
                     width: 100%;
                     display: flex;
-                    // margin-top: 40px;
+                   
+
+                    button {
+                        border-radius: 8px;
+                        user-select: none;
+                    }
 
                     .chakra-popover__close-btn {
                         position: absolute;

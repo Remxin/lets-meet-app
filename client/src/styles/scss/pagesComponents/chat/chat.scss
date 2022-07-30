@@ -6,13 +6,16 @@
     width: 100vw;
     height: 100vh;
     top: 0;
-
+   
     & > div{
     display: flex;
     flex-direction: column;
     width: 100vw;
     height: 85vh;
     padding: 2px;
+    max-height: 100vh;
+    max-width: 100%;
+    overflow: hidden;
 
     .special-nav {
         width: 100%;
@@ -54,6 +57,41 @@
 
 
             .section-menu {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 5px;
+                background-color: orangered;
+                color: white;
+                height: 40px;
+                border-radius: 5px;
+                padding: 2px;
+
+                label {
+                    cursor: pointer;
+
+                    p {
+                        font-size: 14px;
+                    }
+                }
+
+                .one-line {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                   input::placeholder {
+                       color: #454545;
+                       font-size: 11px;
+                   }
+
+                    svg {
+                        margin-right: 5px;
+                        cursor: pointer;
+                    }
+
+                   
+                }
                
             }
 
@@ -119,6 +157,7 @@
             background-color: $chats-bgc;
             height: 100%;
             width: 70%;
+            // padding: 10px;
         }
 
     }
@@ -158,7 +197,8 @@
             }
 
             .last-message {
-                font-size: 12px;
+                margin-left: -12px;
+                font-size: 10px;
                 color: #898989dc;
             }
         }
@@ -184,6 +224,7 @@
         height: 80%;
         width: 100%;
         overflow-y: scroll;
+        padding: 20px;
 
 
         .messages-end {
@@ -316,4 +357,22 @@
     }
     
 
+}
+
+.add-section-summary-container {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: #ffffff66;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+
+    .add-section-summary {
+        
+        width: 70%;
+        height: 70vh;
+        background-color: #fff;
+    }
 }

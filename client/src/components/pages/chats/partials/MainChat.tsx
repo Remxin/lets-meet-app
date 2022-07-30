@@ -1,16 +1,12 @@
 import React, { MutableRefObject, useEffect, useRef } from 'react'
 import Message from './Message'
-import MessageInput from './MessageInput'
+import MessageInput from '../../../../modules/MessageInput'
 import { Input, Button } from "@nextui-org/react"
 
 const MainChat = ({ chatManager }:any) => {
   const chatContentRef = useRef() as MutableRefObject<HTMLDivElement>
   const messagesEndRef = useRef() as MutableRefObject<HTMLDivElement>
-  useEffect(() => {
-    console.log("idzie")
-    console.log(messagesEndRef.current)
-    // chatContentRef.current?.scrollIntoView({ behavior: "smooth"})
-    // chatContentRef.current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest"})
+  useEffect(() => { // always scroll to the bottom of the chat, after writing a message
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end"})
   }, [chatManager.mainChat?.messages, chatManager])
 

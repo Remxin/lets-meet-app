@@ -34,7 +34,7 @@ async function getUserChatsData (chatsId: String[], userId: String, socket: any)
         for (let chatId of sectionChatsId) {
             let foundChat = await Chat.findById(chatId)
             if (!foundChat) return null
-            foundChat.messages = [foundChat.messages[foundChat.messages.length - 2]]
+            foundChat.messages = [foundChat.messages[foundChat.messages.length - 1]]
             allChatsId.push(foundChat._id.toString())
             const event = await Event.findOne({chatId: foundChat._id}).select("premium city place name")
   

@@ -218,7 +218,7 @@ export const useChat = () => {
             // clearing data and disconnecting socket (socket.off(every_emit)) and disconnect from everyRoom (chatId)
             dispatch({type: CASES.DISCONNECTSOCKET, payload: {userId: userRef.current._id}})
         }
-    }, [socket, socket.connected])
+    }, [socket, socket.connected, user])
 
     // ----- setting chosen chat to main (by id) ------
     useEffect(() => { 

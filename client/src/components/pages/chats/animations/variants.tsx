@@ -18,15 +18,15 @@ export const titleVariants = {
     clickDark: {
         backgroundColor: "#F0743D"
     },
-    hover: {
-        scale: 0.95,
-        transition: {
-            type: "spring",
-            stiffness: 100,
-        }
-    },
+    // hover: {
+    //     scale: 0.95,
+    //     transition: {
+    //         type: "spring",
+    //         stiffness: 100,
+    //     }
+    // },
     hold: {
-        scale: 0.7,
+        scale: 0.8,
         radius: 15,
         transition: {
             

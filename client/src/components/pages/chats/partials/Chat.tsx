@@ -14,7 +14,7 @@ type LastMessageType = {
 const Chat = ({data, setMainChatId, mainChatId}: any) => {
   //@ts-ignore
   const { user } = useContext(UserContext)
-  const [lastMessageData, setLastMessageData] = useState<LastMessageType | null>(data.messages[data.messages.length - 1])
+  // const [lastMessageData, setLastMessageData] = useState<LastMessageType | null>(data.messages[data.messages.length - 1])
   const contentVariant = useAnimation()
   const containerVariant = useAnimation()
   
@@ -27,12 +27,9 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
     }
   }, [mainChatId])
 
+  const lastMessageData = data.messages[data.messages.length - 1]
 
-  useEffect(() => {
-    setLastMessageData(data.messages[data.messages.length - 1])
-  })
-  
-  // console.log(data._id, mainChatId)
+ const lastMessageText = lastMessageData.message.length > 20 ? lastMessageData.message.slice(0, 20) + "..." : lastMessageData.message
   return (
     <motion.div className="chat-container" variants={containerVariants} whileHover="hover" onClick={() => setMainChatId(data._id)} animate={containerVariant} initial="initial">
       <motion.div className='chat-content'
@@ -44,7 +41,7 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
         <img src={`${process.env.REACT_APP_SERVER_IP}/get/event-image?eventId=${data.event._id}`} alt="event image" className='event-image'/>
         <div className="text">
           <h4 className='chat-title'>{data.event.name}</h4>
-          {lastMessageData ? <><p className="last-message">{user._id === lastMessageData.userId ? "You" : lastMessageData.user}: {lastMessageData.message} <span className="timestamps">{}</span></p></> : null}
+          {lastMessageData ? <><p className="last-message">{user._id === lastMessageData.userId ? "You" : lastMessageData.user}: {lastMessageText} <span className="timestamps">{}</span></p></> : null}
         </div>
         
       </motion.div>

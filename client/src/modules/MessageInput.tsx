@@ -14,18 +14,18 @@ import {
 import { FaSmile, FaHeart, FaArrowAltCircleRight } from "react-icons/fa"
 
 // emojis
-import faceEmojis from '../emojis/faceEmojis.json'
-import handEmojis from '../emojis/handEmojis.json'
-import natureEmojis from '../emojis/natureEmojis.json'
-import foodDringEmojis from '../emojis/foodDrinkEmojis.json'
-import symbolEmojis from '../emojis/symbolEmojis.json'
-import placesEmojis from '../emojis/placesEmojis.json'
-import objectEmojis from '../emojis/objectEmojis.json'
-import flagsEmojis from '../emojis/flagsEmojis.json'
+import faceEmojis from '../components/pages/chats/emojis/faceEmojis.json'
+import handEmojis from '../components/pages/chats/emojis/handEmojis.json'
+import natureEmojis from '../components/pages/chats/emojis/natureEmojis.json'
+import foodDringEmojis from '../components/pages/chats/emojis/foodDrinkEmojis.json'
+import symbolEmojis from '../components/pages/chats/emojis/symbolEmojis.json'
+import placesEmojis from '../components/pages/chats/emojis/placesEmojis.json'
+import objectEmojis from '../components/pages/chats/emojis/objectEmojis.json'
+import flagsEmojis from '../components/pages/chats/emojis/flagsEmojis.json'
 
 // animations
 import { motion } from "framer-motion"
-import { emojiChose, emojiNavIcon } from "../animations/emojiVariants"
+import { emojiChose, emojiNavIcon } from "../components/pages/chats/animations/emojiVariants"
 
 const MessageInput = ({sendMessageFun}: any) => {
     const [isUserWriting, setIsUserWriting] = useState(false)

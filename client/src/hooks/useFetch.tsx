@@ -13,6 +13,7 @@ const useFetch = (fetchPromise: () => Promise<PromiseType>, startOnLoad?: boolea
 
     const startFetching = useCallback(async () => {
         setLoading(true)
+        console.log(fetchPromise)
         const response = await fetchPromise()
         console.log(response)
         if (response.err) {

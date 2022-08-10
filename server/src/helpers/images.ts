@@ -19,7 +19,8 @@ export const getPlaceImage = (index: number, imageId: String) => {
         try {
             const dir = path.join(__dirname, "/../static/uploads/places/" + imageId);
             const files = fs.readdirSync(dir)
-            if (files.length - 1 < index) {
+            console.log(files.length - 1, +index)
+            if (+index > files.length - 1 ) {
                 resolve({err: "Bad index"})
             }
             resolve({path: dir + "/" + files[index]})
@@ -36,6 +37,19 @@ export const deletePlaceImageFolder = (imageId: String) => {
             resolve({ msg: "Successfully deleted folder" })
         } catch (err) {
             reject({err})
+        }
+    })
+}
+
+export const saveImage = (image: any, imageLocation: string) => {
+    return new Promise((resolve, reject) => {
+        try {
+            image.mv(imageLocation, (err: Error) => {
+                if (err) resolve({ err })
+                resolve({msg: "success"})
+            })
+        } catch (err) {
+            reject({ err })
         }
     })
 }

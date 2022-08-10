@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { sendWelcomeEmail } from "../helpers/emailHelpers";
 
 const User = require("../models/User");
+const UserPreferences = require("../models/UserPreferences")
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config(); // for using process.env variables
 
@@ -32,12 +33,18 @@ const alertErr = (err: any) => {
 
 // ----- export functions -----
 const signup = async (req: Request, res: Response) => {
+  console.log("signup")
   const { name, email, password, sex, age } = req.body;
   try {
     const user = await User.create({ name, email, password, sex, age });
     const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, {
       expiresIn: jwtAge + "s",
     });
+    console.log(user)
+    console.log(UserPreferences)
+    const preferences = await UserPreferences.create({ userId: user._id })
+    console.log(preferences)
+
     // console.log(user);
     const emailRes: boolean = await sendWelcomeEmail(user.email, user.name); // wysyłanie emaila powitalnego
     if (emailRes) {

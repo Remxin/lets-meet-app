@@ -1,11 +1,13 @@
 //@ts-nocheck
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config();
+const fs = require('fs')
 
 const Place = require("../models/Place");
 const User = require("../models/User");
+import { fstat } from "fs";
 import { verifyAdmin, verifyUser } from "../helpers/auth";
-import { getPlaceImageLength, getPlaceImage, deletePlaceImageFolder } from "../helpers/images";
+import { getPlaceImageLength, getPlaceImage, deletePlaceImageFolder, saveImage } from "../helpers/images";
 import { placeImgQueryType } from '../types/requestTypes'
 
 export const placeCreationRequest = (req: Request, res: Response) => {
@@ -90,6 +92,7 @@ export const getPlaceImg = async (req: Request, res: Response) => {
   }
 
   const image = await getPlaceImage(photoIndex, placeId)
+  if (image.err) return res.send({err: "Image index out of range"})
   return res.sendFile(image.path)
 }
 
@@ -187,4 +190,39 @@ export const getCityPlaces = async (req, res) => {
   }
   const returnCities = await Place.find({cityId})
   return res.send(returnCities)
+}
+
+export const uploadPlaceImages = async (req, res) => {
+  const token = req.cookies?.jwt
+  if (!token) return res.send({err: "User not verified"})
+  const user = await verifyUser(token)
+  if (!user) return res.send({err: "User not verified"})
+
+  let files = req.files
+  const data = JSON.parse(req.body.jsondatarequest)
+  const { name, address, website, cityId, localizationString, description, imagesLen } = data
+  const filesArr = []
+
+  for (let i = 0 ; i < imagesLen; i++) {
+    filesArr.push(files["file" + i])
+  }
+
+
+  const place = await Place.create({ name, addressString: address, website, cityId, localizationString, description, user: user.id })
+  console.log(place)
+
+  let localizationDir = `${__dirname}/../static/uploads/places/${place._id}`
+
+  if (!fs.existsSync(localizationDir)){
+    fs.mkdirSync(localizationDir);
+}
+  
+  let incrementer = 0
+  for (let file of filesArr) {
+    const ext = file.name.split(".").pop()
+    const res = await saveImage(file, localizationDir + "/" + incrementer + "." + ext)
+    if (res.err) return res.send({err: "error in saving files"})
+    incrementer++
+  }
+  return res.send({msg: "Success!"})
 }

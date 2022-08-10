@@ -237,7 +237,6 @@ export const useChat = () => {
         positionChat
     }
     const sectionManager = {
-        aa: "bb",
         createNewChatSection,
         moveChatToAnotherSection,
         removeChatSection

@@ -15,12 +15,12 @@ const transporter = nodemailer.createTransport({
 
 // ----- export functions -----
 export const sendWelcomeEmail = (userEmail: string, userName: string) => {
-  console.log(
-    process.env.GMAIL_HOST,
-    process.env.GMAIL_PORT,
-    process.env.GMAIL_USER,
-    process.env.GMAIL_PASSWORD
-  );
+  // console.log(
+  //   process.env.GMAIL_HOST,
+  //   process.env.GMAIL_PORT,
+  //   process.env.GMAIL_USER,
+  //   process.env.GMAIL_PASSWORD
+  // );
   let error = false;
   const sourceFile = fs.readFileSync(
     path.join(__dirname, "../views/email/welcome.hbs"),
@@ -32,7 +32,7 @@ export const sendWelcomeEmail = (userEmail: string, userName: string) => {
   };
   // -- declaring email options --
   const mailOptions = {
-    from: `Lets meet up <${process.env.GMAIL_USER}>`,
+    from: `Lets meet app <${process.env.GMAIL_USER}>`,
     to: userEmail,
     subject: `Welcome ${userName}!`,
     html: template(templateVars),

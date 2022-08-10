@@ -1,18 +1,27 @@
 import React, { useState, useContext, useRef, MutableRefObject } from "react";
-import { Container, Card, Row, Text } from "@nextui-org/react";
-import { Modal, Button, Input, Checkbox } from "@nextui-org/react";
-import { Mail } from "../icons/Mail";
-import { Password } from "../icons/Password";
+import { Container, Card, Row, Text, User } from "@nextui-org/react";
 import { LoginModal } from "./LoginModal";
+import RegisterModal from "./RegisterModal";
+import { Navigate } from "react-router-dom"
+
+import { UserContext } from "../../contexts/UserContext";
 
 const NewLogin = () => {
-  const [visible, setVisible] = React.useState(false);
-  const handler = () => setVisible(true);
+  const { user } = useContext(UserContext)
+  const [loginVisible, setloginVisible] = useState(false);
+  const [registerVisible, setRegisterVisible] = useState(false)
+  const handler = () => setloginVisible(true);
 
   const closeHandler = () => {
-    setVisible(false);
+    setloginVisible(false);
+    setRegisterVisible(false)
     console.log("closed");
   };
+
+  if (user) {
+    return <Navigate to="/"/>
+  }
+
 
   return (
     <Container
@@ -26,7 +35,7 @@ const NewLogin = () => {
         height: "100vh",
       }}
     >
-      <Card hoverable clickable css={{ width: "15rem" }}>
+      <Card hoverable clickable onClick={() => setRegisterVisible(true)} css={{ width: "15rem" }}>
         <Card.Body css={{ p: 0 }}>
           <Card.Image
             objectFit="cover"
@@ -46,7 +55,7 @@ const NewLogin = () => {
           </Row>
         </Card.Footer>
       </Card>
-      <Card hoverable clickable onClick={handler} css={{ width: "15rem" }}>
+      <Card hoverable clickable onClick={() => setloginVisible(true)} css={{ width: "15rem" }}>
         <Card.Body css={{ p: 0 }}>
           <Card.Image
             objectFit="cover"
@@ -65,11 +74,11 @@ const NewLogin = () => {
         </Card.Footer>
       </Card>
       <LoginModal
-        open={visible}
-        onClose={closeHandler}
-        visible={visible}
-        setVisible={setVisible}
-      ></LoginModal>
+        openRegister={setRegisterVisible}
+        visible={loginVisible}
+        setVisible={setloginVisible}
+      />
+      <RegisterModal openLogin={setloginVisible} open={registerVisible} setVisible={setRegisterVisible} visible={registerVisible} onClose={() => setRegisterVisible(false)}/>
     </Container>
   );
 };

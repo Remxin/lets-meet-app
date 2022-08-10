@@ -7,20 +7,21 @@ const preferencesSchema = new mongoose.Schema({
     },
     language: {
         type: String,
-        enum: ["pl", "en"]
-        
+        enum: ["pl", "en"],
+        default: "en"
     },
     chatSections: {
-        type: Array
-        // type: Object,
-        // strict: false
+        type: Array,
+        default: [{name: "favourites", chats: []}, { name: "my events chats", chats: []}, { name: "other", chats: []}]
     },
     country: {
         type: String,
-        enum: ["Poland"]
+        enum: ["", "Poland"],
+        default: ""
     },
     cityId: {
-        type: String
+        type: String,
+        default: ""
     }
 });
 

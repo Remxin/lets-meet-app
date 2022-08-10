@@ -10,6 +10,6 @@ router.delete("/delete/place", placeControllers.rejectPlace)
 router.get("/get/place/imgLen", placeControllers.placeImgLen)
 router.get("/get/place/img", placeControllers.getPlaceImg)
 router.post("/get/place", placeControllers.getCityPlaces)
-
+router.post("/upload/place/images", placeControllers.uploadPlaceImages)
 
 module.exports = router;

@@ -18,10 +18,11 @@ const placeSchema = new mongoose.Schema({
   },
   website: {
     type: String,
-    default: "",
+    required: true
   },
   description: {
     type: String,
+    required: true
   },
   opinionStars: {
     type: Number,

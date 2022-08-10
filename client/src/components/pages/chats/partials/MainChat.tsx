@@ -22,7 +22,7 @@ const MainChat = ({ chatManager }:any) => {
       <div className="upper-menu"></div>
       <div className="chat-content" ref={chatContentRef}>
         {chatManager.mainChat.messages.map((message: any) => {
-          return <Message text={message.message} userName={message.user} userId={message.userId} timestamps={message.timestamps}/>
+          return <Message key={Date.now() + Math.random()} text={message.message} userName={message.user} userId={message.userId} timestamps={message.timestamps}/>
         })}
         <div className="messages-end" ref={messagesEndRef}/>
       </div>

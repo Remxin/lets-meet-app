@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
+import "./styles/scss/fonts.scss"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ChakraProvider } from '@chakra-ui/react'
 import {

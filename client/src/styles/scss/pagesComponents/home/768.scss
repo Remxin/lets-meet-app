@@ -1,0 +1,32 @@
+@media only screen and (min-width: 768px) {
+    .link-card-container {
+
+        .link-card {
+            height: 400px;
+
+            .card-title {
+                font-size: 40px;
+            }
+            
+            .card-footer {
+                height: 35%;
+    
+                .card-text {
+                    width: 100%;
+                    text-align: center;
+                    margin-bottom: 5px;
+                    font-size: 18px;
+                }
+
+                button {
+                    width: 140px;
+                    height: 38px;
+
+                    p {
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+    }
+}

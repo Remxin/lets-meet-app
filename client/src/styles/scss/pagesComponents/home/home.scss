@@ -1,0 +1,50 @@
+.home {
+    margin-top: -40px; // for disabling to top margin of the page
+    height: 100vh;
+
+
+    .home-gradient {
+        width: 60vh;
+        // background-color: red;
+    }
+}
+
+.link-card-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .link-card {
+        width: 49%;
+        height: 250px;
+        margin-right: 1%;
+        margin-top: 1%;
+
+        .card-title {
+            font-size: 30px;
+            width: 100%;
+            color: #ffffffee;
+            text-shadow: 0 0 .3px #000;
+        }
+
+        .card-footer {
+            height: 35%;
+
+            .card-text {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 5px;
+                font-size: 12px;
+            }
+
+            button {
+                width: 100px;
+
+                p {
+                    font-size: 12px;
+                }
+            }
+        }
+    } 
+
+}

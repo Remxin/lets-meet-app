@@ -1,0 +1,60 @@
+// @import url("fonts/OleoScriptSwashCaps-Bold");
+// @import url("fonts/OleoScriptSwashCaps-Regular");
+
+
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+    // padding: 5px;
+    // box-shadow: 0 0 2px black inset;
+    background-color: white;
+    // background-color: red;
+    border-radius: 15px;
+    
+    .slider-text {
+        width: 100%;
+        height: 100%;
+        flex: 0.4;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+        
+        p {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            font-family: "Oleo";
+            width: 100%;
+            background-color: rgba(0, 0, 0, .4);
+            color: #dedede;
+            font-size: 26px;
+            padding: 8px;
+            border-radius: 3px;
+            overflow: hidden;
+            
+            // width: 200px;
+            // height: 200px;
+        }
+    }
+
+    .slider-img {
+        flex: 0.6;
+        height: 100%;
+        background-position-x:left;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
+        
+
+        img {
+            position: relative;
+            width: 200%;
+            border-radius: 15px;
+            left: -100px;
+        }
+    }
+}

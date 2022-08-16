@@ -1,0 +1,28 @@
+.place-image-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    left: calc(50% - 32.5px);
+    padding: 3px;
+    width: 65px;
+    height: 65px;
+    
+    background-color: orange;
+    border-radius: 10px;
+    box-shadow: 0 0 10px darkorange inset;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+
+
+    span {
+        text-align: center;
+        font-size: 10px;
+    }
+}
+
+.place-image-input {
+    display: none;
+}

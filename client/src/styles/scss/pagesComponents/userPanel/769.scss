@@ -1,0 +1,28 @@
+@media only screen and (min-width: 769px) {
+    .user-panel-container {
+
+
+        & > div {
+
+    
+            .user-avatar {
+                width: 250px;
+                height: 250px;
+            }
+
+            .informations {
+                
+
+                p {
+                    font-size: 18px;
+                }
+
+                .premium-label {
+                    font-size: 22px;
+                    width: 180px;
+                    height: 40px;
+                }
+            }
+        }
+    }
+}

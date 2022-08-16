@@ -25,8 +25,6 @@ import NewLogin from "./components/auth/NewLogin";
 import UserPanel from "./components/user/UserPanel";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
-import AddAvatar from "./components/user/addAvatar/AddAvatar";
-import ChangePassword from "./components/user/changePassword/ChangePassword";
 import Page404 from "./components/error/Page404";
 import PrivacyPolicy from "./components/policy/PrivacyPolicy";
 
@@ -101,12 +99,7 @@ function App() {
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset/password" element={<ResetPassword />} />
                   <Route path="/user" element={<UserPanel />} />
-                  <Route path="/user/add-avatar" element={<AddAvatar />} />
-                  <Route
-                    path="/user/change-password"
-                    element={<ChangePassword />}
-                  />
-                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
                   <Route path="/add/event" element={<AddEvent />} />
                   <Route path="/add/place" element={<AddPlace />} />
                   <Route path="/events" element={<Events />} />

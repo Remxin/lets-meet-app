@@ -26,7 +26,7 @@ type ModuleType = {
 
 const ConfirmationModal = ({ visible, setVisible, confirmHandler, text, title }:ModuleType) => {
 
-
+    
     function closeFUnction () {
         confirmHandler()
         setVisible(false)

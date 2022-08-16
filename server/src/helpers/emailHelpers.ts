@@ -6,7 +6,7 @@ const fs = require("fs");
 
 // ----- email config -----
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  service: "yahoo",
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASSWORD,

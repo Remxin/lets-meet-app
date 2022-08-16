@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config();
 const path = require("path");
 const fs = require("fs");
+const bcrypt = require("bcrypt");
 
 const User = require("../models/User");
 const {verifyUser} = require("../helpers/auth")
@@ -142,11 +143,10 @@ export const addAvatar = (req: Request, res: Response) => {
 
 export const getAvatar = async (req, res) => {
   const user = req.cookies?.jwt;
-  const id = req?.query?.userId
+  let id = req?.query?.userId
+  
   if (user) {
-
-      const decodedUser = await verifyUser(user)
-      console.log(decodedUser)
+    const decodedUser = await verifyUser(user)
       if (decodedUser.err) {
         return res.status(403).send({err: "You don't have permissions to perform this action"})
       }
@@ -172,3 +172,51 @@ export const getAvatar = async (req, res) => {
     return res.send({ err: "user unauthorized" });
   }
 };
+
+export const updateInformations = async (req, res) => {
+  const { jwt } = req.cookies
+  const user = await verifyUser(jwt)
+  if (!user) return res.send({ err: "You don't have permissions to perform this action" })
+  
+  const userData = await User.findById(user.id)
+  if (!userData) return res.send({ err: "Internal server error - cannot find user"})
+  
+  const { name, sex, age } = JSON.parse(req.body)
+  userData.name = name
+  userData.sex = sex
+  userData.age = age
+  try {
+    await userData.save()
+  } catch (err) {
+    return res.send({ err: "Internal server error"})
+  }
+
+  return res.send({ msg: "Successfully updated user data" })
+}
+
+export const updatePassword = async (req, res) => {
+  const { jwt } = req.cookies
+  // console.log(jwt);
+  
+  const user = await verifyUser(jwt)
+  if (!user) return res.send({ err: "Cannot verify user" })
+  console.log(user);
+  
+
+  const userData = await User.findById(user.id)
+
+  const { prevPass, password } = JSON.parse(req.body)
+  
+  
+  try {
+    const passwordIsTheSame = await bcrypt.compare(prevPass, userData.password)
+    if (!passwordIsTheSame) return res.send({ err: "Wrong previous password!" })
+  } catch (err) {
+    return res.send({ err: "Internal server error" })
+  }
+  
+  userData.password = password
+  await userData.save()
+
+  return res.send({ msg: "Success" })
+}

@@ -9,5 +9,7 @@ router.post("/email/verifyuser", userControllers.verifyUserFromEmailLink);
 router.put("/update/user/password", userControllers.changeUserPassword);
 router.post("/send/user/avatar", userControllers.addAvatar);
 router.get("/get/user/avatar", userControllers.getAvatar);
+router.put("/update/user/informations", userControllers.updateInformations)
+router.put("/update/user/password-verified", userControllers.updatePassword)
 
 module.exports = router;

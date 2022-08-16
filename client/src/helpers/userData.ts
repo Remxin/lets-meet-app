@@ -21,6 +21,13 @@ class UserDataHelpers {
         }
         return false
     }
+
+    genBirthdateString = (number: number) => {
+        const birthDate = new Date(number)
+        const birthdateFormat = `${birthDate.getFullYear()}-${birthDate.getMonth() < 10 ? "0" + birthDate.getMonth() : birthDate.getMonth() }-${birthDate.getDay() < 10 ? "0" + birthDate.getDay() : birthDate.getDay()}`
+    
+        return birthdateFormat
+    }
 }
 
 const userDataHelper = new UserDataHelpers()

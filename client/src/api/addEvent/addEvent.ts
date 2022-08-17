@@ -5,7 +5,7 @@ type PromiseType = {
   err?: String
 }
 
-export const addEvent = (eventName: String, isPublic: boolean, premiumEvent: boolean, membersRestrictions: boolean, place: String, city: String, eventDescription: String, openChat: boolean, file: any = null) => {
+export const addEvent = (eventName: String, isPublic: boolean, premiumEvent: boolean, membersRestrictions: boolean, place: String, city: String, eventDescription: String, openChat: boolean, file: any = null, fileSrc: string = "") => {
   console.log(eventName, isPublic, premiumEvent, membersRestrictions, place, city, eventDescription, openChat, file)
 
     return new Promise<PromiseType>(async (resolve, reject) => {

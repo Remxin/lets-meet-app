@@ -20,13 +20,13 @@ type eventProps = {
 const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, members, organizator, restrictions, maxMembers }: eventProps) => {
   const navigate = useNavigate();
   return (
-    <Card cover css={{ w: "20%", height: "30vh",  p: 0 }} clickable hoverable onClick={() => navigate("/event/" + id)}>
-    <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
+    <Card cover className="event-card" clickable hoverable onClick={() => navigate("/event/" + id)}>
+    <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }} className="card-header">
       <Col>
-        <Text size={26} weight="bold" transform="uppercase" color="#ffffff">
+        <Text className="title">
           {name}
         </Text>
-        <Text h3 color="#ededed" size={18}>
+        <Text className="city">
           {userDataHelper.capitalize(place)}
         </Text>
       </Col>
@@ -41,6 +41,7 @@ const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, me
     </Card.Body>
     <Card.Footer
       blur
+      className="card-footer"
       css={{
         position: "absolute",
         bgBlur: "#0f1114",
@@ -64,6 +65,10 @@ const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, me
         </Col>
         <Col>
             
+          
+        </Col>
+      </Row>
+      <Row>
           {isPublic ? (
             <Row justify="flex-end">
             <Button
@@ -104,9 +109,7 @@ const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, me
             </Button>
           </Row>
           ) : null}
-          
-        </Col>
-      </Row>
+          </Row>
     </Card.Footer>
   </Card>
   );

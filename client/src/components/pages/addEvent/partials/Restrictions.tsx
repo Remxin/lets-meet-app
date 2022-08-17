@@ -25,9 +25,9 @@ function reducer (restrictions, action) {
 
 }
 
-const Restrictions = ({setRestrictions}) => {
+const Restrictions = ({setRestrictions, defaultRestrictions}) => {
     const [error, setError] = useState("")
-    const [restrictions, dispatch] = useReducer(reducer, [])
+    const [restrictions, dispatch] = useReducer(reducer, defaultRestrictions)
     const inputRef = useRef() as MutableRefObject<HTMLInputElement>
 
     function handleAddRestriction() {

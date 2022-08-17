@@ -21,6 +21,7 @@ import CitySelect from "./partials/CitySelect";
 import Restrictions from "./partials/Restrictions";
 import Summary from "./partials/Summary";
 import Confirmation from "./partials/Confirmation";
+import ImageSelect from "./partials/ImageSelect";
 
 import { AnimatePresence, motion, useAnimation } from "framer-motion"
 import "../../../styles/scss/pagesComponents/addEvent/addEvent.scss"
@@ -42,6 +43,22 @@ const paragraphVariants = {
 
 
 const AddEvent = () => {
+  const [dataHolder, setDataHolder] = useState({
+    name: "",
+    time: Date.now(),
+    openEvent: false,
+    premium: false,
+    restrictions: [],
+    place: "",
+    wantToAddUniquePlace: false,
+    city: { name: "", id: "" },
+    description: "",
+    openChat: false,
+    file: null,
+    fileSrc: ""
+
+  })
+  const [phaseCounter, setPhaseConter] = useState(0)
   //@ts-ignore
   const { user } = useContext(UserContext);
   const errorAnimationControll = useAnimation()
@@ -64,6 +81,7 @@ const AddEvent = () => {
   const [error, setError] = useState("aaa")
 
   const eventNameRef = useRef() as MutableRefObject<HTMLInputElement>; // name of event
+  const dateRef = useRef() as MutableRefObject<HTMLInputElement>; // name of event
   const eventDescriptionRef = useRef() as React.LegacyRef<JoditEditor>
   const cityRef = useRef() as MutableRefObject<HTMLSelectElement>;
 
@@ -79,12 +97,11 @@ const canSetPremium:boolean = promotionsLeft === 0
 
   const handlerFunction = useCallback(() => {
     //@ts-ignore
-    return addEvent(eventNameRef.current?.value, openEvent, isPremiumEvent, restrictions, placeRef.current?.getValue(), cityRef.current?.id(), eventDescriptionRef.current?.value, openChat, file)
+    return addEvent(dataHolder.name, dataHolder.openEvent, dataHolder.premium, dataHolder.restrictions, dataHolder.place, dataHolder.city.id, dataHolder.description, dataHolder.openChat, dataHolder.file, dataHolder.fileSrc)
     //@ts-ignore
   }, [eventNameRef.current?.value, isPremiumEvent, restrictions, placeRef.current?.getValue(), cityRef.current?.id(), eventDescriptionRef.current?.value, openChat, file])
 
 
-console.log(cityId)
  
   // --- choosing image file ---
   const addFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,32 +113,10 @@ console.log(cityId)
   };
   // --- submit handler ---
   const submitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    
     e.preventDefault();
-    let place = null;
-
-    // TODO: add error handling
-    if (!eventNameRef.current?.value) {
-      showError("Please enter event name")
-      return;
-    }
-    //@ts-ignore
-    if (!eventDescriptionRef.current?.value) {
-      showError("Please enter event description")
-      return;
-    }
-    //@ts-ignore
-    if (!cityRef.current?.name() || cityRef.current.name() === "!none") {
-      showError("Please enter city")
-      return;
-    }
-    //@ts-ignore
-    console.log(placeRef?.current.getValue())
-    //@ts-ignore
-    if (placeRef.current?.getValue() === "!") {
-      // zapomniano wybrać miejsca
-      showError("Please choose your event's place")
-      return;
-    } 
+    console.log(dataHolder);
+    
     return setShowSummary(true)
 
   };
@@ -135,47 +130,105 @@ console.log(cityId)
       transition: {duration: 0.5, type: "ease-in-out"}
     })
   }
+  function enter1phase() {
+    if (!eventNameRef.current?.value) return  showError("Please enter event's name")
+    if (!dateRef.current?.value) return showError("Please enter event's date")
+    const dateDiff = new Date().getTime() - new Date(dateRef.current.value).getTime()
+    if (Math.abs(dateDiff / (1000 * 60)) < 30) return showError("Event must be announced at least 30 minutes in advance")
+    //@ts-ignore
+    if (!eventDescriptionRef.current?.value) return showError("Please enter event's description")
+
+    setDataHolder(prev => {
+      //@ts-ignore
+      return {...prev, name: eventNameRef.current.value, time: new Date(dateRef.current.value).getTime(), description: eventDescriptionRef.current.value}
+    })
+    setError("")
+    setPhaseConter(prev => prev + 1)
+  }
+  
+  function enter2phase() {
+    setDataHolder(prev => {
+      //@ts-ignore
+      return {...prev, restrictions}
+    })
+    setPhaseConter(prev => prev + 1)
+  }
+
+  function enter3phase() {
+    //@ts-ignore
+    if (!cityRef.current?.name() || cityRef.current.name() === "!none") return showError("Please enter city")
+    //@ts-ignore
+    if (placeRef.current.getValue() === "!") return showError("Please enter place")
+    setDataHolder(prev => {
+      //@ts-ignore
+      return {...prev, city: {name: cityRef.current.name(), id: cityRef.current.id()}, place: placeRef.current.getValue(), wantToAddUniquePlace: placeRef.current.wantToAddUniquePlace}
+    })
+    setPhaseConter(prev => prev +1)
+  }
+
+  function enter4phase() {
+    if (!dataHolder.file && !dataHolder.fileSrc) return showError("Please select file")
+    setPhaseConter(prev => prev +1)
+  }
+  
+  
+
   
   // ------ render ------
   return (
-    <Card>
+    <Card className="add-event-card">
       <form onSubmit={submitHandler}>
-        <div className="section">
+        {phaseCounter === 0 ? 
+        <div className="section" style={{ display: "flex", flexDirection: "column"}}>
           <h3>Basic informations</h3>
-          <Input bordered placeholder="Event name" ref={eventNameRef}/>
+          <Input bordered placeholder="Event name" ref={eventNameRef} initialValue={dataHolder.name}/>
+          <Input type="datetime-local" ref={dateRef} min={new Date().toISOString().slice(0, 16)} max={new Date(Date.now() + (1000* 60 * 60 * 24 * 365)).toISOString().slice(0, 16)} initialValue={dataHolder.time.toLocaleString()}/>
           <JoditEditor
                   ref={eventDescriptionRef}
-                  value={""}
+                  value={dataHolder.description}
                   config={{placeholder: "Event description: ", maxLenght: 200}}
                     //@ts-ignore
                   tabIndex={1} // tabIndex of textarea
+                  
           />
+          <button type="button" onClick={enter1phase}>Next</button>
         </div>
-       <div className="section">
+         : null}
+        
+       {phaseCounter === 1 ? <div className="section">
          <h3>Restricions</h3>
-        <Restrictions setRestrictions={setRestrictions}/>
-       </div>
-       <div className="section">
+          <Restrictions setRestrictions={setRestrictions} defaultRestrictions={dataHolder.restrictions}/>
+         <button onClick={enter2phase}>Next</button>
+       </div> : null}
+      
+       {phaseCounter === 2 ? <div className="section">
         <h3>Localization</h3>
         <CitySelect ref={cityRef} setId={setCityId}/>
         {/* @ts-ignore */}
           <PlaceSelect ref={placeRef} cityId={cityId}/>
-       </div>
-       <div className="section">
+         <button onClick={enter3phase}>Next</button>
+       </div> : null }
+
+       {phaseCounter === 3 ? <div className="section">
           <h3>Image</h3>  
-          <p className="image-text">{fileName}</p>
-          <label htmlFor="event-image-input" className="event-image-label">
-            <FaRegFileImage/> <span>Choose image</span>
-          </label>
-            <input type="file" onChange={addFile} accept="image/png, image/jpg" id="event-image-input" className="event-image-input"/>
-       </div>
+         <ImageSelect dataHolder={dataHolder} file={dataHolder.file} placeId={dataHolder.place} fileSrc={dataHolder.fileSrc}/>
+        <button onClick={enter4phase}>Next</button>
+       </div> : null }
+       {phaseCounter === 4 ? 
+       <>
        <div className="section">
           <h3>Additional informations</h3> 
           <Spacer y={.5}/>
-          <Checkbox size="md" className="checkbox-with-label" color="warning" onChange={() => setOpenEvent(prev => !prev)} >Everyone can join without request</Checkbox>
+          <Checkbox size="md" className="checkbox-with-label" color="warning" onChange={() => {
+            setOpenEvent(prev => !prev)
+            dataHolder.openEvent = !dataHolder.openEvent
+            }} >Everyone can join without request</Checkbox>
           <Spacer y={.5}/>
           {/* <p>Everyone can write on chat?</p> */}
-          <Checkbox size="md" className="checkbox-with-label" color="warning" onChange={() => setOpenChat(prev => !prev)} >Everyone can write on chat</Checkbox>
+          <Checkbox size="md" className="checkbox-with-label" color="warning" onChange={() => {
+            setOpenChat(prev => !prev)
+            dataHolder.openChat = !dataHolder.openChat
+            }} >Everyone can write on chat</Checkbox>
           {/* <p>
             Premium Event <span>*left: {promotionsLeft}</span>
           </p> */}
@@ -186,7 +239,10 @@ console.log(cityId)
             color="warning"
             
             disabled={canSetPremium}
-            onChange={() => setIsPremiumEvent(prev => !prev)}
+            onChange={() => {
+              setIsPremiumEvent(prev => !prev)
+              dataHolder.premium = !dataHolder.premium
+            }}
           >Premium event <span> *left: {promotionsLeft}</span></Checkbox>
        </div>
         <Grid className="add-event-button-grid">
@@ -194,16 +250,18 @@ console.log(cityId)
             Add Event
           </Button>
         </Grid>
+        </> : null }
+
       
         <AnimatePresence>
         {/* @ts-ignore */}
-        {showSummary ? (<Summary name={eventNameRef.current?.value} description={eventDescriptionRef.current?.value} restrictions={restrictions} city={cityRef.current.name()} place={placeRef.current.getValue()} premium={isPremiumEvent} openChat={openChat} openEvent={openEvent} setShowThisMenu={setShowSummary} setShowConfirmation={setShowConfirmation}/>) : null}
+        {showSummary ? (<Summary name={dataHolder.name} description={dataHolder.description} restrictions={dataHolder.restrictions} city={dataHolder.city.name} place={dataHolder.place} premium={dataHolder.premium} openChat={dataHolder.openChat} openEvent={dataHolder.openEvent} setShowThisMenu={setShowSummary} setShowConfirmation={setShowConfirmation}/>) : null}
         {showConfirmation ? <Confirmation submitHandler={
           //@ts-ignore
         handlerFunction
           
         //@ts-ignore
-        } wantToAddUniquePlace={placeRef.current.wantToAddUniquePlace}/> : null}
+        } wantToAddUniquePlace={dataHolder.wantToAddUniquePlace}/> : null}
         </AnimatePresence>
         <motion.p className="error-paragraph" animate={errorAnimationControll} initial={{opacity: 0, scale: 0.2}}>{error}</motion.p>
       </form>

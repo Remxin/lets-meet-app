@@ -156,8 +156,12 @@ export const createEvent = (req: Request, res: Response) => {
           city,
           eventDescription,
           openChat,
+          fileSrc,
+          maxMembers,
+          date
         } = JSON.parse(req.body.jsondataRequest);
- 
+        // console.log();
+        
         // console.log(decodedToken.id);
         await Chat.create(
           // creating chat for event
@@ -170,7 +174,7 @@ export const createEvent = (req: Request, res: Response) => {
                 .send({ err: "Internal server error - cannot create chat" });
             }
      
-            await Event.create(
+            const event = await Event.create(
               // creating event and linking chat to it
               {
                 name: eventName,
@@ -182,6 +186,9 @@ export const createEvent = (req: Request, res: Response) => {
                 city,
                 description: eventDescription,
                 chatId: chat._id,
+                imageSrc: fileSrc,
+                maxMembers,
+                date
               },
               (err: Error, event: any) => {
                 if (err) {
@@ -199,12 +206,15 @@ export const createEvent = (req: Request, res: Response) => {
            
                   file.mv(
                     `${__dirname}/../static/uploads/events/${event._id}.${fileExt}`,
-                    (err: Error) => {
+                    async (err: Error) => {
                       if (err) {
                         return res.status(500).send({
                           err: "Internal server error - cannot save file",
                         });
                       }
+                      event.imageSrc = `${process.env.SERVER_IP}/get/event-image/${event._id}.${fileExt}`
+                      // event.imageSrc = `/static/uploads/events/${event._id}.${fileExt}`
+                      await event.save()
                       return res.status(200).send({
                         msg: "Successfully saved file, created event and chat",
                       });
@@ -226,23 +236,13 @@ export const createEvent = (req: Request, res: Response) => {
   }
 };
 
-export const getEventImage = (req: Request, res: Response) => {
+export const getEventImage = async (req: Request, res: Response) => {
   const eventId = req?.query?.eventId;
+ 
+  if (!eventId) return res.send({ err: "Event not specified" })
 
-  const dir = path.join(__dirname, "/../static/uploads/events");
-  const files = fs.readdirSync(dir);
-
-  for (const file of files) {
-    let filename = file + "";
-
-    if (filename.includes(eventId)) {
-;
-      return res.sendFile(
-        path.join(__dirname + `/../static/uploads/events/${filename}`)
-      );
-    }
-  }
-  return res.sendFile(
-    path.join(__dirname + "/../static/uploads/events/default.png")
-  );
+  // const event = await Event.findById(eventId).select("imageSrc")
+  // if (!event) return res.send({ err: "Wrong event id" })
+  
+  res.sendFile(path.join(__dirname + "/../static/uploads/events/" + eventId))
 };

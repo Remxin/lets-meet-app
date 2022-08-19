@@ -55,7 +55,8 @@ const AddEvent = () => {
     description: "",
     openChat: false,
     file: null,
-    fileSrc: ""
+    fileSrc: "",
+    maxMembers: -1
 
   })
   const [phaseCounter, setPhaseConter] = useState(0)
@@ -97,7 +98,7 @@ const canSetPremium:boolean = promotionsLeft === 0
 
   const handlerFunction = useCallback(() => {
     //@ts-ignore
-    return addEvent(dataHolder.name, dataHolder.openEvent, dataHolder.premium, dataHolder.restrictions, dataHolder.place, dataHolder.city.id, dataHolder.description, dataHolder.openChat, dataHolder.file, dataHolder.fileSrc)
+    return addEvent(dataHolder.name, dataHolder.openEvent, dataHolder.premium, dataHolder.restrictions, dataHolder.place, dataHolder.city.id, dataHolder.description, dataHolder.openChat, dataHolder.file, dataHolder.fileSrc, dataHolder.maxMembers, dataHolder.time)
     //@ts-ignore
   }, [eventNameRef.current?.value, isPremiumEvent, restrictions, placeRef.current?.getValue(), cityRef.current?.id(), eventDescriptionRef.current?.value, openChat, file])
 
@@ -244,6 +245,7 @@ const canSetPremium:boolean = promotionsLeft === 0
               dataHolder.premium = !dataHolder.premium
             }}
           >Premium event <span> *left: {promotionsLeft}</span></Checkbox>
+          <Input type="number" placeholder="Maximum members count" onChange={(e) => dataHolder.maxMembers = +e.target.value}/>
        </div>
         <Grid className="add-event-button-grid">
           <Button flat color="warning" auto type="submit" className="add-event-button">

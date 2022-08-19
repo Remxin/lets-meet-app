@@ -23,7 +23,7 @@ const ImageSelect = ({dataHolder, file, placeId, fileSrc}: moduleProp) => {
     
     const images = useMemo(() => {
         return imagesSrc.map((image: string) => {
-            return <img src={image} alt="place image" key={image} onClick={(e) => {
+            return <img src={image} alt="place image" key={image} onClick={(e) => {                
                 //@ts-ignore
                 dataHolder.fileSrc = e.target.src
                 dataHolder.file = null

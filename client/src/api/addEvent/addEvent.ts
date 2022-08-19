@@ -5,7 +5,7 @@ type PromiseType = {
   err?: String
 }
 
-export const addEvent = (eventName: String, isPublic: boolean, premiumEvent: boolean, membersRestrictions: boolean, place: String, city: String, eventDescription: String, openChat: boolean, file: any = null, fileSrc: string = "") => {
+export const addEvent = (eventName: String, isPublic: boolean, premiumEvent: boolean, membersRestrictions: boolean, place: String, city: String, eventDescription: String, openChat: boolean, file: any = null, fileSrc: string = "", maxMembers: number = -1, date:number) => {
   console.log(eventName, isPublic, premiumEvent, membersRestrictions, place, city, eventDescription, openChat, file)
 
     return new Promise<PromiseType>(async (resolve, reject) => {
@@ -21,7 +21,10 @@ export const addEvent = (eventName: String, isPublic: boolean, premiumEvent: boo
                 place,
                 city,
                 eventDescription,
-                openChat
+                openChat,
+                fileSrc,
+                maxMembers,
+                date
               })
             );
             formData.append("file", file);

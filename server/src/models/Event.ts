@@ -6,6 +6,10 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  date: {
+    type: Number,
+    required: true
+  },
   organizatorId: {
     type: String,
     required: true,
@@ -42,6 +46,10 @@ const eventSchema = new mongoose.Schema({
   maxMembers: {
     type: Number,
     default: -1
+  },
+  imageSrc: {
+    type: String,
+    default: ""
   }
 }, {timestamps: true});
 

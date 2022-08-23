@@ -9,6 +9,8 @@ import "../../styles/scss/pagesComponents/events/events.scss"
 import useFetch from "../../hooks/useFetch";
 
 import { getJoinRequests } from '../../api/event/getJoinRequests'
+import { rejectUser } from "../../api/event/rejectUser";
+import { acceptUser } from "../../api/event/acceptUser"
 
 import { motion, AnimatePresence } from "framer-motion" 
 
@@ -63,12 +65,24 @@ const MyEventCard = ({ id, name, organizatorId, premium, isPublic, place, city, 
     return getJoinRequests(id)
   }
 
-  const rejectUser = useCallback((userId: string) => {
+  const rejectUserFromEvent = useCallback(async (requestId: string) => {
+    const res = await rejectUser(requestId)
+    console.log(res);
+    
 
   }, [hoveredCardId])
 
-  const accept = useCallback(() => {
+  // async function acceptUser(requestId: string) {
 
+  // }
+  
+  const acceptUserFromEvent = useCallback(async (requestId: string) => {
+    console.log(hoveredCardId);
+    console.log('accept');
+    
+    const res = await acceptUser(requestId)
+    console.log(res);
+      
   }, [hoveredCardId])
   //@ts-ignore
   const {loading, error, data: requests, startFetching  } = useFetch(getRequestsCount, true)  
@@ -189,8 +203,8 @@ const MyEventCard = ({ id, name, organizatorId, premium, isPublic, place, city, 
                   <AnimatePresence>
                     {!!hoveredCardId ? <motion.div className="accept-menu" variants={requestMenuBgcVariants} initial="initial" animate="animate" exit="initial">Accept?
                       <div className="buttons">
-                        <button>❌</button>
-                        <button>✅</button>
+                        <button onClick={() => rejectUserFromEvent(request._id)}>❌</button>
+                        <button onClick={() => acceptUserFromEvent(request._id)}>✅</button>
                       </div>
                     </motion.div> : null }
                   </AnimatePresence>

@@ -215,19 +215,21 @@ export const getEventRequests = async (req: Request, res: Response) => {
   if (!user) return res.send({ err: "Cannot verify user "})
   const { eventId } = JSON.parse(req.body)
   
-  const requests = await JoinRequest.find({ eventId }).lean()
+  const requests = await JoinRequest.find({ eventId, accepted: "pending" }).lean()
 
   for (let request of requests) {
     const userData = await User.findOne({ _id: request.userId }).select("name date age sex")
     request.userData = userData
   }
 
-  console.log(requests);
+  // console.log(requests);
   
   return res.send(requests)
 }
 
 export const acceptUser = async (req: Request, res: Response) => {
+  console.log("leci");
+  
   const { jwt } = req.cookies
   const user = await verifyUser(jwt)
 
@@ -238,17 +240,21 @@ export const acceptUser = async (req: Request, res: Response) => {
 
   
   const request = await JoinRequest.findById(requestId)
-  request.accepted = true
+  
+  request.accepted = "yes"
+  console.log(request);
+  
   await request.save()
+  console.log(request);
 
   const userPreferences = await UserPreferences.findOne({ userId: request.userId }).select("chatSections")
   const event = await Event.findById(request.eventId).select("chatId members")
-  const chat = await Chat.findById(event.chatId).select("_id")
+  const chat = await Chat.findById(event.chatId).select("_id members")
 
   let otherChats = userPreferences.chatSections[1].chats
   otherChats.push(chat._id.toString())
 
-  await UserPreferences.update({ _id: userPreferences._id, "chatSections.name": "other" }, {
+  await UserPreferences.updateOne({ _id: userPreferences._id, "chatSections.name": "other" }, {
     $set: {
       "chatSections.$.chats": otherChats
     }
@@ -258,10 +264,33 @@ export const acceptUser = async (req: Request, res: Response) => {
   event.members.push(request.userId)
   await event.save()
 
+  console.log(chat);
+  
   chat.members.push(request.userId)
   await chat.save()
 
   return res.send({ msg: "Success"})
+
+  } catch (err) {
+    console.log(err);
+  }
+  
+
+}
+
+export const rejectUser = async (req: Request, res: Response) => {
+  const { jwt } = req.cookies
+  const user = await verifyUser(jwt)
+
+  if (!user) return res.send({ err: "User not verified" })
+  const { requestId } = JSON.parse(req.body)
+
+  try {
+    const request = await JoinRequest.findById(requestId)
+    request.accepted = "no"
+    await request.save()
+
+    return res.send({ msg: "Success"})
 
   } catch (err) {
     console.log(err);

@@ -12,8 +12,8 @@ const joinRequestSchema = new mongoose.Schema({
     },
 
     accepted: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: "pending"
     }
 
 }, {timestamps: true});

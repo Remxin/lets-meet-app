@@ -12,7 +12,7 @@ const preferencesSchema = new mongoose.Schema({
     },
     chatSections: {
         type: Array,
-        default: [{name: "favourites", chats: []}, { name: "my events chats", chats: []}, { name: "other", chats: []}]
+        default: [{ name: "my events chats", chats: []}, { name: "other", chats: []}, {name: "favourites", chats: []}]
     },
     country: {
         type: String,

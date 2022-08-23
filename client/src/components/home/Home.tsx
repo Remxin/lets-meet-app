@@ -14,7 +14,7 @@ const Home = () => {
       <HomeSlider/>
       <div className="link-card-container">
         <CardLink href="/events" title="Events" text="Search for events" imgLink="/cardImg/friends.jpg"/>
-        <CardLink href="/events" title="My events" text="Get information about created and joined events" imgLink="/cardImg/meal.jpg"/>
+        <CardLink href="/myevents" title="My events" text="Get information about created and joined events" imgLink="/cardImg/meal.jpg"/>
         <CardLink href="/chats" title="Chats" text="Check your chats" imgLink="/cardImg/chat.jpg"/>
         <CardLink href="/user" title="User Panel" text="Personalize your account" imgLink="/cardImg/male.jpg"/>
         <CardLink href="/add/event" title="Add Event" text="Create your own event" imgLink="/cardImg/wine-glass.jpg"/>

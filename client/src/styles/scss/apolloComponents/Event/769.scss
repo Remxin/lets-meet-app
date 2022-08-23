@@ -1,0 +1,137 @@
+@media only screen and (min-width: 769px) {
+
+    .event-page-content {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        width: 85%;
+        height: 85%;
+
+
+        .event-name {
+            font-size: 30px;
+        }
+
+        .title-text {
+            font-size: 20px;
+        }
+
+        & >  button {
+            width: 120px;
+            font-size: 18px;
+            height: 30px;
+        }
+
+
+        .left {
+            width: 50%;
+            
+            .organizator{
+                height: 200px;
+                width: 200px;
+
+                .data {
+                    p {
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+
+        .right {
+            width: 50%;
+
+            .place {
+
+
+                .place-card {
+                    height: 200px;
+                    margin: 0;
+                    max-width: 300px;
+
+                    & > div {
+                        width: 100%;
+                        height: 200%;
+                        margin: 0;
+                        padding: 0;
+
+                        img {
+                            width: 100%;
+                            height: 100%;
+
+                        }
+
+                        p {
+                            padding: 5px;
+                            color: white;
+                            font-size: 12px;
+                            font-weight: bold;
+                            
+                            
+
+                            .cityName {
+                                font-size: 15px;
+                            }
+
+                            .placeName {
+                                font-size: 18px;
+                            }
+                        }
+                    }
+                }
+
+                .google-maps {
+                    height: 250px;
+                    width: 100%;
+                    max-width: 300px;
+                }
+            }
+
+            .restrictions {
+
+                li {
+                    font-size: 12px;
+                }
+            }
+        }
+
+        .buttons {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            button {
+                margin-right: 10px;
+                background-color: orangered;
+                color: #fefefe;
+                border-radius: 10px;
+                padding: 5px;
+                cursor: pointer;
+                transition: 0.3s all;
+
+                &:hover {
+                    font-weight: bold;
+                }
+            }
+        }
+
+    }
+
+    .members-card__container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 470px;
+        height: 300px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+
+        & > * {
+            display: block;
+        }
+    }
+}

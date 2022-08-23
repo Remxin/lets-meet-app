@@ -4,83 +4,12 @@ const path = require("path");
 const fs = require("fs");
 
 import { emitWarning } from "process";
+import { verifyUser } from "../helpers/auth";
 const Event = require("../models/Event");
 const Chat = require("../models/Chat");
 const User = require("../models/User");
-
-// export const createEvent = (req: Request, res: Response) => {
-//   //@ts-ignore
-//   const user = req.cookies.jwt;
-//   //   console.log(user);
-//   try {
-//     jwt.verify(
-//       user,
-//       process.env.JWT_TOKEN,
-//       async (err: Error, decodedToken: string) => {
-//         if (err) {
-//           return (
-//             res
-//               //@ts-ignore
-//               .status(403)
-//               .send({
-//                 err: "You don't have permissions to execute this action",
-//               })
-//           );
-//         }
-//         // const { name, email, password, sex, age } = req.body;
-//         const {
-//           eventName,
-//           isPublic,
-//           premiumEvent,
-//           membersRestrictions,
-//           place,
-//           city,
-//           eventDescription,
-//           openChat,
-//         } = req.body;
-//         console.log(decodedToken.id);
-//         await Chat.create(
-//           { organizatorId: decodedToken.id, open: openChat },
-//           async (err: Error, chat: any) => {
-//             if (err) {
-//               console.log(`Error while creating chat: ${err}`);
-//               return res
-//                 .status(500)
-//                 .send({ err: "Internal server error - cannot create chat" });
-//             }
-//             await Event.create(
-//               {
-//                 name: eventName,
-//                 organizatorId: decodedToken.id,
-//                 public: isPublic,
-//                 premium: premiumEvent,
-//                 membersRestrictions,
-//                 place,
-//                 city,
-//                 description: eventDescription,
-//                 chatId: chat._id,
-//               },
-//               (err: Error, event: any) => {
-//                 if (err) {
-//                   console.log(`Error while creating event: ${err}`);
-//                   return res.status(500).send({
-//                     err: "Internal server error - cannot create event",
-//                   });
-//                 }
-//                 return res.status(200).send({
-//                   msg: "Successfully created event and chat",
-//                   id: event._id,
-//                 });
-//               }
-//             );
-//           }
-//         );
-//       }
-//     );
-//   } catch (err) {
-//     console.log(`Cannot add event: ${err}`);
-//   }
-// };
+const JoinRequest = require("../models/JoinRequest")
+const UserPreferences = require("../models/UserPreferences")
 
 export const uploadEventImage = (req: Request, res: Response) => {
   const user = req.cookies.jwt;
@@ -174,7 +103,7 @@ export const createEvent = (req: Request, res: Response) => {
                 .send({ err: "Internal server error - cannot create chat" });
             }
      
-            const event = await Event.create(
+            await Event.create(
               // creating event and linking chat to it
               {
                 name: eventName,
@@ -190,13 +119,24 @@ export const createEvent = (req: Request, res: Response) => {
                 maxMembers,
                 date
               },
-              (err: Error, event: any) => {
+              async (err: Error, event: any) => {
                 if (err) {
                   console.log(`Error while creating event: ${err}`);
                   return res.status(500).send({
                     err: "Internal server error - cannot create event",
                   });
                 }
+
+                const userPreferences = await UserPreferences.findOne({ userId: decodedToken.id }).select("chatSections")
+                const pushedChats = userPreferences.chatSections[0].chats
+                pushedChats.push(chat._id.toString())
+
+                await UserPreferences.update({ _id: userPreferences._id, "chatSections.name": "my events chats" }, {
+                  $set: {
+                    "chatSections.$.chats": pushedChats
+                  }
+                })
+
    
                 const file = req.files?.file;
            
@@ -237,12 +177,95 @@ export const createEvent = (req: Request, res: Response) => {
 };
 
 export const getEventImage = async (req: Request, res: Response) => {
-  const eventId = req?.query?.eventId;
+  const urlParts =  req.url.split("/")
+  const eventId = urlParts[urlParts.length - 1]
+  
  
   if (!eventId) return res.send({ err: "Event not specified" })
-
-  // const event = await Event.findById(eventId).select("imageSrc")
-  // if (!event) return res.send({ err: "Wrong event id" })
   
   res.sendFile(path.join(__dirname + "/../static/uploads/events/" + eventId))
 };
+
+export const joinEvent = async (req: Request, res: Response) => {
+  const { jwt } = req.cookies
+  const user = await verifyUser(jwt)
+  if (!user) return res.send({ err: "User not verified! "})
+
+
+  const { eventId } = JSON.parse(req.body)
+  const userAlreadyJoined = await JoinRequest.findOne({ userId: user.id })
+  
+  if (userAlreadyJoined) return res.send({ err: "You have already joined this event" })
+  
+  try {
+    await JoinRequest.create({ userId: user.id, eventId })
+  } catch (err) {
+    return res.send({ err: "Internal server error "})
+  }
+  
+  return res.send({ msg: "Successfully created join request"})
+
+}
+
+export const getEventRequests = async (req: Request, res: Response) => {
+  const { jwt } = req.cookies
+  
+  const user = await verifyUser(jwt)
+  
+  if (!user) return res.send({ err: "Cannot verify user "})
+  const { eventId } = JSON.parse(req.body)
+  
+  const requests = await JoinRequest.find({ eventId }).lean()
+
+  for (let request of requests) {
+    const userData = await User.findOne({ _id: request.userId }).select("name date age sex")
+    request.userData = userData
+  }
+
+  console.log(requests);
+  
+  return res.send(requests)
+}
+
+export const acceptUser = async (req: Request, res: Response) => {
+  const { jwt } = req.cookies
+  const user = await verifyUser(jwt)
+
+  if (!user) return res.send({ err: "User not verified" })
+  const { requestId } = JSON.parse(req.body)
+
+  try {
+
+  
+  const request = await JoinRequest.findById(requestId)
+  request.accepted = true
+  await request.save()
+
+  const userPreferences = await UserPreferences.findOne({ userId: request.userId }).select("chatSections")
+  const event = await Event.findById(request.eventId).select("chatId members")
+  const chat = await Chat.findById(event.chatId).select("_id")
+
+  let otherChats = userPreferences.chatSections[1].chats
+  otherChats.push(chat._id.toString())
+
+  await UserPreferences.update({ _id: userPreferences._id, "chatSections.name": "other" }, {
+    $set: {
+      "chatSections.$.chats": otherChats
+    }
+  })
+  await userPreferences.save()
+
+  event.members.push(request.userId)
+  await event.save()
+
+  chat.members.push(request.userId)
+  await chat.save()
+
+  return res.send({ msg: "Success"})
+
+  } catch (err) {
+    console.log(err);
+  }
+  
+
+}

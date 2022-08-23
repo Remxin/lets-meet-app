@@ -1,12 +1,13 @@
 import React from "react";
 import { useState, useContext } from "react";
 import "../../styles/scss/layoutComponents/Navbar.scss"
-import { IoIosMenu } from "react-icons/io";
+import { IoIosMenu } from "react-icons/io"
 import { FcLandscape} from "react-icons/fc";
-import { FaGlassCheers, FaDoorOpen, FaDoorClosed, FaWeixin, FaChessKing, FaPlusCircle } from 'react-icons/fa'
+import { FaGlassCheers, FaDoorOpen, FaDoorClosed, FaWeixin, FaChessKing, FaPlusCircle, FaPizzaSlice } from 'react-icons/fa'
 import { UserContext } from "../../contexts/UserContext";
 
-import { FaHome } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"
+
 
 import NavbarLink from "./NavbarLink";
 
@@ -18,6 +19,7 @@ const Navbar = ({ logged }: navbarProps) => {
   const {user} = useContext(UserContext)
   const [enabled, setEnabled] = useState(false);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate()
 
   // console.log(logged);
   const logout = async () => {
@@ -42,7 +44,7 @@ const Navbar = ({ logged }: navbarProps) => {
   <div className="md:flex items-center justify-between bg-white py-4 md:px-10 px-7">
     <div
       className="font-bold text-2xl cursor-pointer flex content-center items-center font-[Poppins] 
-  text-gray-800"
+  text-gray-800" onClick={() => navigate("/")}
     >
       <span className="text-2xl text-indigo-700 mr-3 ">
         <FcLandscape name="logo-ionic"></FcLandscape>
@@ -61,9 +63,9 @@ const Navbar = ({ logged }: navbarProps) => {
         open ? "top-18 opacity-100" : "top-[-490px]"
       } md:opacity-100 opacity-100`}
     >
-      <NavbarLink path="/" text="Home" Icon={FaHome}/>
+      <NavbarLink path="/events" text="Events" Icon={FaPizzaSlice}/>
       <NavbarLink path="/add/event" text="Add Event" Icon={FaPlusCircle}/>
-      <NavbarLink path="/events" text="My Events" Icon={FaGlassCheers}/>
+      <NavbarLink path="/myevents" text="My Events" Icon={FaGlassCheers}/>
       <NavbarLink path="/chats" text="Chats" Icon={FaWeixin}/>
       {user.role === 'admin' ? <NavbarLink path="/admin" text="Admin Panel" Icon={FaChessKing}/> : null}
       <NavbarLink path="" text="Logout" Icon={FaDoorOpen} func={logout}/>
@@ -95,10 +97,8 @@ const Navbar = ({ logged }: navbarProps) => {
             open ? "top-18 opacity-100" : "top-[-490px]"
           } md:opacity-100 opacity-100`}
         >
-          <NavbarLink path="/" text="Home" Icon={FaHome}/>
+          <NavbarLink path="/events" text="Events" Icon={FaPizzaSlice}/>
           <NavbarLink path="/login" text="Login" Icon={FaDoorClosed}/>
-          <NavbarLink path="/signup" text="Signup" Icon={FaDoorClosed}/>
-          <NavbarLink path="/newlogin" text="New Login" Icon={FaDoorClosed}/>
           {}
         </ul>
       </div>

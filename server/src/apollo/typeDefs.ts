@@ -4,7 +4,7 @@ import { gql } from "apollo-server-express";
 export const typeDefs = gql`
   type Query {
     test: String!
-    events: [Event]
+    events(userId: ID, eventsType: String): [Event]
     event(id: ID!): Event
     places(verified: Boolean): [Place]
     cities: [City]
@@ -20,12 +20,16 @@ export const typeDefs = gql`
     premium: Boolean!
     public: Boolean!
     place: String! 
+    placeObj: Place
     city: String!
+    cityObj: City
     description: String!
     membersRestrictions: [String]
     chatId: ID!
     chat: Chat
     maxMembers: Int!
+    date: Float!
+    imageSrc: String!
   }
 
   type User {

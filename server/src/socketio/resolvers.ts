@@ -36,7 +36,7 @@ async function getUserChatsData (chatsId: String[], userId: String, socket: any)
             if (!foundChat) return null
             foundChat.messages = [foundChat.messages[foundChat.messages.length - 1]]
             allChatsId.push(foundChat._id.toString())
-            const event = await Event.findOne({chatId: foundChat._id}).select("premium city place name")
+            const event = await Event.findOne({chatId: foundChat._id}).select("premium city place name imageSrc")
   
             foundChat = {...foundChat._doc, event, _id: foundChat._id.toString()}
             sectionChats.push(foundChat)

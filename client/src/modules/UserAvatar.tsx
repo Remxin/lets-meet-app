@@ -105,7 +105,7 @@ return (
     }}
     >
         <img src={`${process.env.REACT_APP_SERVER_IP}/get/user/avatar?userId=${userId}`} alt="user avatar" className="user-avatar" />
-        { premium ? <img src="premiumBorder.png" alt="premium border" className="premium-border"/> : null}
+        { premium ? <img src="/premiumBorder.png" alt="premium border" className="premium-border"/> : null}
         {/* {isHovered ? <div>Change image</div> : null} */}
       </div>
 )

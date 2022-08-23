@@ -45,6 +45,8 @@ export type eventType = {
       description: String
       chatId: String
       maxMembers: Number
+      date: Number
+      imageSrc: string
 }
 
 export type cityType = {

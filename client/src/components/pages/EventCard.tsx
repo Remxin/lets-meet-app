@@ -15,9 +15,11 @@ type eventProps = {
   organizator: any;
   restrictions: String[];
   maxMembers: Number
+  date: number
+  imageSrc: string
 };
 
-const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, members, organizator, restrictions, maxMembers }: eventProps) => {
+const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, members, organizator, restrictions, maxMembers, date, imageSrc }: eventProps) => {
   const navigate = useNavigate();
   return (
     <Card cover className="event-card" clickable hoverable onClick={() => navigate("/event/" + id)}>
@@ -33,7 +35,8 @@ const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, me
     </Card.Header>
     <Card.Body>
       <Card.Image
-        src={`${process.env.REACT_APP_SERVER_IP}/get/event-image?eventId=${id}`}
+        // src={`${process.env.REACT_APP_SERVER_IP}/get/event-image?eventId=${id}`}
+        src={imageSrc}
         height={400}
         width="100%"
         alt="Relaxing app background"
@@ -54,59 +57,57 @@ const EventCard = ({ id, name, organizatorId, premium, isPublic, place, city, me
         <Col>
           <Row>
             <Col>
-              <Text color="#dcdcdc" size={18}>
+              <p className="city">
                 {userDataHelper.capitalize(city)}
-              </Text>
-              <Text color="#d1d1d1" size={12}>
-                Members: {maxMembers === -1 ? members.length : `${members.length}/${maxMembers}`}
-              </Text>
+              </p>
             </Col>
           </Row>
+          
+        
         </Col>
         <Col>
-            
-          
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+        <Col>
+          <p className="date">
+            📅  {userDataHelper.genFullDateFormat(date)}
+          </p>
+        </Col>
+        <Col>
+          <p className="time">
+            ⏰ {userDataHelper.genTimeFormat(date)}
+          </p>
+        </Col>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <p className="members">
+            🧍 Members: {maxMembers === -1 ? members.length : `${members.length}/${maxMembers}`}
+          </p>
         </Col>
       </Row>
       <Row>
           {isPublic ? (
             <Row justify="flex-end">
-            <Button
-              flat
-              auto
-              rounded
-              css={{ color: "#ffffff", linearGradient: "326deg, #a4508b 0%, #5f0a87 74%" }}
-              // #ffffcc #ffff00
+            <button className="public"
             >
-              <Text
-                css={{ color: "inherit" }}
-                size={12}
-                weight="bold"
-                transform="uppercase"
-              >
+              <p className="text">
                 Public
-              </Text>
-            </Button>
+              </p>
+            </button>
           </Row>
           ) : null}
           {premium ? (
             <Row justify="flex-end" >
-            <Button
-              flat
-              auto
-              rounded
-              css={{ color: "#ffffff", linearGradient: "315deg, #fbb034 0%, #ffdd00 74%" }}
-              // #ffffcc #ffff00
+            <button className="premium"
             >
-              <Text
-                css={{ color: "inherit" }}
-                size={12}
-                weight="bold"
-                transform="uppercase"
-              >
+              <p className="text">
                 Premium
-              </Text>
-            </Button>
+              </p>
+            </button>
           </Row>
           ) : null}
           </Row>

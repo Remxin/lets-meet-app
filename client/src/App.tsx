@@ -27,6 +27,7 @@ import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import Page404 from "./components/error/Page404";
 import PrivacyPolicy from "./components/policy/PrivacyPolicy";
+import MyEvents from "./components/pages/MyEvents";
 
 import AddEvent from "./components/pages/addEvent/AddEvent";
 import AddPlace from "./components/pages/addPlace/AddPlace";
@@ -93,9 +94,7 @@ function App() {
               <div className="main">
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/newlogin" element={<NewLogin />} />
+                  <Route path="/login" element={<NewLogin />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset/password" element={<ResetPassword />} />
                   <Route path="/user" element={<UserPanel />} />
@@ -103,6 +102,7 @@ function App() {
                   <Route path="/add/event" element={<AddEvent />} />
                   <Route path="/add/place" element={<AddPlace />} />
                   <Route path="/events" element={<Events />} />
+                  <Route path="/myevents" element={<MyEvents/>} />
                   <Route path="/event/:eventId" element={<Event />} />
                   <Route path="/chats" element={<Chats />} />
                   <Route path="/admin" element={<AdminPanel />} />

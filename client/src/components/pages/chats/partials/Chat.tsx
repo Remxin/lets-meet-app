@@ -38,6 +38,8 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
     }
   }, [mainChatId])
 
+  console.log(data);
+  
   useEffect(() => {
     console.log("zmienia showMenu")
   }, [showMoveMenu])
@@ -48,7 +50,7 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
 
   const lastMessageData = data.messages[data.messages.length - 1]
 
- const lastMessageText = lastMessageData.message.length > 20 ? lastMessageData.message.slice(0, 20) + "..." : lastMessageData.message
+ const lastMessageText = lastMessageData ? lastMessageData.message.length > 20 ? lastMessageData.message.slice(0, 20) + "..." : lastMessageData.message : null
   return (
     <motion.div className="chat-container" variants={containerVariants} whileHover="hover" onClick={(e) => setMainChatId(data._id)} animate={containerVariant} initial="initial"
       onHoverStart={() => setIsHover(true)}
@@ -61,7 +63,7 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
         whileHover="hover"
         whileTap="tap"
       >
-        <img src={`${process.env.REACT_APP_SERVER_IP}/get/event-image?eventId=${data.event._id}`} alt="event image" className='event-image'/>
+        <img src={data.event.imageSrc} alt="event image" className='event-image'/>
         <div className="text">
           <h4 className='chat-title'>{data.event.name}</h4>
           {lastMessageData ? <><p className="last-message">{user._id === lastMessageData.userId ? "You" : lastMessageData.user}: {lastMessageText} <span className="timestamps">{}</span></p></> : null}

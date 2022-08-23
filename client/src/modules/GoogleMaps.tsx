@@ -13,7 +13,7 @@ function cutLocalizationString(locStr: String) {
     return locStr
 }
 
-const GoogleMaps = ({ localizationString, changeFun }: MapsProps) => {
+const GoogleMaps = ({ localizationString, changeFun}: MapsProps) => {
   console.log(localizationString)
   if (!localizationString) return <p>Cannot load map</p>
 

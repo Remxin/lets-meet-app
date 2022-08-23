@@ -1,0 +1,190 @@
+.event-page-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 85vh;
+    overflow: hidden;
+}
+
+.event-page-content {
+    background-color: #ffffffde;
+    position: relative;
+    width: 90%;
+    height: 90%;
+    border-radius: 10px;
+    padding: 15px;
+    overflow-y: scroll;
+
+
+    .event-name {
+        // color: ;
+        text-shadow: 0 0 5px #dedede inset;
+        text-align: center;
+        font-weight: bold;
+        font-size: 28px;
+        background: #333333;
+        background: linear-gradient(to right, #333333 35%, #DEDEDE 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .title-text {
+        font-weight: bold;
+        font-size: 18px;
+    }
+    
+    .premium-btns {
+        width: 100%;
+        
+        
+        & >  button {
+            width: 100px;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 15px;
+            height: 25px;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        .public {
+            background-color: purple;
+        }
+    
+        .premium {
+            background-color: gold;
+        }
+    }
+
+
+    .left {
+        width: 100%;
+        
+        .organizator{
+            position: relative;
+            height: 200px;
+            width: 200px;
+
+            .organizator-avatar {
+                width: 100%;
+                height: 100%;
+                border-radius: 10px;
+            }
+
+            .data {
+                position: absolute;
+                background-color: #dededecc;
+                backdrop-filter: blur(3px);
+                width: 100%;
+                height: 30%;
+                bottom: 0;
+
+                p {
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+
+    .right {
+
+
+        .place {
+
+
+            .place-card {
+                height: 200px;
+                margin: 0;
+                max-width: 300px;
+
+                & > div {
+                    width: 100%;
+                    height: 200%;
+                    margin: 0;
+                    padding: 0;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+
+                    }
+
+                    p {
+                        padding: 5px;
+                        color: white;
+                        font-size: 12px;
+                        font-weight: bold;
+                        
+                        
+
+                        .cityName {
+                            font-size: 15px;
+                        }
+
+                        .placeName {
+                            font-size: 18px;
+                        }
+                    }
+                }
+            }
+
+            .google-maps {
+                height: 250px;
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        .restrictions {
+
+            li {
+                font-size: 12px;
+            }
+        }
+    }
+
+    .description {
+        width: 100%;
+    }
+    .buttons {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        button {
+            margin-right: 10px;
+            background-color: orangered;
+            color: #fefefe;
+            border-radius: 10px;
+            padding: 5px;
+            cursor: pointer;
+            transition: 0.3s all;
+
+            &:hover {
+                font-weight: bold;
+            }
+        }
+    }
+
+}
+
+.members-card__container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 470px;
+    height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+
+    & > * {
+        display: block;
+    }
+}

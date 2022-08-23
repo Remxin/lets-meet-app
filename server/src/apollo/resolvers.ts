@@ -3,7 +3,7 @@ const User = require("../models/User");
 const City = require("../models/City")
 const Place = require("../models/Place")
 
-import {placesArgsType, eventArgsType, singlePlaceArgsType} from './argsTypes'
+import {placesArgsType, eventArgsType, singlePlaceArgsType, myEventsArgsType} from './argsTypes'
 import { placeType, eventType } from '../types/modelTypes';
 
 export const resolvers = {
@@ -12,19 +12,37 @@ export const resolvers = {
       // console.log("jest");
       return "Hello world!";
     },
-    events: async () => {
-      let events1 = await Event.find();
+    events: async (root: any, args: myEventsArgsType) => {
+      
+      
+      let events1 = await getProperEvents(args.userId, args.eventsType);
+    
+      
       let events = events1;
+      if (!events || !Array.isArray(events)) return []
       // --- creating sql relation to adding event ogranizator ---
       events = await Promise.all(
         events.map(async (event: eventType) => {
           const organizator = await User.findById(event.organizatorId);
           event.organizator = organizator;
+
+          const city = await City.findById(event.city)
+          event.cityObj = city
+
+          if (event.place.charAt(0) === "^") { // own place
+            event.placeObj = null
+          } else {
+            const place = await Place.findById(event.place)
+            event.placeObj = place
+          }
           // console.log(organizator, event);
           return event;
         })
       );
+
+
       events = await Promise.all(
+        //@ts-ignore
         events.map(async (event: eventType) => {
           //@ts-ignore
           event.members = event.members.map(async (userId: String) => {
@@ -43,6 +61,10 @@ export const resolvers = {
       event.members = membersTab
       const organizator = await User.findById(event.organizatorId)
       event.organizator = organizator
+      const place = await Place.findById(event.place)
+      event.placeObj = place
+      const city = await City.findById(event.city)
+      event.cityObj = city
       return event
       
     },
@@ -76,3 +98,28 @@ export const resolvers = {
     }
   },
 };
+
+const getProperEvents = (userId?: string, eventType?: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let events
+      if (!userId) {
+        events = await Event.find();
+        resolve(events)
+      } else {
+        if (eventType === "myevents") {
+          
+          events = await Event.find({ organizatorId: userId })
+          resolve(events)
+          
+        }
+        events =  await Event.find({ members: userId })
+        resolve(events)
+
+      } 
+      
+    } catch (err) {
+      reject({ err })
+    }
+  })
+}

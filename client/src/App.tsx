@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
 import "./styles/scss/fonts.scss"
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ChakraProvider } from '@chakra-ui/react'
 import {
   ApolloClient,
@@ -48,6 +48,8 @@ const client = new ApolloClient({
 function App() {
   const [user, setUser] = useState<any>(null);
   const [isLogged, setIsLogged] = useState<boolean>(false);
+  const [isLoggingError, setIsLoggingError] = useState(false)
+  // const navigate = useNavigate()
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -65,9 +67,12 @@ function App() {
           }
         );
         const data = await res.json();
+        console.log(data);
+        
         await setUser(data);
       } catch (err) {
         console.log(err);
+        setIsLoggingError(true)
       }
     };
     verifyUser();
@@ -81,6 +86,7 @@ function App() {
     }
   }, [user]);
 
+
   return (
     // @ts-ignore
     <div className="app">
@@ -93,8 +99,10 @@ function App() {
               <Navbar logged={isLogged} />
               <div className="main">
                 <Routes>
-                  <Route path="/" element={<Home />} />
                   <Route path="/login" element={<NewLogin />} />
+                  {isLogged ?
+                  <>
+                  <Route path="/" element={<Home />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset/password" element={<ResetPassword />} />
                   <Route path="/user" element={<UserPanel />} />
@@ -108,6 +116,12 @@ function App() {
                   <Route path="/admin" element={<AdminPanel />} />
                   <Route path="/admin/unverifiedPlace/:placeId" element={<UnverifiedPlace />} />
                   <Route path="*" element={<Page404 />} />
+                  </> : null }
+                  { isLoggingError ? 
+                  <>
+                  <Route path="*" element={<Navigate to="/login"/>}/>
+                  </> : null
+                  }
                 </Routes>
               </div>
             </UserContext.Provider>

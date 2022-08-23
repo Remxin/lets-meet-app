@@ -32,7 +32,6 @@ const Restrictions = ({setRestrictions, defaultRestrictions}) => {
 
     function handleAddRestriction() {
         setError("")
-        console.log('jest')
         if (inputRef.current.value === "") return
         if (restrictions.length >= 10) {
             inputRef.current.value = ""
@@ -72,7 +71,13 @@ const Restrictions = ({setRestrictions, defaultRestrictions}) => {
             placeholder='New restriction: '
             // labelPlaceholder="New restriction: "
             ref={inputRef}
-            onKeyDown={(e) => e.key == "Enter" ? handleAddRestriction() : null}
+            onKeyDown={(e) => {
+                
+                if (e.key == "Enter") {
+                    e.preventDefault()
+                    handleAddRestriction()
+                }
+            }}
             // onKeyDown={(e) => e.key == "Enter" ? console.log(e.key) : null}
             />
             <Spacer x={.3}/>

@@ -88,10 +88,12 @@ const AddEvent = () => {
 
   const placeRef = useRef() as MutableRefObject<HTMLSelectElement>;
 
-const canSetPremium:boolean = promotionsLeft === 0
+const canSetPremium:boolean = promotionsLeft === 0 && !user.premium // set the opposite
 
   useEffect(() => {
     if (user) {
+      //@ts-ignore
+      if (user.premium) return setPromotionsLeft("premium")
       setPromotionsLeft(Math.floor(user.promotionEvents));
     }
   }, [user]);
@@ -103,20 +105,14 @@ const canSetPremium:boolean = promotionsLeft === 0
   }, [eventNameRef.current?.value, isPremiumEvent, restrictions, placeRef.current?.getValue(), cityRef.current?.id(), eventDescriptionRef.current?.value, openChat, file])
 
 
- 
-  // --- choosing image file ---
-  const addFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target?.files) {
-      //@ts-ignore
-      setFile(e.target.files[0]);
-      setFileName(e.target.files[0].name);
-    }
-  };
+
   // --- submit handler ---
   const submitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
-    
     e.preventDefault();
-    console.log(dataHolder);
+    //@ts-ignore
+    if(e.keyCode == 13) {
+      return false;
+    }
     
     return setShowSummary(true)
 
@@ -187,19 +183,20 @@ const canSetPremium:boolean = promotionsLeft === 0
           <JoditEditor
                   ref={eventDescriptionRef}
                   value={dataHolder.description}
-                  config={{placeholder: "Event description: ", maxLenght: 200}}
+                  config={{placeholder: "Event description: ", maxLenght: 200, textAlign: "left"}}
                     //@ts-ignore
                   tabIndex={1} // tabIndex of textarea
+                 className="jodit"
                   
           />
-          <button type="button" onClick={enter1phase}>Next</button>
+          <button type="button" onClick={enter1phase} className="next-btn">Next</button>
         </div>
          : null}
         
        {phaseCounter === 1 ? <div className="section">
          <h3>Restricions</h3>
           <Restrictions setRestrictions={setRestrictions} defaultRestrictions={dataHolder.restrictions}/>
-         <button onClick={enter2phase}>Next</button>
+         <button onClick={enter2phase} className="next-btn">Next</button>
        </div> : null}
       
        {phaseCounter === 2 ? <div className="section">
@@ -207,13 +204,13 @@ const canSetPremium:boolean = promotionsLeft === 0
         <CitySelect ref={cityRef} setId={setCityId}/>
         {/* @ts-ignore */}
           <PlaceSelect ref={placeRef} cityId={cityId}/>
-         <button onClick={enter3phase}>Next</button>
+         <button onClick={enter3phase} className="next-btn">Next</button>
        </div> : null }
 
        {phaseCounter === 3 ? <div className="section">
           <h3>Image</h3>  
          <ImageSelect dataHolder={dataHolder} file={dataHolder.file} placeId={dataHolder.place} fileSrc={dataHolder.fileSrc}/>
-        <button onClick={enter4phase}>Next</button>
+        <button onClick={enter4phase} className="next-btn">Next</button>
        </div> : null }
        {phaseCounter === 4 ? 
        <>
@@ -244,7 +241,7 @@ const canSetPremium:boolean = promotionsLeft === 0
               setIsPremiumEvent(prev => !prev)
               dataHolder.premium = !dataHolder.premium
             }}
-          >Premium event <span> *left: {promotionsLeft}</span></Checkbox>
+          >Premium event <span className="promotions-left"> *left: {promotionsLeft}</span></Checkbox>
           <Input type="number" placeholder="Maximum members count" onChange={(e) => dataHolder.maxMembers = +e.target.value}/>
        </div>
         <Grid className="add-event-button-grid">

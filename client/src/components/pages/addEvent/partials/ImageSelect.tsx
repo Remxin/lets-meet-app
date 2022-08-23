@@ -19,17 +19,24 @@ const ImageSelect = ({dataHolder, file, placeId, fileSrc}: moduleProp) => {
     const [imagesSrc, setImagesSrc] = useState<string[]>([])
     const [resolvedImages, setResolvedImages] = useState(false)
 
+    const [forceRefresh, setForceRefresh] = useState(false)
+
     console.log(fileSrc);
     
     const images = useMemo(() => {
         return imagesSrc.map((image: string) => {
-            return <img src={image} alt="place image" key={image} onClick={(e) => {                
+            return <img src={image} alt="place image" key={image} className="select-image" onClick={(e) => {                
                 //@ts-ignore
                 dataHolder.fileSrc = e.target.src
                 dataHolder.file = null
-            }}/>
+                setForceRefresh(prev => !prev)
+            }}
+            style={{
+                border: image === dataHolder.fileSrc ? "3px solid orangered" : "none"
+            }}
+            />
         })
-    }, [imagesSrc])
+    }, [imagesSrc, forceRefresh])
 
     useEffect(() => {
         console.log(selectValue)
@@ -88,9 +95,9 @@ const ImageSelect = ({dataHolder, file, placeId, fileSrc}: moduleProp) => {
         <input type="file" ref={inputRef} onChange={addFile} accept="image/png, image/jpg" id="event-image-input" className="event-image-input"/>
         </> : null }
         {partShown === 2 ? 
-        <>
+        <div className='image-selector'>
             {images}
-        </> : null}
+        </div> : null}
     </>
   )
 }

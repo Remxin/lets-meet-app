@@ -67,7 +67,12 @@ const MyEventCard = ({ id, name, organizatorId, premium, isPublic, place, city, 
 
   const rejectUserFromEvent = useCallback(async (requestId: string) => {
     const res = await rejectUser(requestId)
-    console.log(res);
+      //@ts-ignore
+      if (res.msg) {
+        startFetching()
+        setShowRequestMenu(true)
+        setHoveredCardId(null)
+      }
     
 
   }, [hoveredCardId])
@@ -77,11 +82,13 @@ const MyEventCard = ({ id, name, organizatorId, premium, isPublic, place, city, 
   // }
   
   const acceptUserFromEvent = useCallback(async (requestId: string) => {
-    console.log(hoveredCardId);
-    console.log('accept');
-    
     const res = await acceptUser(requestId)
-    console.log(res);
+    //@ts-ignore
+    if (res.msg) {
+      startFetching()
+      setShowRequestMenu(true)
+      setHoveredCardId(null)
+    }
       
   }, [hoveredCardId])
   //@ts-ignore

@@ -174,7 +174,7 @@ export const rejectPlace = async (req: Request, res: Response) => {
 }
 
 export const getCityPlaces = async (req, res) => {
-  const token = req.cookies?.jwtA
+  const token = req.cookies?.jwt
   if (!token) {
     return res.send({err: "User not verified!"})
   }

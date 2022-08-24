@@ -113,31 +113,34 @@ export const verifyPlace = async (req: Request, res: Response) => {
   if (!place) {
     return res.send({err: "Cannot find this place!"})
   }
-  console.log(place);
+
   const addingUserId = place.userId;
   place.verified = true;
   place.userId = ""; // teraz ustawiam na puste, poniewaz tutaj będzie oficjalne konto miejsca, jeśli będzie chciało
   await place
     .save() // aktualizowanie statusu miejsca na verified
     .then(async () => {
+      if (addingUserId) {
       const addingUserInfo = await User.findOne({ _id: addingUserId }); // dodawanie userowi za nagrodę darmową promocję eventu
       console.log(addingUserId, addingUserInfo);
-      addingUserInfo.promotionEvents += 0.2;
-      addingUserInfo
+        addingUserInfo.promotionEvents += 0.25; // promotion events given to user
+        addingUserInfo
         .save()
         .then(() => {
           return res
-            .status(200)
-            .send({ msg: "Successfully verified place" });
+          .status(200)
+          .send({ msg: "Successfully verified place" });
         })
         .catch((err: Error) => {
           console.log(
             `Adding promotion event points to user ${addingUserId} failed - give him manually`
-          ); // nalezy dodać uzytkownikowi 1 darmowy punkt promocji wydarzenia manualnie i sprawdzic, co jest nie tak z serwerem
-          return res.status(500).send({
-            err: "Internal server error - place successfully added, but user promotion points do not increase - administrator will give them manually",
+            ); // nalezy dodać uzytkownikowi 1 darmowy punkt promocji wydarzenia manualnie i sprawdzic, co jest nie tak z serwerem
+            return res.status(500).send({
+              err: "Internal server error - place successfully added, but user promotion points do not increase - administrator will give them manually",
+            });
           });
-        });
+        }
+        return res.send({ msg: "Success"})
       })
 }
 
@@ -185,10 +188,10 @@ export const getCityPlaces = async (req, res) => {
   }
   const cityId = JSON.parse(req.body).cityId
   if (!cityId) {
-    const returnCities = await Place.find()
+    const returnCities = await Place.find({ verified: true })
     return res.send(returnCities)
   }
-  const returnCities = await Place.find({cityId})
+  const returnCities = await Place.find({cityId, verified: true})
   return res.send(returnCities)
 }
 

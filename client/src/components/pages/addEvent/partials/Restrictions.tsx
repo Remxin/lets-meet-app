@@ -81,7 +81,7 @@ const Restrictions = ({setRestrictions, defaultRestrictions}) => {
             // onKeyDown={(e) => e.key == "Enter" ? console.log(e.key) : null}
             />
             <Spacer x={.3}/>
-            <IconButton bordered colorScheme="green" auto onClick={handleAddRestriction} className="restrictions-adding-button" icon={<FaPlus/>}/>
+            <IconButton bordered colorScheme="green" auto onClick={handleAddRestriction} className="restrictions-adding-button" icon={<FaPlus/>} type="button"/>
                 
         </Grid.Container>     
             <ul>{restrictionsListComponent}</ul>

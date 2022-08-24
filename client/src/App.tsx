@@ -100,11 +100,11 @@ function App() {
               <div className="main">
                 <Routes>
                   <Route path="/login" element={<NewLogin />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/reset/password" element={<ResetPassword />} />
                   {isLogged ?
                   <>
                   <Route path="/" element={<Home />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/reset/password" element={<ResetPassword />} />
                   <Route path="/user" element={<UserPanel />} />
                   {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
                   <Route path="/add/event" element={<AddEvent />} />
@@ -113,13 +113,16 @@ function App() {
                   <Route path="/myevents" element={<MyEvents/>} />
                   <Route path="/event/:eventId" element={<Event />} />
                   <Route path="/chats" element={<Chats />} />
-                  <Route path="/admin" element={<AdminPanel />} />
-                  <Route path="/admin/unverifiedPlace/:placeId" element={<UnverifiedPlace />} />
                   <Route path="*" element={<Page404 />} />
                   </> : null }
                   { isLoggingError ? 
                   <>
                   <Route path="*" element={<Navigate to="/login"/>}/>
+                  </> : null
+                  }
+                  { user?.type === "admin" ? <>
+                    <Route path="/admin" element={<AdminPanel />} />
+                    <Route path="/admin/unverifiedPlace/:placeId" element={<UnverifiedPlace />} />
                   </> : null
                   }
                 </Routes>

@@ -72,13 +72,30 @@ export const resolvers = {
     places: async (root:any, args: placesArgsType) => {
       let places = await Place.find({verified: args.verified})
       // console.log(places) 
-      places = await Promise.all(
-        places.map(async (place: placeType) => {
-          place.user = await User.findById(place.userId)
-          place.city = await City.findById(place.cityId)
-          return place
-        })
-      )
+      try {
+        places = await Promise.all(
+          places.map(async (place: placeType) => {
+            console.log(place.userId);
+            
+            if (place.userId) {
+              const user = await User.findById(place.userId)
+              place.user = user ? user : null
+
+            } else {
+              place.user = undefined
+            }
+            
+            
+            
+            place.city = await City.findById(place.cityId)
+            console.log(place);
+            
+            return place
+          })
+        )
+      } catch (err) {
+        return []
+      }
       return places
     },
 
@@ -86,7 +103,11 @@ export const resolvers = {
    
         let place = await Place.findOne({_id: args.id, verified: args.verified})
         
-        place.user = await User.findById(place.userId)
+        if (!place.userId) {
+          place.user = undefined
+        } else {
+          place.user = await User.findById(place.userId)
+        }
         place.city = await City.findById(place.cityId)
         return place
 

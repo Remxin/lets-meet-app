@@ -1,3 +1,4 @@
+//@ts-nocheck
 import axios from "axios";
 import React, {
   useState,
@@ -28,15 +29,13 @@ import "../../../styles/scss/pagesComponents/addEvent/addEvent.scss"
 import { FaRegFileImage } from 'react-icons/fa'
 
 
-const paragraphVariants = {
-  hidden: {
-    opaciy: 0,
-    scale: 0.2
+const pageTransitionVariants = {
+  initial: {
+    left: "-100%"
   },
 
-  visible: {
-    opacity: 1,
-    scale: 1
+  animate: {
+    left: 0
   }
 }
  
@@ -76,6 +75,8 @@ const AddEvent = () => {
   const [openEvent, setOpenEvent] = useState(false);
   const [isPremiumEvent, setIsPremiumEvent] = useState(false);
 
+  const [canAdd, setCanAdd] = useState(false)
+
   const [showSummary, setShowSummary] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
 
@@ -113,6 +114,8 @@ const canSetPremium:boolean = promotionsLeft === 0 && !user.premium // set the o
     if(e.keyCode == 13) {
       return false;
     }
+
+    if (!canAdd) return false
     
     return setShowSummary(true)
 
@@ -175,46 +178,56 @@ const canSetPremium:boolean = promotionsLeft === 0 && !user.premium // set the o
   return (
     <Card className="add-event-card">
       <form onSubmit={submitHandler}>
+        <AnimatePresence>
         {phaseCounter === 0 ? 
-        <div className="section" style={{ display: "flex", flexDirection: "column"}}>
-          <h3>Basic informations</h3>
-          <Input bordered placeholder="Event name" ref={eventNameRef} initialValue={dataHolder.name}/>
-          <Input type="datetime-local" ref={dateRef} min={new Date().toISOString().slice(0, 16)} max={new Date(Date.now() + (1000* 60 * 60 * 24 * 365)).toISOString().slice(0, 16)} initialValue={dataHolder.time.toLocaleString()}/>
-          <JoditEditor
-                  ref={eventDescriptionRef}
-                  value={dataHolder.description}
-                  config={{placeholder: "Event description: ", maxLenght: 200, textAlign: "left"}}
-                    //@ts-ignore
-                  tabIndex={1} // tabIndex of textarea
-                 className="jodit"
-                  
-          />
-          <button type="button" onClick={enter1phase} className="next-btn">Next</button>
-        </div>
-         : null}
-        
-       {phaseCounter === 1 ? <div className="section">
-         <h3>Restricions</h3>
-          <Restrictions setRestrictions={setRestrictions} defaultRestrictions={dataHolder.restrictions}/>
-         <button onClick={enter2phase} className="next-btn">Next</button>
-       </div> : null}
+          <motion.div className="section" style={{ display: "flex", flexDirection: "column"}} variants={pageTransitionVariants} initial="initial" animate="animate" exit="exit">
+            <h3>Basic informations</h3>
+            <Input bordered placeholder="Event name" ref={eventNameRef} initialValue={dataHolder.name}/>
+            <Input type="datetime-local" ref={dateRef} min={new Date().toISOString().slice(0, 16)} max={new Date(Date.now() + (1000* 60 * 60 * 24 * 365)).toISOString().slice(0, 16)} initialValue={dataHolder.time.toLocaleString()}/>
+            <JoditEditor
+                    ref={eventDescriptionRef}
+                    value={dataHolder.description}
+                    config={{placeholder: "Event description: ", maxLenght: 200, textAlign: "left"}}
+                      //@ts-ignore
+                    tabIndex={1} // tabIndex of textarea
+                  className="jodit"
+                    
+            />
+            <button type="button" onClick={enter1phase} className="next-btn">Next</button>
+          </motion.div>
+          : null}
+        </AnimatePresence>
+
+        <AnimatePresence>
+        {phaseCounter === 1 ? <motion.div className="section" variants={pageTransitionVariants} initial="initial" animate="animate" exit="exit">
+          <h3>Restricions</h3>
+            <Restrictions setRestrictions={setRestrictions} defaultRestrictions={dataHolder.restrictions}/>
+          <button onClick={enter2phase} className="next-btn">Next</button>
+        </motion.div> : null}
+       </AnimatePresence>
       
-       {phaseCounter === 2 ? <div className="section">
+        <AnimatePresence>
+       {phaseCounter === 2 ? <motion.div className="section" variants={pageTransitionVariants} initial="initial" animate="animate" exit="exit">
         <h3>Localization</h3>
         <CitySelect ref={cityRef} setId={setCityId}/>
         {/* @ts-ignore */}
           <PlaceSelect ref={placeRef} cityId={cityId}/>
          <button onClick={enter3phase} className="next-btn">Next</button>
-       </div> : null }
+       </motion.div> : null }
+       </AnimatePresence>
 
-       {phaseCounter === 3 ? <div className="section">
+          <AnimatePresence>
+       {phaseCounter === 3 ? <motion.div className="section" variants={pageTransitionVariants} initial="initial" animate="animate" exit="exit">
           <h3>Image</h3>  
          <ImageSelect dataHolder={dataHolder} file={dataHolder.file} placeId={dataHolder.place} fileSrc={dataHolder.fileSrc}/>
         <button onClick={enter4phase} className="next-btn">Next</button>
-       </div> : null }
+       </motion.div> : null }
+       </AnimatePresence>
+
+       <AnimatePresence>
        {phaseCounter === 4 ? 
        <>
-       <div className="section">
+       <motion.div className="section" variants={pageTransitionVariants} initial="initial" animate="animate" exit="exit">
           <h3>Additional informations</h3> 
           <Spacer y={.5}/>
           <Checkbox size="md" className="checkbox-with-label" color="warning" onChange={() => {
@@ -243,13 +256,14 @@ const canSetPremium:boolean = promotionsLeft === 0 && !user.premium // set the o
             }}
           >Premium event <span className="promotions-left"> *left: {promotionsLeft}</span></Checkbox>
           <Input type="number" placeholder="Maximum members count" onChange={(e) => dataHolder.maxMembers = +e.target.value}/>
-       </div>
+       </motion.div>
         <Grid className="add-event-button-grid">
-          <Button flat color="warning" auto type="submit" className="add-event-button">
+          <Button flat color="warning" auto type="submit" className="add-event-button" onClick={() => setCanAdd(true)}>
             Add Event
           </Button>
         </Grid>
         </> : null }
+        </AnimatePresence>
 
       
         <AnimatePresence>

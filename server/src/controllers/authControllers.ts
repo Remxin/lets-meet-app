@@ -36,7 +36,7 @@ const signup = async (req: Request, res: Response) => {
   console.log("signup")
   const { name, email, password, sex, age } = req.body;
   try {
-    const user = await User.create({ name, email, password, sex, age });
+    const user = await User.register({ name, email, password, sex, age });
     const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, {
       expiresIn: jwtAge + "s",
     });

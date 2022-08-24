@@ -131,11 +131,19 @@ export const createEvent = (req: Request, res: Response) => {
                 const pushedChats = userPreferences.chatSections[0].chats
                 pushedChats.push(chat._id.toString())
 
-                await UserPreferences.update({ _id: userPreferences._id, "chatSections.name": "my events chats" }, {
+                await UserPreferences.updateOne({ _id: userPreferences._id, "chatSections.name": "my events chats" }, {
                   $set: {
                     "chatSections.$.chats": pushedChats
                   }
                 })
+                
+                const userData = await User.findById(decodedToken.id).select("promotionEvents premium")
+                console.log(userData);
+                
+                if (userData && !userData.premium) {
+                  userData.promotionEvents = userData.promotionEvents - 1
+                  await userData.save()
+                }
 
    
                 const file = req.files?.file;
@@ -155,6 +163,8 @@ export const createEvent = (req: Request, res: Response) => {
                       event.imageSrc = `${process.env.SERVER_IP}/get/event-image/${event._id}.${fileExt}`
                       // event.imageSrc = `/static/uploads/events/${event._id}.${fileExt}`
                       await event.save()
+
+                    
                       return res.status(200).send({
                         msg: "Successfully saved file, created event and chat",
                       });

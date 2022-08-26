@@ -26,7 +26,7 @@ const JoinedEventsQuery = () => {
   return (
     <Card className='events-container'>
         <h2 className="subclass-title">Joined Events</h2>
-        {dataJoin.events.length === 0 ? "No joined events" : dataJoin.events.map((event: any) => {
+        {dataJoin.events.length === 0 ? "No events joined" : dataJoin.events.map((event: any) => {
             return <EventCard id={event.id} name={event.name} organizatorId={event.organizatorId} premium={event.premium} isPublic={event.public} place={event.placeObj.name} city={event.cityObj.name} members={event.members} organizator={event.organizatorId} restrictions={event.membersRestrictions} maxMembers={event.maxMembers} date={event.date} imageSrc={event.imageSrc}/>
         })}
         

@@ -14,10 +14,11 @@ export const forgotPassword = async (req: Request, res: Response) => {
   try {
     if (secret !== process.env.FORGOT_PASSWORD_SECRET) {
       return res
-        .status(403)
-        .send({ err: "You don't have permissions to perform this action" });
+      .status(403)
+      .send({ err: "You don't have permissions to perform this action" });
     }
     const userInfo = await User.findOne({ email });
+    if (!userInfo) return res.send({ err: "This email account does not exist"})
     const resetPasswordToken: string = jwt.sign(
       { id: userInfo.id, email: userInfo.email },
       process.env.RESET_PASSWORD_TOKEN,

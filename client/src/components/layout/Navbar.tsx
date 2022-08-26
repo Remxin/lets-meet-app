@@ -97,8 +97,8 @@ const Navbar = ({ logged }: navbarProps) => {
             open ? "top-18 opacity-100" : "top-[-490px]"
           } md:opacity-100 opacity-100`}
         >
-          <NavbarLink path="/events" text="Events" Icon={FaPizzaSlice}/>
-          <NavbarLink path="/login" text="Login" Icon={FaDoorClosed}/>
+          {/* <NavbarLink path="/events" text="Events" Icon={FaPizzaSlice}/>
+          <NavbarLink path="/login" text="Login" Icon={FaDoorClosed}/> */}
           {}
         </ul>
       </div>

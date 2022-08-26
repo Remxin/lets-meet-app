@@ -156,7 +156,7 @@ const EventQuery = ({eventId}: queryProps) => {
               <div className='buttons'>
                 {user._id === data.event.organizatorId ? 
                 <>
-                  <button onClick={() => navigate("/myevents/" + eventId)}>Manage event</button>
+                  <button onClick={() => navigate("/myevents")}>Manage event</button>
                 </> : 
                 <>
                   <button onClick={() => setUserWantJoin(true)}>Join event</button>

@@ -6,6 +6,8 @@ import { Navigate } from "react-router-dom"
 
 import { UserContext } from "../../contexts/UserContext";
 
+import "../../styles/scss/auth/loginPage.scss"
+
 const NewLogin = () => {
   const { user } = useContext(UserContext)
   const [loginVisible, setloginVisible] = useState(false);
@@ -31,37 +33,34 @@ const NewLogin = () => {
       alignItems="center"
       direction="row"
       wrap="nowrap"
+      className="login-page"
       css={{
         height: "100vh",
       }}
     >
-      <Card hoverable clickable onClick={() => setRegisterVisible(true)} css={{ width: "15rem" }}>
+      <Card hoverable clickable onClick={() => setRegisterVisible(true)} css={{ width: "15rem" }} className="action-card">
         <Card.Body css={{ p: 0 }}>
           <Card.Image
             objectFit="cover"
             src={
-              "https://icon-library.com/images/sign-in-icon/sign-in-icon-26.jpg"
+              "/signup.jpeg"
             }
-            width="100%"
-            height={220}
             alt="signup"
           />
         </Card.Body>
         <Card.Footer>
           <Row wrap="wrap" justify="space-between">
             <Text b css={{ margin: "auto" }}>
-              Sing up
+              Signup
             </Text>
           </Row>
         </Card.Footer>
       </Card>
-      <Card hoverable clickable onClick={() => setloginVisible(true)} css={{ width: "15rem" }}>
+      <Card hoverable clickable onClick={() => setloginVisible(true)} css={{ width: "15rem" }} className="action-card">
         <Card.Body css={{ p: 0 }}>
           <Card.Image
             objectFit="cover"
-            src={"https://cdn-icons-png.flaticon.com/512/152/152533.png"}
-            width="626px"
-            height={220}
+            src={"/login.png"}
             alt="login"
           />
         </Card.Body>

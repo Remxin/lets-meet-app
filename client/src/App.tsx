@@ -18,8 +18,6 @@ import { NextUIProvider } from "@nextui-org/react";
 
 import Navbar from "./components/layout/Navbar";
 import Home from "./components/home/Home";
-import Login from "./components/auth/Login";
-import Signup from "./components/auth/Signup";
 import NewLogin from "./components/auth/NewLogin";
 
 import UserPanel from "./components/user/UserPanel";

@@ -32,7 +32,11 @@ io.on("connection", (socket: Socket) => { // on connection
     RoomManager.setIo(io)
 
     socket.on("request-user-chats-data", async (params, callback) => {
+      console.log("pyta");
+      
         const result = await resolver.getUserChatsData(params.chats, params.userId, socket)
+        console.log(result);
+        
         callback({
             chats: result
         })

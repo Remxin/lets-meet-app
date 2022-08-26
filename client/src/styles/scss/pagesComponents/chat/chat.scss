@@ -2,38 +2,20 @@
 
 .chats { 
     position: absolute;
-    z-index: 1001;
+    margin-top: -35px;
     width: 100vw;
-    height: 100vh;
+    height: 90vh;
     top: 0;
    
     & > div{
     display: flex;
     flex-direction: column;
     width: 100vw;
-    height: 85vh;
+    height: 90vh;
     padding: 2px;
     max-height: 100vh;
     max-width: 100%;
     overflow: hidden;
-
-    .special-nav {
-        width: 100%;
-        height: 5%;
-    
-        a {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            width: fit-content;
-            cursor: pointer;
-
-            svg {
-                margin-right: 5px;
-            }
-        }
-
-    }
 
     .chats-content {
         display: flex;
@@ -41,7 +23,7 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        height: 90%;
+        height: 100%;
         padding: 5px;
         box-shadow: 0 0 10px lightgray;
         
@@ -71,7 +53,14 @@
                     cursor: pointer;
 
                     p {
-                        font-size: 14px;
+                        font-size: 10px;
+                        text-align: center;
+                        margin-left: 5px;
+                    }
+
+                    svg {
+                        position: relative;
+                        left: 5px;
                     }
                 }
 
@@ -96,11 +85,9 @@
             }
 
             .section {
-                width: 100%;
                 height: 30px;
                 overflow: hidden;
                 margin-bottom: 1px;
-                max-height: 30%;
                 cursor: pointer;
                 
                 
@@ -116,12 +103,12 @@
                     color: white;
                     font-weight: bold;
                     transition: .3s all;
-                    font-size: 12px;
+                    font-size: 10px;
                     user-select: none;
 
                     .arrow-container {
                         position: absolute;
-                        right: 18px;
+                        right: 14px;
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -184,25 +171,31 @@
     .chat-content {
         position: relative;
         display: flex;
+        height: 100%;
         padding: 8px;
 
         
         .event-image {
+            position: relative;
+            top: 5px;
+            left: -2px;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
         }
 
         .text {
             padding-left: 15px;
+            overflow: hidden;
 
             .chat-title {
                 font-weight: bold;
+                font-size: 14px;
             }
 
             .last-message {
                 margin-left: -12px;
-                font-size: 10px;
+                font-size: 8px;
                 color: #898989dc;
             }
         }
@@ -210,7 +203,7 @@
     }
     .menu-icon {
         position: absolute;
-        right: 10px;
+        right: 6px;
         height: 25px;
         top: calc(50% - 12.5px);
         width: 25px;
@@ -263,18 +256,18 @@
             .message-content {
                 width: fit-content;
                 max-width: 70%;
-                padding: 4px;
-                border-radius: 10px;
+                padding: 7px;
+                border-radius: 8px;
                 color: white;
-                font-size: 13px;
+                font-size: 11px;
             }
         }
     }
 
     .message-input {
         position: relative;
-        height: 6%;
-        width: 100%;
+        height: 3%;
+        width: 98%;
         display: flex;
         justify-content: center;
         flex-direction: row;
@@ -285,14 +278,25 @@
 
 
         .input {
+            position: relative;
+            left: 3px;
             width: 90%;
+
+            & input::placeholder {
+                font-size: 11px;
+            }
+
+            span {
+                width: 20px;
+            }
 
             .trigger-button {
                 position: relative;
                 display: flex;
                 position: relative;
+                width: 20px;
                 padding: 8px;
-                right: 5px;
+                right: 15px;
 
                 .popover-trigger {
                     display: block;
@@ -368,9 +372,12 @@
         }
 
         .button {
-            width: 10%;
+            position: relative;
+            top: -2px;
+            width: 25px;
+            height: 25px;
             font-size: 20px;
-            padding: 5px;
+            padding: 3px;
 
             svg {
                 width: 100%;

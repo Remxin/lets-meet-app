@@ -19,14 +19,15 @@ const messageVariants = {
   }
 }
 
-const Message = ({text, userName, userId, timestamps}: any) => {
+const Message = ({text, userName, userId, timestamps, iterator, messagesCount}: any) => {
     //@ts-ignore
     const { user } = useContext(UserContext)
     const [isOwner, setIsOwner] = useState(userId === user._id)
 
   return (
-    <motion.div variants={messageVariants} initial="initial" animate="animate" className='message-container' style={{justifyContent: isOwner ? "flex-end" : "flex-start" }}>
-        <div className="message-content" style={{ backgroundColor: isOwner ? "#F0A34B" : "#454545" }}>{text}
+    <motion.div variants={messageVariants} initial={iterator === messagesCount ? "initial" : "" } animate={iterator === messagesCount ? "animate" : ""} className='message-container' style={{justifyContent: isOwner ? "flex-end" : "flex-start" }}>
+        <div className="message-content" style={{ backgroundColor: isOwner ? "#F0A34B" : "#cdcdcd", color: isOwner ? "#fff" : "#232323" }}>
+          {text}
         </div>    
     </motion.div>
   )

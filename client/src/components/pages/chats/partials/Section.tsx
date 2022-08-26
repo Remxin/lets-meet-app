@@ -48,7 +48,9 @@ const Section = ({name, chats, chatManager, sectionManager}: SectionProps) => {
     }
   }, [sectionOpened])
 
-  function deleteSectionbHanlder() {
+  function deleteSectionbHanlder(e: React.MouseEvent) {
+    // e.preventDefault()
+    e.stopPropagation()
     if (chats.length > 0) return setShowErrorModal(true)
     setShowConfirmationModal(true)
 

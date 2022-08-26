@@ -37,12 +37,10 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
       containerVariant.start("initial")
     }
   }, [mainChatId])
-
-  console.log(data);
   
-  useEffect(() => {
-    console.log("zmienia showMenu")
-  }, [showMoveMenu])
+  // useEffect(() => {
+  //   console.log("zmienia showMenu")
+  // }, [showMoveMenu])
   const choseModal = useMemo(() => {
     // return <OwnChoseModal/>
      return <ChoseModal visible={showMoveMenu} setVisible={setShowMoveMenu} title="Chose section you want to move chat to" optionArr={["a", "b"]} confirmHandler={() => console.log("jest")}/> 

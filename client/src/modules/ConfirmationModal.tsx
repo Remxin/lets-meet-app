@@ -27,16 +27,15 @@ type ModuleType = {
 const ConfirmationModal = ({ visible, setVisible, confirmHandler, text, title }:ModuleType) => {
 
     
-    function closeFUnction () {
-        confirmHandler()
+    function closeFunction () {
         setVisible(false)
+        confirmHandler()
     }
   return (
     <Modal
-    closeButton
     aria-labelledby="modal-title"
     open={visible}
-    // onClose={closeHandler}
+    onClose={() => setVisible(false)}
   >
     <Modal.Header>
           <motion.p variants={textVariants} initial="initial" animate="animate" style={{ fontWeight: "bold", fontSize: "24px"}}>{title}</motion.p>
@@ -49,7 +48,7 @@ const ConfirmationModal = ({ visible, setVisible, confirmHandler, text, title }:
         No
       </Button>
       {/* @ts-ignore */}
-      <Button auto onClick={closeFUnction}>
+      <Button auto onClick={closeFunction}>
         Yes
       </Button>
     </Modal.Footer>

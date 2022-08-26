@@ -4,6 +4,8 @@ import { useChat } from '../../../hooks/useChat'
 
 // --- graphical imports ---
 import "../../../styles/scss/pagesComponents/chat/chat.scss"
+import "../../../styles/scss/pagesComponents/chat/576.scss"
+import "../../../styles/scss/pagesComponents/chat/769.scss"
 import { Card, Loading, Input, Button } from "@nextui-org/react"
 import Section from './partials/Section'
 import MainChat from './partials/MainChat'
@@ -52,9 +54,6 @@ const Chats = () => {
 
   return (
     <Card className='chats'>
-      <div className='special-nav'>
-        <NavLink to="/"> <FaArrowLeft/> Return to home </NavLink>
-      </div>
       <div className='chats-content'>
         <div className="chats-list">
           <div className="section-menu">

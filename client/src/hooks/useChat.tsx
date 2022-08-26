@@ -131,6 +131,8 @@ export const useChat = () => {
     const [areChatsLoading, setAreChatsLoading] = useState(false)
     const [mainChatId, setMainChatId] = useState<String | null>(null)
     const [isConnectionError, setIsConnectionError] = useState(false)
+    const [socketEstabilished, setSockeEstabilished] = useState(false)
+    const [forceReload, setForceReload] = useState(false)
     const [errorText, setErrorText] = useState("")
    
     const [chats, dispatch] = useReducer(reducer, {
@@ -196,10 +198,15 @@ export const useChat = () => {
         }, 10000)
     }, [])
 
-
+    console.log(socket.connected);
+    
     // _-_-_-_- MAIN USEEFFECT _-_-_-_-_-
     useEffect(() => {
-        if (!socket.connected || !user) return 
+        if (socketEstabilished) return
+        if (!socket.connected || !user) return setTimeout(() => {
+            // setForceReload(prev => !prev)
+            window.location.reload()
+        }, 200)
 
         clearTimeout(errorTimeout.current)
         setIsSocketConnecting(false)
@@ -207,18 +214,21 @@ export const useChat = () => {
 
         // emit for chats data
         socket.emit("request-user-chats-data", {chats: user.chatsId, userId: user._id}, (response) => {
+            console.log("robi się");
+            
             dispatch({type: CASES.GETUSERCHATS, payload: {chats: response.chats}})
             setAreChatsLoading(false)
         })
-      
+        
         // get chat message (when someone sends)
         socket.on("get-message", (data) => dispatch({type: CASES.GETMESSAGE, payload: {message: data.message, chatId: data.chatId}}))
-
+        
+        setSockeEstabilished(true)
         return () => {
             // clearing data and disconnecting socket (socket.off(every_emit)) and disconnect from everyRoom (chatId)
             dispatch({type: CASES.DISCONNECTSOCKET, payload: {userId: userRef.current._id}})
         }
-    }, [socket, socket.connected, user])
+    }, [socket, socket.connected, user, forceReload])
 
     // ----- setting chosen chat to main (by id) ------
     useEffect(() => { 

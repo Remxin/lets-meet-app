@@ -61,7 +61,7 @@ async function getChatMessages (chatId: String, count: Number) {
 }
 
 async function messageSent(chatId: String, message: MessageType) {
-    console.log(chatId)
+    // console.log(chatId)
     const chatMessages = await Chat.findById(chatId).select("messages")
     // console.log(chatMessages)
     if (!chatMessages) return
@@ -138,7 +138,7 @@ function removeChatSection (userId: String, chatSectionName: String) {
 
 async function actualizeUserData (sections: any, userId: String) {
     try {
-        console.log(sections)
+        // console.log(sections)
         await Preferences.updateOne({userId}, {chatSections: sections})
     } catch (err) { //TODO : error handling
         console.log(err)

@@ -27,7 +27,7 @@ import flagsEmojis from '../components/pages/chats/emojis/flagsEmojis.json'
 import { motion } from "framer-motion"
 import { emojiChose, emojiNavIcon } from "../components/pages/chats/animations/emojiVariants"
 
-const MessageInput = ({sendMessageFun}: any) => {
+const MessageInput = ({sendMessageFun, placeHolder = "Type a message...", showSendButton = true, showEmojis = true}: any) => {
     const [isUserWriting, setIsUserWriting] = useState(false)
     const [message, setMessage] = useState("")
 
@@ -127,7 +127,7 @@ const MessageInput = ({sendMessageFun}: any) => {
 
     return (
         <>
-            <Input animated={false} contentClickable={true} placeholder='Type a message...' className='input' onChange={(e) => setMessage(e.target.value)} bordered ref={messageInputRef} onFocus={moveCaretAtEnd} contentRight={
+            <Input animated={false} contentClickable={true} placeholder={placeHolder} className='input' onChange={(e) => setMessage(e.target.value)} bordered ref={messageInputRef} onFocus={moveCaretAtEnd} contentRight={ showEmojis ?
                 <Popover onClose={() => messageInputRef.current.focus()}>
                 <PopoverTrigger>
                     <Button className='trigger-button'><FaSmile className='popover-trigger'/></Button>
@@ -145,8 +145,8 @@ const MessageInput = ({sendMessageFun}: any) => {
                 </PopoverContent>
             </Popover>
             
-            } onKeyPress={(e) => inputHandler(e)}/>
-            <button className='button'>{isUserWriting ? <FaArrowAltCircleRight color="orangered" onClick={sendMessage}/> : <FaHeart color='tomato'/>}</button>
+            : null} onKeyPress={(e) => inputHandler(e)}/>
+            { showSendButton ? <button className='button'>{isUserWriting ? <FaArrowAltCircleRight color="orangered" onClick={sendMessage}/> : <FaHeart color='tomato'/>}</button> : null }
         </>
     )
 }

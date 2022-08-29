@@ -196,6 +196,8 @@
             .last-message {
                 margin-left: -12px;
                 font-size: 8px;
+                overflow: hidden;
+                max-height: 50%;
                 color: #898989dc;
             }
         }

@@ -37,6 +37,9 @@ import AdminPanel from "./components/admin/AdminPanel";
 import UnverifiedPlace from "./components/admin/elements/verifyPlace/UnverifiedPlace";
 import UnverifiedPlaceCard from "./components/admin/elements/verifyPlace/UnverifiedPlaceCard";
 
+import VerifiedPlaces from "./graphql/components/VerifiedPlaces";
+import VerifiedPlace from "./graphql/components/VerifiedPlace";
+
 // ---- init global apollo server variable and initialize memory cache for queries, to speed up app ----
 const client = new ApolloClient({
   uri: "http://localhost:4000",
@@ -110,6 +113,8 @@ function App() {
                   <Route path="/events" element={<Events />} />
                   <Route path="/myevents" element={<MyEvents/>} />
                   <Route path="/event/:eventId" element={<Event />} />
+                  <Route path="/places" element={<VerifiedPlaces/>} />
+                  <Route path="/places/:placeId" element={<VerifiedPlace/>} />
                   <Route path="/chats" element={<Chats />} />
                   <Route path="*" element={<Page404 />} />
                   </> : null }
@@ -118,7 +123,7 @@ function App() {
                   <Route path="*" element={<Navigate to="/login"/>}/>
                   </> : null
                   }
-                  { user?.type === "admin" ? <>
+                  { user?.role === "admin" ? <>
                     <Route path="/admin" element={<AdminPanel />} />
                     <Route path="/admin/unverifiedPlace/:placeId" element={<UnverifiedPlace />} />
                   </> : null

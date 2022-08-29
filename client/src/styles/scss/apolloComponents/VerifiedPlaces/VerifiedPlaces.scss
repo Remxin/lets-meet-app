@@ -1,0 +1,39 @@
+.verified-places-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    .place-card {
+        width: 50%;
+        height: 180px;
+        padding: 0;
+        
+        & > div {
+            color: white;
+            padding: 0;
+
+            img {
+                // min-width: 100%;
+                object-fit: cover;
+                min-height: 100%;
+            }
+
+            p {
+                padding: 3px;
+                padding-left: 8px;
+                font-weight: bold;
+                font-size: 12px;
+
+                .placeName {
+                    color: orange;
+                    text-shadow: 0 0 5px black;
+                    font-size: 17px;
+                }
+
+                .cityName {
+                    font-size: 14px;
+                }
+            }
+        }
+
+    }
+}

@@ -49,7 +49,7 @@ const Navbar = ({ logged }: navbarProps) => {
       <span className="text-2xl text-indigo-700 mr-3 ">
         <FcLandscape name="logo-ionic"></FcLandscape>
       </span>
-      <h1>Lets Meet Up </h1>
+      <h1>Lets Meet App </h1>
     </div>
 
     <div
@@ -83,7 +83,7 @@ const Navbar = ({ logged }: navbarProps) => {
           <span className="text-2xl text-indigo-700 mr-3 ">
             <FcLandscape name="logo-ionic"></FcLandscape>
           </span>
-          <h1>Lets Meet Up </h1>
+          <h1>Lets Meet App </h1>
         </div>
 
         <div

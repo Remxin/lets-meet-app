@@ -15,3 +15,7 @@ export type myEventsArgsType = {
     userId?: string
     eventsType: "myevents" | "joinedEvents"
 }
+
+export type placeOpinionsArgsType = {
+    placeId: string
+}

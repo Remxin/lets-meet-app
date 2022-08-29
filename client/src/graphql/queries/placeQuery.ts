@@ -10,6 +10,7 @@ export const PLACEQUERY = gql`
       premium
       website
       localizationString
+      opinionStars
       name
       city {
         state

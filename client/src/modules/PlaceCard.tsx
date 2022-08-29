@@ -15,7 +15,7 @@ type moduleType = {
 const PlaceCard = ({className, placeName, cityName, id, opinionStars}: moduleType) => {
     const navitate = useNavigate()
   return (
-    <Card className={className} key={id} clickable onClick={() => navitate("/place/" + id)}>
+    <Card className={className} key={id} clickable hoverable onClick={() => navitate("/places/" + id)}>
         <img src={`${process.env.REACT_APP_SERVER_IP}/get/place/img?photoIndex=0&placeId=${id}`} alt="place image" />
         <p style={{
             position: "absolute",

@@ -1,0 +1,26 @@
+@media only screen and (min-width: 769px) {
+    .verified-places-container {
+        .place-card {
+            width: 25%;
+            height: 240px;
+            padding: 0;
+            
+            & > div {
+    
+                p {
+                    padding: 10px;
+                    font-size: 14px;
+    
+                    .placeName {
+                        font-size: 20px;
+                    }
+    
+                    .cityName {
+                        font-size: 17px;
+                    }
+                }
+            }
+    
+        }
+    }
+}

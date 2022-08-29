@@ -2,8 +2,9 @@ const Event = require("../models/Event");
 const User = require("../models/User");
 const City = require("../models/City")
 const Place = require("../models/Place")
+const Opinion = require("../models/Opinion")
 
-import {placesArgsType, eventArgsType, singlePlaceArgsType, myEventsArgsType} from './argsTypes'
+import {placesArgsType, eventArgsType, singlePlaceArgsType, myEventsArgsType, placeOpinionsArgsType} from './argsTypes'
 import { placeType, eventType } from '../types/modelTypes';
 
 export const resolvers = {
@@ -116,6 +117,18 @@ export const resolvers = {
     cities: async () => {
       let cities = await City.find()
       return cities
+    },
+
+    placeOpinions: async (root: any, args: placeOpinionsArgsType) => {
+      const opinions = await Opinion.find({ placeId: args.placeId})
+      if (!opinions) return []
+
+      for (let opinion of opinions) {
+        opinion.user = await User.findById(opinion.userId)
+        opinion.place = await Place.findById(opinion.placeId)
+      }
+
+      return opinions
     }
   },
 };

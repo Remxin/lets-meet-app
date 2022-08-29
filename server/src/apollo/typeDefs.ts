@@ -9,6 +9,7 @@ export const typeDefs = gql`
     places(verified: Boolean): [Place]
     cities: [City]
     place(verified: Boolean, id: ID!): Place
+    placeOpinions(placeId: String): [PlaceOpinion]
     # cities(country: String)
   }
   type Event {
@@ -54,7 +55,7 @@ export const typeDefs = gql`
     premium: Boolean!
     website: String
     description: String
-    opinionStars: Int!
+    opinionStars: Float!
     user: User
     verified: Boolean!
     city: City
@@ -79,5 +80,12 @@ export const typeDefs = gql`
   type Message {
     user: User
     text: String
+  }
+
+  type PlaceOpinion {
+    place: Place
+    stars: Float
+    comment: String
+    user: User
   }
 `;

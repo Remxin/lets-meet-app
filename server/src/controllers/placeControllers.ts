@@ -5,7 +5,8 @@ const fs = require('fs')
 
 const Place = require("../models/Place");
 const User = require("../models/User");
-import { fstat } from "fs";
+const Opinion = require("../models/Opinion")
+
 import { verifyAdmin, verifyUser } from "../helpers/auth";
 import { getPlaceImageLength, getPlaceImage, deletePlaceImageFolder, saveImage } from "../helpers/images";
 import { placeImgQueryType } from '../types/requestTypes'
@@ -212,7 +213,7 @@ export const uploadPlaceImages = async (req, res) => {
 
 
   const place = await Place.create({ name, addressString: address, website, cityId, localizationString, description, user: user.id })
-  console.log(place)
+  // console.log(place)
 
   let localizationDir = `${__dirname}/../static/uploads/places/${place._id}`
 
@@ -228,4 +229,40 @@ export const uploadPlaceImages = async (req, res) => {
     incrementer++
   }
   return res.send({msg: "Success!"})
+}
+
+export const sendOpinion = async (req: Request, res: Response) => {
+  const { jwt } = req.cookies
+
+  const user = await verifyUser(jwt)
+  if (!user) return res.send({ err: "user not verified" })
+
+  const { placeId, comment, stars } = JSON.parse(req.body)
+  try {
+    
+    const opinion = await Opinion.create({ userId: user.id, placeId, comment, stars })
+    const placeOpinions = await Opinion.find({ placeId })
+    console.log(opinion);
+    
+    
+    // calculating stars
+    const sum = placeOpinions.reduce((a, b) => {
+      return a + b.stars
+    
+    }, 0);
+    
+    // average rating + rounding value
+    let avg = (sum / placeOpinions.length)
+    avg = Math.floor(avg * 10) / 10
+    
+    await Place.findOneAndUpdate({ _id: placeId }, { opinionStars: avg}, {
+      new: true,
+      upsert: true      
+    })
+
+    return res.send({ msg: "opinion successfully sended" })
+  } catch (err) {
+    return res.send({ err: "Internal server error" })
+  }
+
 }

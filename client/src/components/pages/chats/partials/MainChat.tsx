@@ -17,9 +17,13 @@ const MainChat = ({ chatManager }:any) => {
     if (!chatManager.mainChat?.messages) return <p>Send first message...</p>
     const messagesCount = chatManager.mainChat.messages.length
     let iterator = 0
+    let lastUserIdArr: string[] = []
     return chatManager.mainChat.messages.map((message: any) => {
       iterator++
-      return <Message key={Date.now() + Math.random()} text={message.message} userName={message.user} userId={message.userId} timestamps={message.timestamps} iterator={iterator} messagesCount={messagesCount}/>
+      lastUserIdArr.push(message.userId)
+      console.log(lastUserIdArr, iterator);
+      
+      return <Message key={Date.now() + Math.random()} text={message.message} userName={message.user} userId={message.userId} timestamps={message.timestamps} iterator={iterator} messagesCount={messagesCount} lastUserId={iterator > 1 ? lastUserIdArr[iterator - 2] : null}/>
     })
   }, [chatManager.mainChat?.messages.length])
 

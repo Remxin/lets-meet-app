@@ -54,16 +54,13 @@ async function getUserChatsData (chatsId: String[], userId: String, socket: any)
 
 async function getChatMessages (chatId: String, count: Number) {
     let messages = await Chat.findById(chatId).select("messages")
-    // console.log(messages)
     const messagesCount = +`-${count}`
     messages = messages.messages.slice(messagesCount)
     return messages
 }
 
 async function messageSent(chatId: String, message: MessageType) {
-    // console.log(chatId)
     const chatMessages = await Chat.findById(chatId).select("messages")
-    // console.log(chatMessages)
     if (!chatMessages) return
     chatMessages.messages.push(message)
     chatMessages.save().catch((err: Error) => console.log(err)) // TODO: write error to database)
@@ -96,6 +93,7 @@ function createNewChatSection(userId: String, sectionName: string) {
 function moveChatToAnotherSection (userId: String, chatId: String, prevSection: String, newSection: String) {
     return new Promise(async (resolve, reject) => {
         try {
+            
             const preferences = await Preferences.findOne({userId})
             const chatSections = preferences.chatSections
 
@@ -108,8 +106,8 @@ function moveChatToAnotherSection (userId: String, chatId: String, prevSection: 
             const isChatInNewSection = chatSections[nSectionIndex].chats.some((pChatId: String) => pChatId == chatId)
 
             chatSections[pSectionIndex].chats = lastChatArr
-            if (isChatInNewSection) chatSections[nSectionIndex].chats.push(chatId)
-    
+            
+            if (!isChatInNewSection) chatSections[nSectionIndex].chats.push(chatId) 
   
             await Preferences.updateOne({ userId }, {chatSections: chatSections})
             resolve({msg: "Success"})
@@ -138,7 +136,7 @@ function removeChatSection (userId: String, chatSectionName: String) {
 
 async function actualizeUserData (sections: any, userId: String) {
     try {
-        // console.log(sections)
+        if (sections.length === 0) return
         await Preferences.updateOne({userId}, {chatSections: sections})
     } catch (err) { //TODO : error handling
         console.log(err)

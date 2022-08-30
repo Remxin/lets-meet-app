@@ -95,6 +95,14 @@ function reducer(state: any, action: any) {
         case CASES.REMOVECHATSECTION:
             delete state.allChats[action.payload.sectionName]
             return { ...state }
+            
+        case CASES.MOVECHATTOANOTHERSECTION:
+            console.log(state);
+            state.allChats[action.payload.prevSection].filter((chat: string) => chat !== action.payload.chatId)
+            state.allChats[action.payload.newSection].push(action.payload.chatId)
+
+            return {...state}
+
 
         case CASES.DISCONNECTSOCKET: // main purpose of this function is to disconnect from socket + save user chats in right order inside sections
             const sectionsArr = []
@@ -103,13 +111,18 @@ function reducer(state: any, action: any) {
                 sectionsArr.push({name: chatSection, chats: chatsId})
             }
             socket.emit("request-actualize-user-chat-preferences", {sections: sectionsArr, userId: action.payload.userId})
-            for (let action of socketIncomingActions) {
-                socket.off(action)
+            for (let actionName of socketIncomingActions) {
+                socket.off(actionName)
             }
             socket.close()
         return {...state}
 
+      
+            
+
         default:
+            console.log(action);
+            
             throw new Error("This method do not exist")
         
     }
@@ -178,6 +191,7 @@ export const useChat = () => {
         socket.emit("request-move-chat-to-another-section", {userId: userRef.current._id, chatId, prevSection, newSection }, (result) => {
             if (result.err) return setErrorText("Error in moving chat to another section")
             dispatch({type: CASES.MOVECHATTOANOTHERSECTION, payload: {chatId, prevSection, newSection}})
+            window.location.reload()
         })
     }, [])
 
@@ -198,7 +212,7 @@ export const useChat = () => {
         }, 10000)
     }, [])
 
-    console.log(socket.connected);
+    // console.log(socket.connected);
     
     // _-_-_-_- MAIN USEEFFECT _-_-_-_-_-
     useEffect(() => {
@@ -206,17 +220,21 @@ export const useChat = () => {
         if (!socket.connected || !user) return setTimeout(() => {
             // setForceReload(prev => !prev)
             window.location.reload()
-        }, 200)
+        }, 500)
 
         clearTimeout(errorTimeout.current)
         setIsSocketConnecting(false)
         setAreChatsLoading(true)
+        errorTimeout.current = setTimeout(() => {
+            window.location.reload()
+        }, 1000)
 
         // emit for chats data
         socket.emit("request-user-chats-data", {chats: user.chatsId, userId: user._id}, (response) => {
-            console.log("robi się");
+            // console.log("robi się");
             
             dispatch({type: CASES.GETUSERCHATS, payload: {chats: response.chats}})
+            clearTimeout(errorTimeout.current)
             setAreChatsLoading(false)
         })
         

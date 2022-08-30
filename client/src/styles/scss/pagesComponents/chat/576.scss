@@ -99,26 +99,112 @@
 
    
 
+    .upper-menu {
+        height: 10%;
+        width: 100%;
+    }
+
     .chat-content {
+        height: 80%;
+        width: 100%;
+        overflow-y: scroll;
+        padding: 20px;
+
+
+        .messages-end {
+            height: 10px;
+        }
+
 
         .message-container {
- 
-
-
+            display: flex;
+            margin-top: 10px;
+            
+            
             .message-content {
-                width: fit-content;
-                max-width: 70%;
-                padding: 7px;
-                border-radius: 8px;
-                color: white;
-                font-size: 12px;
+                position: relative;
+                display: flex;
+                width: 100%;
+
+                &.my-content {
+                    .timestamps {
+                        bottom: -20px;
+                        right: 0;
+                        text-align: right;
+                    }
+                }
+
+                &.friends-content {
+                    .timestamps {
+                        bottom: -20px;
+                        left: 24px;
+                    }
+
+                }
+
+                .user-avatar {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: absolute;
+                    top: 15px;
+                    left: 0;
+                    width: 20px;
+                    height: 20px;
+                    margin-right: 5px;
+                    background-color: none;
+                    // box-shadow: 0 0 3px black;
+
+                    img {
+                        top: 0;
+                    }
+                }
+
+                .first-friend-message {
+                    margin-top: 10px;
+                }
+
+                .user-name-label {
+                    position: absolute;
+                    top: -7px;
+                    padding: 0;
+                    left: 24px;
+                    // color: darkgray;
+                    text-shadow: 0 0 .1px black;
+                }
+                
+                .friend-message {
+                    margin-left: 24px;
+
+                }
+                
+                p {
+                    width: fit-content;
+                    max-width: 70%;
+                    padding: 7px;
+                    border-radius: 8px;
+                    color: white;
+                    font-size: 13px;
+
+                }
+
+                .timestamps {
+                    position: absolute;
+                    display: block;
+                    // text-shadow: 0 0 .5px black;
+                    color: black;
+                    font-size: 10px;
+                    margin-top: 3px;
+                    width: 100%;
+                }
             }
         }
     }
+}
 
     .message-input {
         position: relative;
-        height: 3%;
+        height: 5%;
         width: 98%;
         display: flex;
         justify-content: center;
@@ -257,5 +343,4 @@
         height: 70vh;
         background-color: #fff;
     }
-}
 }

@@ -107,19 +107,14 @@
 
 
             .message-content {
-                width: fit-content;
-                max-width: 70%;
-                padding: 7px;
-                border-radius: 8px;
-                color: white;
-                font-size: 14px;
+               
             }
         }
     }
 
     .message-input {
         position: relative;
-        height: 3%;
+        height: 7%;
         width: 98%;
         display: flex;
         justify-content: center;

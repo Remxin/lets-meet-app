@@ -55,6 +55,7 @@ const Section = ({name, chats, chatManager, sectionManager}: SectionProps) => {
     setShowConfirmationModal(true)
 
   }
+console.log(name);
 
 
 
@@ -75,7 +76,7 @@ const Section = ({name, chats, chatManager, sectionManager}: SectionProps) => {
         ><h2>{name}</h2> <motion.div className='arrow-container' animate={arrowVariant} variants={arrowVariants}><FaAngleDown className='arrow'/></motion.div> {showRemoveBin && name !== "other" && name !== "my events chats" ? <FaTrashAlt className='bin' onClick={deleteSectionbHanlder}/> : null}</motion.span>
         <div>
             {chats.map((chat:any) => {
-                return <Chat data={chat} setMainChatId={chatManager.setMainChatId} mainChatId={chatManager.mainChatId}/>
+                return <Chat data={chat} setMainChatId={chatManager.setMainChatId} mainChatId={chatManager.mainChatId} sectionManager={sectionManager} chatManager={chatManager} currentSection={name}/>
             })}
         </div>
             <InformationModal visible={showErrorModal} setVisible={setShowErrorModal} errorText="Please move all chats from this section before delete"/>

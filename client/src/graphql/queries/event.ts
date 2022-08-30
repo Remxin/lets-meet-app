@@ -7,6 +7,21 @@ export const EVENTQUERY = gql`
         organizatorId
         membersRestrictions
         maxMembers
+        description
+        membersRestrictions
+        public
+        premium
+        date
+        placeObj {
+            id
+            name
+            localizationString
+            opinionStars
+        }
+       
+        cityObj {
+            name
+        }
         organizator {
             age
             name
@@ -21,7 +36,7 @@ export const EVENTQUERY = gql`
             id
             premium
         }
-    
+        imageSrc
     
     }
     }

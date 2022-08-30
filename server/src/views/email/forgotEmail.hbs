@@ -4,17 +4,92 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Forgot email</title>
+    <style>
+      .body {
+        width: 500px;
+        height: 600px;
+        padding-left: 50px;
+        padding-top: 30px;
+        background-color: #FFD580;
+        border-radius: 10px;
+      }
+
+      #main {
+          width: 80%;
+          height: 90%;
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 10px;
+          margin: 0;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      button {
+        width: 150px;
+        height: 30px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px orangered;
+        background-color: orange;
+        border: none;
+      }
+
+      button a {
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        transition: .3s all;
+      }
+
+      button a:hover {
+        font-weight: bold;
+      }
+
+      a {
+        color: white !important;
+        font-size: 11px;
+      }
+
+      a:active {
+        color: white;
+      }
+
+      a:link {
+        color: white;
+      }
+
+      a:visited {
+        color: white;
+      }
+
+      .star {
+        font-size: 10px;
+        font-weight: bold;
+      }
+
+      .signature {
+        color: orangered;
+        font-weight: bold;
+        font-size: 12px;
+      }
+    </style>
   </head>
   <body>
-    <div id="main">
-      <h1>Hi {{userName}}!</h1>
-      <p>Here is your password reset link: </p>
-      <button><a
-          href="{{clientIP}}/reset/password?token={{resetPasswordToken}}&email={{userEmail}}"
-        >RESET YOUR PASSWORD</a></button>
-      <p>*This link is active only for 15 minutes</p>
-      <p>*If you didn't forgot your password just ignore this email</p>
-      <p>Lets meet up team</p>
+    <div class="body">
+      <div id="main">
+        <h1>Hi {{userName}}!</h1>
+        <p>Here is your password reset link: </p>
+        <button><a
+            href="{{clientIP}}/reset/password?token={{resetPasswordToken}}&email={{userEmail}}"
+          >RESET YOUR PASSWORD</a></button>
+        <p class="star">*This link is active only for 15 minutes</p>
+        <p class="star">*If you didn't forget your password just ignore this email</p>
+        <p class="signature">Lets Meet App team</p>
+      </div>
     </div>
   </body>
 </html>

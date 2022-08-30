@@ -5,9 +5,11 @@ import { motion, useAnimation, useMotionValue } from "framer-motion"
 import { contentVariants, containerVariants } from "../animations/sideChatVariants"
 import { Popover,PopoverTrigger, PopoverContent, PopoverArrow } from '@chakra-ui/react'
 import ChoseModal from '../../../../modules/ChoseModal'
+import MoveChatToAnotherSectionModal from './MoveChatToAnotherSectionModal'
 
 import { FaEllipsisV } from "react-icons/fa"
 import ConfirmationModal from '../../../../modules/ConfirmationModal'
+import { Loading } from '@nextui-org/react'
 
 
 type LastMessageType = {
@@ -17,7 +19,7 @@ type LastMessageType = {
   timestamps: number
 }
 
-const Chat = ({data, setMainChatId, mainChatId}: any) => {
+const Chat = ({data, setMainChatId, mainChatId, sectionManager, chatManager, currentSection}: any) => {
   //@ts-ignore
   const { user } = useContext(UserContext)
   const contentVariant = useAnimation()
@@ -28,7 +30,8 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
    const [showMoveMenu, setShowMoveMenu] = useState(false)
   const [moveMenu, setMoveMenu] = useState(false)
 
-  //  console.log(showMoveMenu)
+  //  console.log(currentSection);
+   
   
   useEffect(() => {
     if (data._id === mainChatId) {
@@ -37,18 +40,25 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
       containerVariant.start("initial")
     }
   }, [mainChatId])
-
-  useEffect(() => {
-    console.log("zmienia showMenu")
-  }, [showMoveMenu])
+  
+  // console.log(sectionManager);
+  
+  // useEffect(() => {
+  //   console.log("zmienia showMenu")
+  // }, [showMoveMenu])
   const choseModal = useMemo(() => {
     // return <OwnChoseModal/>
-     return <ChoseModal visible={showMoveMenu} setVisible={setShowMoveMenu} title="Chose section you want to move chat to" optionArr={["a", "b"]} confirmHandler={() => console.log("jest")}/> 
+     return <MoveChatToAnotherSectionModal visible={showMoveMenu} setVisible={setShowMoveMenu} title="Chose section you want to move chat to" optionArr={Object.keys(chatManager.allChats)} confirmHandler={sectionManager} data={{ chatId: data._id, currentSection}}/> 
   }, [showMoveMenu])
 
-  const lastMessageData = data.messages[data.messages.length - 1]
+  const lastMessageData = data.messages ? data.messages[data.messages.length - 1] : null
 
- const lastMessageText = lastMessageData.message.length > 20 ? lastMessageData.message.slice(0, 20) + "..." : lastMessageData.message
+ const lastMessageText = lastMessageData ? lastMessageData.message.length > 20 ? lastMessageData.message.slice(0, 20) + "..." : lastMessageData.message : null
+
+ if (!data.event) {
+  return <Loading>Loading data...</Loading>
+ }
+
   return (
     <motion.div className="chat-container" variants={containerVariants} whileHover="hover" onClick={(e) => setMainChatId(data._id)} animate={containerVariant} initial="initial"
       onHoverStart={() => setIsHover(true)}
@@ -61,7 +71,7 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
         whileHover="hover"
         whileTap="tap"
       >
-        <img src={`${process.env.REACT_APP_SERVER_IP}/get/event-image?eventId=${data.event._id}`} alt="event image" className='event-image'/>
+        <img src={data.event.imageSrc} alt="event image" className='event-image'/>
         <div className="text">
           <h4 className='chat-title'>{data.event.name}</h4>
           {lastMessageData ? <><p className="last-message">{user._id === lastMessageData.userId ? "You" : lastMessageData.user}: {lastMessageText} <span className="timestamps">{}</span></p></> : null}
@@ -72,7 +82,7 @@ const Chat = ({data, setMainChatId, mainChatId}: any) => {
         <>
           <FaEllipsisV className='menu-icon' onClick={(e) => {
             e.stopPropagation()
-            console.log("idzie")
+            // console.log("idzie")
             setShowMoveMenu(true)
           }}/>
           {/* <ConfirmationModal visible={showMoveMenu} setVisible={setShowMoveMenu} title="Chose section you want to move chat to" text={"ab"} confirmHandler={() => console.log("jest")}/> */}

@@ -1,0 +1,51 @@
+.main {
+    padding: 0;
+    position: relative;
+}
+
+.login-page {
+    // position: absolute;
+    max-width: none;
+    width: 100%;
+    height: 90vh;
+    // padding: 0;
+    background: url("/../public/login-page.jpg");
+    // background-color: red;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+
+    .action-card {
+        height: 160px;
+        padding: 5px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            position: relative;
+            // width: 80px;
+            width: fit-content;
+            background-color: white;
+        }
+    }
+}
+
+@media only screen and (min-width: 420px) {
+    .login-page {
+        .action-card {
+            height: 200px;
+        }
+    }
+}
+
+@media only screen and (min-width: 576px) {
+    .login-page {
+        .action-card {
+            height: 240px;
+
+        }
+    }
+}

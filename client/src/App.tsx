@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
 import "./styles/scss/fonts.scss"
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ChakraProvider } from '@chakra-ui/react'
 import {
   ApolloClient,
@@ -18,8 +18,6 @@ import { NextUIProvider } from "@nextui-org/react";
 
 import Navbar from "./components/layout/Navbar";
 import Home from "./components/home/Home";
-import Login from "./components/auth/Login";
-import Signup from "./components/auth/Signup";
 import NewLogin from "./components/auth/NewLogin";
 
 import UserPanel from "./components/user/UserPanel";
@@ -27,6 +25,7 @@ import ForgotPassword from "./components/auth/ForgotPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import Page404 from "./components/error/Page404";
 import PrivacyPolicy from "./components/policy/PrivacyPolicy";
+import MyEvents from "./components/pages/MyEvents";
 
 import AddEvent from "./components/pages/addEvent/AddEvent";
 import AddPlace from "./components/pages/addPlace/AddPlace";
@@ -38,6 +37,9 @@ import AdminPanel from "./components/admin/AdminPanel";
 import UnverifiedPlace from "./components/admin/elements/verifyPlace/UnverifiedPlace";
 import UnverifiedPlaceCard from "./components/admin/elements/verifyPlace/UnverifiedPlaceCard";
 
+import VerifiedPlaces from "./graphql/components/VerifiedPlaces";
+import VerifiedPlace from "./graphql/components/VerifiedPlace";
+
 // ---- init global apollo server variable and initialize memory cache for queries, to speed up app ----
 const client = new ApolloClient({
   uri: "http://localhost:4000",
@@ -47,6 +49,8 @@ const client = new ApolloClient({
 function App() {
   const [user, setUser] = useState<any>(null);
   const [isLogged, setIsLogged] = useState<boolean>(false);
+  const [isLoggingError, setIsLoggingError] = useState(false)
+  // const navigate = useNavigate()
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -64,9 +68,12 @@ function App() {
           }
         );
         const data = await res.json();
+        console.log(data);
+        
         await setUser(data);
       } catch (err) {
         console.log(err);
+        setIsLoggingError(true)
       }
     };
     verifyUser();
@@ -80,6 +87,7 @@ function App() {
     }
   }, [user]);
 
+
   return (
     // @ts-ignore
     <div className="app">
@@ -92,22 +100,34 @@ function App() {
               <Navbar logged={isLogged} />
               <div className="main">
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/newlogin" element={<NewLogin />} />
+                  <Route path="/login" element={<NewLogin />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset/password" element={<ResetPassword />} />
+                  {isLogged ?
+                  <>
+                  <Route path="/" element={<Home />} />
                   <Route path="/user" element={<UserPanel />} />
                   {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
                   <Route path="/add/event" element={<AddEvent />} />
                   <Route path="/add/place" element={<AddPlace />} />
                   <Route path="/events" element={<Events />} />
+                  <Route path="/myevents" element={<MyEvents/>} />
                   <Route path="/event/:eventId" element={<Event />} />
+                  <Route path="/places" element={<VerifiedPlaces/>} />
+                  <Route path="/places/:placeId" element={<VerifiedPlace/>} />
                   <Route path="/chats" element={<Chats />} />
-                  <Route path="/admin" element={<AdminPanel />} />
-                  <Route path="/admin/unverifiedPlace/:placeId" element={<UnverifiedPlace />} />
                   <Route path="*" element={<Page404 />} />
+                  </> : null }
+                  { isLoggingError ? 
+                  <>
+                  <Route path="*" element={<Navigate to="/login"/>}/>
+                  </> : null
+                  }
+                  { user?.role === "admin" ? <>
+                    <Route path="/admin" element={<AdminPanel />} />
+                    <Route path="/admin/unverifiedPlace/:placeId" element={<UnverifiedPlace />} />
+                  </> : null
+                  }
                 </Routes>
               </div>
             </UserContext.Provider>

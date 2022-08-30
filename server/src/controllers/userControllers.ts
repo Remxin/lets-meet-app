@@ -14,10 +14,11 @@ export const forgotPassword = async (req: Request, res: Response) => {
   try {
     if (secret !== process.env.FORGOT_PASSWORD_SECRET) {
       return res
-        .status(403)
-        .send({ err: "You don't have permissions to perform this action" });
+      .status(403)
+      .send({ err: "You don't have permissions to perform this action" });
     }
     const userInfo = await User.findOne({ email });
+    if (!userInfo) return res.send({ err: "This email account does not exist"})
     const resetPasswordToken: string = jwt.sign(
       { id: userInfo.id, email: userInfo.email },
       process.env.RESET_PASSWORD_TOKEN,
@@ -73,7 +74,9 @@ export const changeUserPassword = (req: Request, res: Response) => {
         const { email, id } = decodedUser;
         const userInfo = await User.findOne({ _id: id });
         console.log(userInfo);
-        userInfo.password = newPassword;
+        const salt = await bcrypt.genSalt()
+        const hashedPass = await bcrypt.hash(newPassword, salt)
+        userInfo.password = hashedPass;
         userInfo
           .save()
           .then(() => {
@@ -200,7 +203,6 @@ export const updatePassword = async (req, res) => {
   
   const user = await verifyUser(jwt)
   if (!user) return res.send({ err: "Cannot verify user" })
-  console.log(user);
   
 
   const userData = await User.findById(user.id)
@@ -215,7 +217,9 @@ export const updatePassword = async (req, res) => {
     return res.send({ err: "Internal server error" })
   }
   
-  userData.password = password
+  const salt = await bcrypt.genSalt()
+  const hashedPass = await bcrypt.hash(password, salt)
+  userData.password = hashedPass
   await userData.save()
 
   return res.send({ msg: "Success" })

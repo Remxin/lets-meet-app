@@ -28,18 +28,6 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  myEventsId: {
-    type: Array,
-    default: [],
-  },
-  joinedEventsId: {
-    type: Array,
-    default: [],
-  },
-  chatsId: {
-    type: Array,
-    default: []
-  },
   premium: {
     type: Boolean,
     default: false,
@@ -55,14 +43,33 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+type registerProps = {
+  email: string,
+  password: string,
+  name: string,
+  age: number,
+  sex: string
+}
+
 //@ts-ignore
-userSchema.pre("save", async function (next: NextFunction) {
-  // wykona się przed zapisaniem do bazy danych
-  const salt = await bcrypt.genSalt(); // generuje dodatkowe zbędne znaki
-  // @ts-ignore
-  this.password = await bcrypt.hash(this.password, salt); // hashuje hasło z dodatkowymi znakami
-  next();
-});
+// userSchema.pre("save", async function (next: NextFunction) {
+//   // wykona się przed zapisaniem do bazy danych
+//   const salt = await bcrypt.genSalt(); // generuje dodatkowe zbędne znaki
+//   // @ts-ignore
+//   this.password = await bcrypt.hash(this.password, salt); // hashuje hasło z dodatkowymi znakami
+//   next();
+// });
+
+userSchema.statics.register = async function ({ email, password, name, sex, age }: registerProps) {
+  const salt = await bcrypt.genSalt();
+  const hashedPass = await bcrypt.hash(password, salt)
+  try {
+    const user = await this.create({ email, password: hashedPass, name, sex, age})
+    return user
+  } catch (err) {
+    throw Error("Internal server error")
+  }
+}
 
 userSchema.statics.login = async function (email: string, password: string) {
   // creating own function to the schema

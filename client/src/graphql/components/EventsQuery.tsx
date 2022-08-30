@@ -9,8 +9,8 @@ type eventProps = {
   organizatorId: String;
   premium: Boolean;
   public: Boolean;
-  place: String;
-  city: String;
+  placeObj: { name: string };
+  cityObj: { name: string };
   members: any[];
   organizator: any;
   membersRestrictions: String[];
@@ -42,12 +42,16 @@ const EventsQuery = () => {
           organizatorId={event.organizatorId}
           premium={event.premium}
           isPublic={event.public}
-          place={event.place}
-          city={event.city}
+          place={event.placeObj.name}
+          city={event.cityObj.name}
           members={event.members}
           organizator={event.organizator}
           restrictions={event.membersRestrictions}
           maxMembers={event.maxMembers}
+          //@ts-ignore
+          imageSrc={event.imageSrc}
+          //@ts-ignore
+          date={event.date}
         />
       ))}
     </div>

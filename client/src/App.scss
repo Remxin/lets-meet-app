@@ -16,12 +16,43 @@
 }
 
 .app {
-  padding-top: 120px;
+  padding-top: 150px;
 }
 .main {
-  /* margin-top: 150px; */
+  width: 100vw;
+   margin-top: -60px; 
 }
 
 .modal {
   z-index: 5400;
+}
+
+.jodit {
+  text-align: left;
+}
+
+.app-logo {
+  width: 120px;
+  height: 55px;
+  object-fit: cover;
+}
+
+@media only screen and (min-width: 576px) {
+  .main {
+     margin-top: -55px; 
+  }
+  .app-logo {
+    width: 130px;
+    height: 60px;
+  }
+}
+
+@media only screen and (min-width: 769px) {
+  .main {
+    margin-top: -27px; 
+ }
+  .app-logo {
+    width: 175px;
+    height: 80px;
+  }
 }

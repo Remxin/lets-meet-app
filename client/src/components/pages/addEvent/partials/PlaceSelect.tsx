@@ -72,7 +72,10 @@ const  PlaceSelect = ({cityId}: placeSelectType, ref) => {
     }, [cityId])
 
     const cityPlacesOptions: any[] = useMemo(() => {
-      // console.log(cityPlacesArr)
+      //@ts-ignore
+      if (!cityPlacesArr || cityPlacesArr.length === 0) return [{value: "", label: "My own places"}]
+      console.log(cityPlacesArr);
+      
       //@ts-ignore
       let cityPlaces: placeType[] = cityPlacesArr.sort((x: any, y:any) => {
         return x.name > y.name

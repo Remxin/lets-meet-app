@@ -32,7 +32,7 @@ export const sendWelcomeEmail = (userEmail: string, userName: string) => {
   };
   // -- declaring email options --
   const mailOptions = {
-    from: `Lets meet app <${process.env.GMAIL_USER}>`,
+    from: `Lets Meet App <${process.env.GMAIL_USER}>`,
     to: userEmail,
     subject: `Welcome ${userName}!`,
     html: template(templateVars),
@@ -70,7 +70,7 @@ export const sendForgotPasswordEmail = (
   };
   // -- declaring email options --
   const mailOptions = {
-    from: `Lets meet up <${process.env.GMAIL_USER}>`,
+    from: `Lets Meet App <${process.env.GMAIL_USER}>`,
     to: userEmail,
     subject: `Reset your password`,
     html: template(templateVars),

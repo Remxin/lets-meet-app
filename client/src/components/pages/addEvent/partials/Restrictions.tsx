@@ -25,14 +25,13 @@ function reducer (restrictions, action) {
 
 }
 
-const Restrictions = ({setRestrictions}) => {
+const Restrictions = ({setRestrictions, defaultRestrictions}) => {
     const [error, setError] = useState("")
-    const [restrictions, dispatch] = useReducer(reducer, [])
+    const [restrictions, dispatch] = useReducer(reducer, defaultRestrictions)
     const inputRef = useRef() as MutableRefObject<HTMLInputElement>
 
     function handleAddRestriction() {
         setError("")
-        console.log('jest')
         if (inputRef.current.value === "") return
         if (restrictions.length >= 10) {
             inputRef.current.value = ""
@@ -72,11 +71,17 @@ const Restrictions = ({setRestrictions}) => {
             placeholder='New restriction: '
             // labelPlaceholder="New restriction: "
             ref={inputRef}
-            onKeyDown={(e) => e.key == "Enter" ? handleAddRestriction() : null}
+            onKeyDown={(e) => {
+                
+                if (e.key == "Enter") {
+                    e.preventDefault()
+                    handleAddRestriction()
+                }
+            }}
             // onKeyDown={(e) => e.key == "Enter" ? console.log(e.key) : null}
             />
             <Spacer x={.3}/>
-            <IconButton bordered colorScheme="green" auto onClick={handleAddRestriction} className="restrictions-adding-button" icon={<FaPlus/>}/>
+            <IconButton bordered colorScheme="green" auto onClick={handleAddRestriction} className="restrictions-adding-button" icon={<FaPlus/>} type="button"/>
                 
         </Grid.Container>     
             <ul>{restrictionsListComponent}</ul>

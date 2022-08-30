@@ -6,7 +6,8 @@ import { motion } from "framer-motion"
 type ComponentType = {
     visible: boolean,
     setVisible: Function,
-    errorText: string
+    errorText: string,
+    successText?: string
 }
 
 const textVariants = {
@@ -22,7 +23,7 @@ const textVariants = {
     }
 }
 
-const InformationModal = ({visible, setVisible, errorText}: ComponentType) => {
+const InformationModal = ({visible, setVisible, errorText, successText = ""}: ComponentType) => {
   return (
     <Modal
     closeButton
@@ -31,10 +32,10 @@ const InformationModal = ({visible, setVisible, errorText}: ComponentType) => {
     // onClose={closeHandler}
   >
     <Modal.Header>
-          <motion.p variants={textVariants} initial="initial" animate="animate" style={{ fontWeight: "bold", fontSize: "24px"}}>Error</motion.p>
+          <motion.p variants={textVariants} initial="initial" animate="animate" style={{ fontWeight: "bold", fontSize: "24px"}}>{!!successText ? "Success" : "Error"}</motion.p>
     </Modal.Header>
     <Modal.Body>
-        <motion.p variants={textVariants} initial="initial" animate="animate" style={{ textAlign: "center"}}>{errorText}</motion.p>
+        <motion.p variants={textVariants} initial="initial" animate="animate" style={{ textAlign: "center"}}>{!!successText ? successText : errorText}</motion.p>
     </Modal.Body>
     <Modal.Footer>
       <Button auto onClick={() => setVisible(false)}>

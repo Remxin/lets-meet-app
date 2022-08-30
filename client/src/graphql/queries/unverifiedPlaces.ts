@@ -18,6 +18,7 @@ query Query ($verified: Boolean!){
       }
       verified
     localizationString
+    opinionStars
     website
     description
   }

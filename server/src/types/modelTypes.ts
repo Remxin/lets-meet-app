@@ -39,7 +39,9 @@ export type eventType = {
       public: Boolean
       membersRestrictions: String[]
       place: String
+      placeObj: placeType | null
       city: String
+      cityObj: cityType | null
       description: String
       chatId: String
       maxMembers: Number

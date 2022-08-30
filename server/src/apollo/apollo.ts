@@ -12,6 +12,7 @@ export async function startApolloServer() {
   const app = express();
   const httpServer = http.createServer(app);
 
+  app.use(express.urlencoded({ extended: true }))
   // Same ApolloServer initialization as before, plus the drain plugin.
   const server = new ApolloServer({
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],

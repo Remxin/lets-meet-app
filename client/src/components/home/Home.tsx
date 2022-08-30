@@ -14,11 +14,13 @@ const Home = () => {
       <HomeSlider/>
       <div className="link-card-container">
         <CardLink href="/events" title="Events" text="Search for events" imgLink="/cardImg/friends.jpg"/>
-        <CardLink href="/events" title="My events" text="Get information about created and joined events" imgLink="/cardImg/meal.jpg"/>
+        <CardLink href="/myevents" title="My events" text="Get information about created and joined events" imgLink="/cardImg/meal.jpg"/>
         <CardLink href="/chats" title="Chats" text="Check your chats" imgLink="/cardImg/chat.jpg"/>
         <CardLink href="/user" title="User Panel" text="Personalize your account" imgLink="/cardImg/male.jpg"/>
         <CardLink href="/add/event" title="Add Event" text="Create your own event" imgLink="/cardImg/wine-glass.jpg"/>
         <CardLink href="/add/place" title="Add Place" text="Add your favourite place and help us in developing the app" imgLink="/cardImg/waterfall.jpg"/>
+        <CardLink href="/places" title="Places" text="Search for interesting places and gave them opinions" imgLink="/cardImg/landscape.jpg"/>
+        <CardLink href="#" title="Coming soon" text="This page will come soon..." imgLink="/cardImg/contruction.jpg"/>
 
       </div>
     </div>

@@ -11,7 +11,7 @@ type placeType = {
   name: String
   city: {name: String, country: String, state: String}
   website: string
-  description: String,
+  description: string,
   localizationString: String
 }
 
@@ -43,9 +43,7 @@ const UnverifiedPlaceCard = ({id ,name, city, website, description, localization
           </Card.Header>
           <Divider />
           <Card.Body css={{ py: "$10" }}>
-            <Text>
-              {description}
-            </Text>
+            <div dangerouslySetInnerHTML={{ __html: description }}/>
             <img />
           {/* <GoogleMaps localizationString={localizationString}/> */}
           </Card.Body>

@@ -4,11 +4,12 @@ import { gql } from "apollo-server-express";
 export const typeDefs = gql`
   type Query {
     test: String!
-    events: [Event]
+    events(userId: ID, eventsType: String): [Event]
     event(id: ID!): Event
     places(verified: Boolean): [Place]
     cities: [City]
     place(verified: Boolean, id: ID!): Place
+    placeOpinions(placeId: String): [PlaceOpinion]
     # cities(country: String)
   }
   type Event {
@@ -20,12 +21,16 @@ export const typeDefs = gql`
     premium: Boolean!
     public: Boolean!
     place: String! 
+    placeObj: Place
     city: String!
+    cityObj: City
     description: String!
     membersRestrictions: [String]
     chatId: ID!
     chat: Chat
     maxMembers: Int!
+    date: Float!
+    imageSrc: String!
   }
 
   type User {
@@ -50,7 +55,7 @@ export const typeDefs = gql`
     premium: Boolean!
     website: String
     description: String
-    opinionStars: Int!
+    opinionStars: Float!
     user: User
     verified: Boolean!
     city: City
@@ -75,5 +80,12 @@ export const typeDefs = gql`
   type Message {
     user: User
     text: String
+  }
+
+  type PlaceOpinion {
+    place: Place
+    stars: Float
+    comment: String
+    user: User
   }
 `;

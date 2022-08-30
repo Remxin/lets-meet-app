@@ -5,7 +5,8 @@ const fs = require('fs')
 
 const Place = require("../models/Place");
 const User = require("../models/User");
-import { fstat } from "fs";
+const Opinion = require("../models/Opinion")
+
 import { verifyAdmin, verifyUser } from "../helpers/auth";
 import { getPlaceImageLength, getPlaceImage, deletePlaceImageFolder, saveImage } from "../helpers/images";
 import { placeImgQueryType } from '../types/requestTypes'
@@ -113,31 +114,34 @@ export const verifyPlace = async (req: Request, res: Response) => {
   if (!place) {
     return res.send({err: "Cannot find this place!"})
   }
-  console.log(place);
+
   const addingUserId = place.userId;
   place.verified = true;
   place.userId = ""; // teraz ustawiam na puste, poniewaz tutaj będzie oficjalne konto miejsca, jeśli będzie chciało
   await place
     .save() // aktualizowanie statusu miejsca na verified
     .then(async () => {
+      if (addingUserId) {
       const addingUserInfo = await User.findOne({ _id: addingUserId }); // dodawanie userowi za nagrodę darmową promocję eventu
       console.log(addingUserId, addingUserInfo);
-      addingUserInfo.promotionEvents += 0.2;
-      addingUserInfo
+        addingUserInfo.promotionEvents += 0.25; // promotion events given to user
+        addingUserInfo
         .save()
         .then(() => {
           return res
-            .status(200)
-            .send({ msg: "Successfully verified place" });
+          .status(200)
+          .send({ msg: "Successfully verified place" });
         })
         .catch((err: Error) => {
           console.log(
             `Adding promotion event points to user ${addingUserId} failed - give him manually`
-          ); // nalezy dodać uzytkownikowi 1 darmowy punkt promocji wydarzenia manualnie i sprawdzic, co jest nie tak z serwerem
-          return res.status(500).send({
-            err: "Internal server error - place successfully added, but user promotion points do not increase - administrator will give them manually",
+            ); // nalezy dodać uzytkownikowi 1 darmowy punkt promocji wydarzenia manualnie i sprawdzic, co jest nie tak z serwerem
+            return res.status(500).send({
+              err: "Internal server error - place successfully added, but user promotion points do not increase - administrator will give them manually",
+            });
           });
-        });
+        }
+        return res.send({ msg: "Success"})
       })
 }
 
@@ -174,7 +178,7 @@ export const rejectPlace = async (req: Request, res: Response) => {
 }
 
 export const getCityPlaces = async (req, res) => {
-  const token = req.cookies?.jwtA
+  const token = req.cookies?.jwt
   if (!token) {
     return res.send({err: "User not verified!"})
   }
@@ -185,10 +189,10 @@ export const getCityPlaces = async (req, res) => {
   }
   const cityId = JSON.parse(req.body).cityId
   if (!cityId) {
-    const returnCities = await Place.find()
+    const returnCities = await Place.find({ verified: true })
     return res.send(returnCities)
   }
-  const returnCities = await Place.find({cityId})
+  const returnCities = await Place.find({cityId, verified: true})
   return res.send(returnCities)
 }
 
@@ -209,7 +213,7 @@ export const uploadPlaceImages = async (req, res) => {
 
 
   const place = await Place.create({ name, addressString: address, website, cityId, localizationString, description, user: user.id })
-  console.log(place)
+  // console.log(place)
 
   let localizationDir = `${__dirname}/../static/uploads/places/${place._id}`
 
@@ -225,4 +229,40 @@ export const uploadPlaceImages = async (req, res) => {
     incrementer++
   }
   return res.send({msg: "Success!"})
+}
+
+export const sendOpinion = async (req: Request, res: Response) => {
+  const { jwt } = req.cookies
+
+  const user = await verifyUser(jwt)
+  if (!user) return res.send({ err: "user not verified" })
+
+  const { placeId, comment, stars } = JSON.parse(req.body)
+  try {
+    
+    const opinion = await Opinion.create({ userId: user.id, placeId, comment, stars })
+    const placeOpinions = await Opinion.find({ placeId })
+    console.log(opinion);
+    
+    
+    // calculating stars
+    const sum = placeOpinions.reduce((a, b) => {
+      return a + b.stars
+    
+    }, 0);
+    
+    // average rating + rounding value
+    let avg = (sum / placeOpinions.length)
+    avg = Math.floor(avg * 10) / 10
+    
+    await Place.findOneAndUpdate({ _id: placeId }, { opinionStars: avg}, {
+      new: true,
+      upsert: true      
+    })
+
+    return res.send({ msg: "opinion successfully sended" })
+  } catch (err) {
+    return res.send({ err: "Internal server error" })
+  }
+
 }

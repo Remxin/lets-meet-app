@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
 import "./styles/scss/fonts.scss"
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ChakraProvider } from '@chakra-ui/react'
 import {
   ApolloClient,

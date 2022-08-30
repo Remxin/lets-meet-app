@@ -64,5 +64,5 @@ require("./socketio/main")
 app.listen(PORT, () => console.log(`🖥️  Server listening on port ${PORT}`));
 
 // ! TESTS (disable when everything is ok)
-// import "./tests/emailTest.js";
+import "./tests/emailTest.js";
 // import "./tests/helpersTest";

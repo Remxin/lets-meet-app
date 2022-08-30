@@ -13,7 +13,7 @@ type moduleProp ={
 
 const ImageSelect = ({dataHolder, file, placeId, fileSrc}: moduleProp) => {
     const [selectValue, setSelectValue] = useState("")
-    const [fileName, setFileName] = useState("Select file")
+    const [fileName, setFileName] = useState("Select image")
     const inputRef = useRef() as MutableRefObject<HTMLInputElement>
     const [partShown, setPartShown] = useState<null | number>(null)
     const [imagesSrc, setImagesSrc] = useState<string[]>([])
@@ -80,7 +80,7 @@ const ImageSelect = ({dataHolder, file, placeId, fileSrc}: moduleProp) => {
         }
     }
   return (
-    <>
+    <div className="image-select">
         <select onChange={(e) => setSelectValue(e.target.value)}>
             <option value="" defaultChecked hidden>Select image</option>
             <option value="own">My own file</option>
@@ -98,7 +98,7 @@ const ImageSelect = ({dataHolder, file, placeId, fileSrc}: moduleProp) => {
         <div className='image-selector'>
             {images}
         </div> : null}
-    </>
+    </div>
   )
 }
 

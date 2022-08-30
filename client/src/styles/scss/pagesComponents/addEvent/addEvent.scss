@@ -123,3 +123,50 @@
         transition: .3s all;
     }
 }
+
+.image-select {
+
+    .image-selector {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        img {
+            width: 80%;
+            height: 200px;  
+            object-fit: cover;
+        }
+    }
+}
+
+@media only screen and (min-width: 576px) {
+    .image-select {
+
+        .image-selector {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            flex-wrap: wrap;
+    
+            img {
+                width: 45%;
+                height: 250px;  
+                object-fit: cover;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 769px) {
+    .image-select {
+
+        .image-selector {
+    
+            img {
+                width: 32%;
+                height: 300px;  
+                object-fit: cover;
+            }
+        }
+    }
+}

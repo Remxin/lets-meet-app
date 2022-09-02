@@ -77,7 +77,7 @@ const login = async (req: Request, res: Response) => {
       expiresIn: jwtAge + "s",
     });
     // @ts-ignore
-    res.cookie("jwt", token, { expiresIn: jwtAge * 1000, httpOnly: true });
+    res.cookie("jwt", token, { expiresIn: jwtAge * 1000, httpOnly: true, secure: false });
     if (user.role === "admin") {
       const adminToken = jwt.sign(
         { id: user._id, email: user.email },
@@ -97,7 +97,9 @@ const login = async (req: Request, res: Response) => {
 
 const verifyuser = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt;
-  // console.log(token);
+  console.log(token);
+  console.log(req.cookies);
+  
   if (token) {
     jwt.verify(
       token,
@@ -107,8 +109,8 @@ const verifyuser = (req: Request, res: Response, next: NextFunction) => {
           // console.log("tutaj");
           // console.log(err.message);
         } else {
-          let user = await User.findById(decodedToken.id);
-          res.json(user);
+          let user = await User.findById(decodedToken.id).select("name email premium age sex role");
+          res.send(user);
           next();
         }
       }
@@ -124,6 +126,7 @@ const logout = (req: Request, res: Response) => {
   } else {
     res.cookie("jwt", "", { maxAge: 1 });
   }
+  // res.clearCookie("jwt")
   res.status(200).json({ logout: true });
 };
 

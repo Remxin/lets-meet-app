@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios'
 import "./App.scss";
 import "./styles/scss/fonts.scss"
-import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ChakraProvider } from '@chakra-ui/react'
 import {
   ApolloClient,
@@ -42,7 +43,7 @@ import VerifiedPlace from "./graphql/components/VerifiedPlace";
 
 // ---- init global apollo server variable and initialize memory cache for queries, to speed up app ----
 const client = new ApolloClient({
-  uri: "http://localhost:4000",
+  uri: process.env.REACT_APP_APOLLO_SERVER_IP,
   cache: new InMemoryCache(),
 });
 
@@ -55,18 +56,21 @@ function App() {
   useEffect(() => {
     const verifyUser = async () => {
       try {
-        // console.log("trying");
+        console.log("trying");
         const res = await fetch(
           `${process.env.REACT_APP_SERVER_IP}/verifyuser`,
           {
             method: "GET",
-            credentials: "include", // dołącza do zapytania cookiesy
+            credentials: "include",// dołącza do zapytania cookiesy
             headers: {
               "Content-Type": "application/json",
               Cache: "no-cache",
             },
           }
         );
+        // const res = await axios.get(`${process.env.REACT_APP_SERVER_IP}/verifyuser`, {
+        //   withCredentials: true
+        // })
         const data = await res.json();
         console.log(data);
         

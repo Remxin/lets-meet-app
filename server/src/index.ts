@@ -25,6 +25,7 @@ const corsOptions: any = {
   origin: true,
   credentials: true,
   optionsSuccessStatus: 200,
+  secure: false
 };
 
 // ----- app configuration -----
@@ -36,6 +37,12 @@ app.use(bodyParser.json());
 app.use(express.static("static"));
 app.use(cors(corsOptions));
 app.use(fileUpload());
+app.use(function(req, res, next) {  
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  next();
+}); 
 
 // ----- using routes -----
 try {
@@ -46,7 +53,7 @@ try {
   app.use(cityRoutes)
   app.use(express.static(path.join(__dirname, "../../client/build")))
 
-  app.get("/*", (req, res) => res.sendFile(path.resolve(__dirname, "index.html")))
+  app.get("/*", (req, res) => res.sendFile(path.resolve(__dirname, "../../client/build/index.html")))
   console.log("routes successfully imported");
 } catch (err) {
   console.log(`Routes import error : ${err}`);

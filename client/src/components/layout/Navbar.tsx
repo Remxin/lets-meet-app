@@ -81,9 +81,8 @@ const Navbar = ({ logged }: navbarProps) => {
       text-gray-800"
         >
           <span className="text-2xl text-indigo-700 mr-3 ">
-            <FcLandscape name="logo-ionic"></FcLandscape>
+            <img src="/logo.png" alt="logo" className="app-logo" />
           </span>
-          <h1>Lets Meet App </h1>
         </div>
 
         <div

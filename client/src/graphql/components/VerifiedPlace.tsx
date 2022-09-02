@@ -79,6 +79,7 @@ const VerifiedPlace = () => {
    return <div></div>
  }, [imagesCount, data]);
 
+console.log(ratingVal);
 
 const deliverOpinion = useCallback(async (comment: string) => {
   if (!params.placeId) return
@@ -149,7 +150,7 @@ console.log(opinionsData);
                   {/* <div className="do-rating" style={{ display: showComments ? "block" : "none"}}> */}
                   <div className="do-rating">
                     <div className="rating">
-                      <Rating ratingValue={ratingVal} readonly={false} emptyIcon={<FaRegStar/>} fullIcon={<FaStar/>} allowHalfIcon={true}/>
+                      <Rating ratingValue={ratingVal} readonly={false} emptyIcon={<FaRegStar/>} fullIcon={<FaStar/>} allowHalfIcon={true} onClick={(val) => setRatingVal(val / 20)}/>
                     </div>
                     <MessageInput sendMessageFun={deliverOpinion} placeHolder="Write an opinion..." showSendButton={true} showEmojis={false}/>
                   </div>

@@ -123,7 +123,6 @@ export const verifyPlace = async (req: Request, res: Response) => {
     .then(async () => {
       if (addingUserId) {
       const addingUserInfo = await User.findOne({ _id: addingUserId }); // dodawanie userowi za nagrodę darmową promocję eventu
-      console.log(addingUserId, addingUserInfo);
         addingUserInfo.promotionEvents += 0.25; // promotion events given to user
         addingUserInfo
         .save()

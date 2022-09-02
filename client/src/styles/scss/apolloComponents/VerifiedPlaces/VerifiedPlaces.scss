@@ -6,6 +6,7 @@
         width: 50%;
         height: 180px;
         padding: 0;
+        overflow: hidden;
         
         & > div {
             color: white;
@@ -21,16 +22,16 @@
                 padding: 3px;
                 padding-left: 8px;
                 font-weight: bold;
-                font-size: 12px;
+                font-size: 10px;
 
                 .placeName {
                     color: orange;
                     text-shadow: 0 0 5px black;
-                    font-size: 17px;
+                    font-size: 13.5x;
                 }
 
                 .cityName {
-                    font-size: 14px;
+                    font-size: 11px;
                 }
             }
         }
